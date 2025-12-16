@@ -1,0 +1,43 @@
+name: Optimize images
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.jpg'
+      - '**/*.jpeg'
+      - '**/*.png'
+      - '**/*.webp'
+
+jobs:
+  optimize:
+    name: Optimize and commit images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install image tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jpegoptim optipng webp
+
+      - name: Optimize images (JPEG)
+        run: |
+          find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' \) -print0 | xargs -0 -n1 jpegoptim --strip-all --max=85 || true
+
+      - name: Optimize images (PNG)
+        run: |
+          find . -type f -iname '*.png' -print0 | xargs -0 -n1 optipng -o2 || true
+
+      - name: Commit optimized images
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "ci(images): optimize images" || echo "No image changes"
+          git push
