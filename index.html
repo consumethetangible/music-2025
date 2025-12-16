@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Music Favorites</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@700&family=Inter:wght@400;600&family=Courier+Prime:ital@0;1&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            padding: 60px 40px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: 'NOW PLAYING';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-5deg);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18vw;
+            font-weight: bold;
+            color: rgba(212, 175, 55, 0.08);
+            z-index: 0;
+            pointer-events: none;
+            letter-spacing: 0.15em;
+            white-space: nowrap;
+            text-shadow: 0 0 80px rgba(212, 175, 55, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.95);
+            border-radius: 20px;
+            padding: 60px 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 52px;
+            text-align: center;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4a6 50%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            line-height: 1.2;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #aaa;
+            font-weight: 400;
+            margin-bottom: 50px;
+            font-family: 'Courier Prime', monospace;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #d4af37;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #333;
+            letter-spacing: 3px;
+        }
+        
+        .releases {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .release {
+            position: relative;
+            aspect-ratio: 1;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            border-radius: 50%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 8px solid #1a1a1a;
+            box-shadow: 
+                0 0 0 2px #333,
+                0 10px 30px rgba(0, 0, 0, 0.8),
+                inset 0 0 50px rgba(0, 0, 0, 0.5);
+            overflow: visible;
+        }
+        
+        .release::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 0 2px #0a0a0a,
+                inset 0 2px 10px rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+        
+        .release::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg 0.5deg,
+                rgba(255, 255, 255, 0.02) 0.5deg 1deg
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Tone arm base (fixed pivot point) */
+        .tonearm {
+            position: absolute;
+            width: 4px;
+            height: 50%;
+            background: linear-gradient(to bottom, #b0b0b0 0%, #808080 50%, #606060 100%);
+            top: 5%;
+            right: 10%;
+            transform-origin: top center;
+            transform: rotate(-60deg);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px 2px 0 0;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+            z-index: 20;
+            pointer-events: none;
+        }
+        
+        /* Pivot point at top */
+        .tonearm::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: #505050;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 0 2px #303030,
+                inset 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Needle tip at bottom */
+        .tonearm::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #f4e4a6, #d4af37);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.9);
+        }
+        
+        .release:hover .tonearm {
+            opacity: 1;
+            transform: rotate(-10deg);
+        }
+        
+        .release.clickable {
+            cursor: pointer;
+        }
+        
+        .release.clickable:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 0 0 2px #d4af37,
+                0 20px 50px rgba(212, 175, 55, 0.4),
+                inset 0 0 50px rgba(212, 175, 55, 0.1);
+            border-color: #d4af37;
+        }
+        
+        .release.clickable:hover::after {
+            animation: spin 3s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .release.no-link {
+            cursor: default;
+            opacity: 0.7;
+        }
+        
+        .artist {
+            font-weight: 600;
+            color: #f4e4a6;
+            font-size: 18px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 5;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .album {
+            color: #999;
+            font-size: 14px;
+            font-style: italic;
+            position: relative;
+            z-index: 5;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .archival .release {
+            border-color: #2a2a2a;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            border: 3px solid #4a4a4a;
+            box-shadow: 
+                12px 12px 25px rgba(0, 0, 0, 0.9),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.6);
+            transform: perspective(800px) rotateY(-15deg) rotateX(8deg);
+            overflow: visible;
+            position: relative;
+        }
+        
+        /* Right side panel - deeper */
+        .archival .release::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -30px;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to right, #2a2a2a, #1a1a1a, #0a0a0a);
+            transform-origin: left;
+            transform: rotateY(90deg);
+            border-radius: 0 15px 15px 0;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.9);
+            z-index: -1;
+        }
+        
+        /* Bottom panel - deeper */
+        .archival .release::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to bottom, #1a1a1a, #0a0a0a, #000);
+            transform-origin: top;
+            transform: rotateX(-90deg);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.9);
+            z-index: -1;
+        }
+        
+        /* Label on front */
+        .archival .artist::before {
+            content: 'DELUXE EDITION';
+            display: block;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 12px;
+            color: #8b7355;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .archival .release .tonearm {
+            display: none;
+        }
+        
+        .archival .release.clickable:hover {
+            transform: perspective(800px) rotateY(-15deg) rotateX(8deg) scale(1.08);
+            border-color: #8b7355;
+            box-shadow: 
+                15px 15px 35px rgba(139, 115, 85, 0.6),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.6);
+        }
+        
+        .archival .release.clickable:hover::before,
+        .archival .release.clickable:hover::after {
+            animation: none !important;
+        }
+        
+        .archival .release.clickable:hover .artist::before {
+            color: #d4af37;
+        }
+        
+        @media (max-width: 768px) {
+            .releases {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .subtitle {
+                font-size: 13px;
+            }
+            
+            .container {
+                padding: 40px 30px;
+            }
+            
+            .release {
+                padding: 25px;
+            }
+            
+            .artist {
+                font-size: 15px;
+            }
+            
+            .album {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Consuming Music in 2025</h1>
+        <div class="subtitle">A partial look at some of Chris's favorite albums</div>
+        
+        <div class="section new-releases">
+            <h2>New Releases</h2>
+            <div class="releases">
+                <div class="release clickable" onclick="window.open('https://annahstasia.bandcamp.com/album/tether', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Annahstasia</div>
+                    <div class="album">Tether</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://automatic-band.bandcamp.com/album/is-it-now', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Automatic</div>
+                    <div class="album">Is It Now?</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://basknc.bandcamp.com/album/the-turning', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Bask</div>
+                    <div class="album">The Turning</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://blackcountrynewroad.bandcamp.com/', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Black Country, New Road</div>
+                    <div class="album">Forever Howlong</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://brasscamelband.bandcamp.com/album/camel', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Brass Camel</div>
+                    <div class="album">Camel</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://clairerousay.bandcamp.com/album/no-floor', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Claire Rousay & More Ease</div>
+                    <div class="album">No Floor</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://cleoforshort.bandcamp.com/album/cuntry', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Cleo Reed</div>
+                    <div class="album">Cuntry</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://deafheavens.bandcamp.com/album/lonely-people-with-power', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Deafheaven</div>
+                    <div class="album">Lonely People With Power</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://thedirtynil.bandcamp.com/album/the-lash', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">The Dirty Nil</div>
+                    <div class="album">The Lash</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://dominicsanderson.bandcamp.com/album/blazing-revelations', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Dominic Sanderson</div>
+                    <div class="album">Blazing Revelations</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://giobiagiobia.bandcamp.com/album/x-on', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Giöbia</div>
+                    <div class="album">X-ÆON</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://gokurosawa.bandcamp.com/album/soft-shakes', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Go Kurosawa</div>
+                    <div class="album">soft shakes</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://guerillatoss.bandcamp.com/album/youre-weird-now', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Guerrilla Toss</div>
+                    <div class="album">You're Weird Now</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://hedvigmollestadtrio.bandcamp.com/album/bees-in-the-bonnet', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Hedvig Mollestad Trio</div>
+                    <div class="album">Bees in the Bonnet</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://hiromimusic.bandcamp.com/album/out-there', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Hiromi</div>
+                    <div class="album">Out There</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://ivslys.bandcamp.com/album/zero-seven-four-one-zero', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">IVSLYS</div>
+                    <div class="album">Zero Seven Four One Zero</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://larsfredrikfroislie.bandcamp.com/album/gamle-mester', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Lars Fredrik Frøslie</div>
+                    <div class="album">Gamle Mester</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://leatherhearsesl.bandcamp.com/album/burn-in-heaven-decalouge', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Leather Hearse</div>
+                    <div class="album">Burn in Heaven / Decalogue</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://lyrapramuk.bandcamp.com/album/hymnal', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Lyra Pramuk</div>
+                    <div class="album">Hymnal</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://militariegun.bandcamp.com/album/god-save-the-gun', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Militarie Gun</div>
+                    <div class="album">God Save The Gun</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://militariegun.bandcamp.com/album/god-save-the-gun', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Natural Information Society & Bitchin' Bajas</div>
+                    <div class="album">Totality</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://naxatras.bandcamp.com/album/v', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Naxatras</div>
+                    <div class="album">V</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://www.newdad.live', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">NewDad</div>
+                    <div class="album">Altar</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://phantomspell.bandcamp.com/album/heather-hearth', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Phantom Spell</div>
+                    <div class="album">Heather & Hearth</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://rwake.bandcamp.com/album/the-return-of-magik', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Rwake</div>
+                    <div class="album">The Return of Magick</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://squeakyfeet.bandcamp.com/album/overview-effect-2', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Squeaky Feet</div>
+                    <div class="album">The Overview Effect</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://stevenwilsonhq.com', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Steven Wilson</div>
+                    <div class="album">The Overview</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://sunn.bandcamp.com/album/eternitys-pillars-b-w-raise-thechalice-reverential', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">sunn O)))</div>
+                    <div class="album">Eternity's Pillars b/w Raise The Chalice & Reverential</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://turnstilehardcore.com', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Turnstile</div>
+                    <div class="album">NEVER ENOUGH</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://yelloweyes.bandcamp.com/album/confusion-gate', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Yellow Eyes</div>
+                    <div class="album">The Confusion Gate</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://yoodooright.bandcamp.com/album/yoo-ii-avec-nolan-potter', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Yoo Doo Right & Nolan Potter</div>
+                    <div class="album">Yoo II avec Nolan Potter</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section archival">
+            <h2>Archival / Reissues</h2>
+            <div class="releases">
+                <div class="release clickable" onclick="window.open('https://jethrotull.com/merch/still-living-in-the-past-boxset/', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Jethro Tull</div>
+                    <div class="album">Still Living in the Past</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://lesrallizesdenudes.bandcamp.com/album/jittoku-76', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Les Rallizes Dénudés</div>
+                    <div class="album">Jittoku '76</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://imotorhead.com/the-manticore-tapes/', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Motörhead</div>
+                    <div class="album">The Manticore Tapes</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://store.pinkfloyd.com/collections/live-at-pompeii', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Pink Floyd</div>
+                    <div class="album">Live at Pompeii - MCMLXXII</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://shop.deeppurple.com/gb/deep-purple/special-collections/madein-japan/made-in-japan-super-deluxe-edition-5cdbr/0602475839507.html', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Deep Purple</div>
+                    <div class="album">Made in Japan Super Deluxe</div>
+                </div>
+                <div class="release clickable" onclick="window.open('https://store.zappa.com/collections/box-sets/products/cheeper-thancheep-2cd-blu-ray', '_blank')">
+                    <div class="tonearm"></div>
+                    <div class="artist">Frank Zappa</div>
+                    <div class="album">Cheaper Than Cheap</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
