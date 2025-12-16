@@ -346,6 +346,28 @@
             pointer-events: none;
         }
 
+        /* Full-cover artwork for archival box sets */
+        .archival .release .artwork {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform: none;
+            border-radius: 12px;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.95;
+            filter: saturate(0.98) contrast(0.98);
+        }
+
+        .archival .release .artist,
+        .archival .release .album {
+            position: relative;
+            z-index: 2;
+            color: #f4f4f4;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
         @media (max-width: 768px) {
             .releases {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
