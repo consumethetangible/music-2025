@@ -332,6 +332,20 @@
             color: #d4af37;
         }
         
+        /* Artwork image inside release */
+        .release .artwork {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            object-fit: cover;
+            border-radius: 50%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
         @media (max-width: 768px) {
             .releases {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -374,159 +388,186 @@
             <div class="releases">
                 <div class="release clickable" onclick="window.open('https://annahstasia.bandcamp.com/album/tether', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="annahstasia.jpg" alt="Annahstasia - Tether">
                     <div class="artist">Annahstasia</div>
                     <div class="album">Tether</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://automatic-band.bandcamp.com/album/is-it-now', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="automatic.jpg" alt="Automatic - Is It Now?">
                     <div class="artist">Automatic</div>
                     <div class="album">Is It Now?</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://basknc.bandcamp.com/album/the-turning', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="the turning.jpg" alt="Bask - The Turning">
                     <div class="artist">Bask</div>
                     <div class="album">The Turning</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://blackcountrynewroad.bandcamp.com/', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="black country new road.jpg" alt="Black Country, New Road - Forever Howlong">
                     <div class="artist">Black Country, New Road</div>
                     <div class="album">Forever Howlong</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://brasscamelband.bandcamp.com/album/camel', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="brass camel.jpg" alt="Brass Camel - Camel">
                     <div class="artist">Brass Camel</div>
                     <div class="album">Camel</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://clairerousay.bandcamp.com/album/no-floor', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="no floor.jpg" alt="Claire Rousay & More Ease - No Floor">
                     <div class="artist">Claire Rousay & More Ease</div>
                     <div class="album">No Floor</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://cleoforshort.bandcamp.com/album/cuntry', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="cleo reed.jpg" alt="Cleo Reed - Cuntry">
                     <div class="artist">Cleo Reed</div>
                     <div class="album">Cuntry</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://deafheavens.bandcamp.com/album/lonely-people-with-power', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="deafheaven.webp" alt="Deafheaven - Lonely People With Power">
                     <div class="artist">Deafheaven</div>
                     <div class="album">Lonely People With Power</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://thedirtynil.bandcamp.com/album/the-lash', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="dirty nil.jpg" alt="The Dirty Nil - The Lash">
                     <div class="artist">The Dirty Nil</div>
                     <div class="album">The Lash</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://dominicsanderson.bandcamp.com/album/blazing-revelations', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="blazing revelation.jpg" alt="Dominic Sanderson - Blazing Revelations">
                     <div class="artist">Dominic Sanderson</div>
                     <div class="album">Blazing Revelations</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://giobiagiobia.bandcamp.com/album/x-on', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="giobia.jpg" alt="Giöbia - X-ÆON">
                     <div class="artist">Giöbia</div>
                     <div class="album">X-ÆON</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://gokurosawa.bandcamp.com/album/soft-shakes', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="soft shakes.jpg" alt="Go Kurosawa - soft shakes">
                     <div class="artist">Go Kurosawa</div>
                     <div class="album">soft shakes</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://guerillatoss.bandcamp.com/album/youre-weird-now', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="you're weird now.jpg" alt="Guerrilla Toss - You're Weird Now">
                     <div class="artist">Guerrilla Toss</div>
                     <div class="album">You're Weird Now</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://hedvigmollestadtrio.bandcamp.com/album/bees-in-the-bonnet', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="hedvig mollestad.jpg" alt="Hedvig Mollestad Trio - Bees in the Bonnet">
                     <div class="artist">Hedvig Mollestad Trio</div>
                     <div class="album">Bees in the Bonnet</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://hiromimusic.bandcamp.com/album/out-there', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="hiromi.jpg" alt="Hiromi - Out There">
                     <div class="artist">Hiromi</div>
                     <div class="album">Out There</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://ivslys.bandcamp.com/album/zero-seven-four-one-zero', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="IVSLYS.jpg" alt="IVSLYS - Zero Seven Four One Zero">
                     <div class="artist">IVSLYS</div>
                     <div class="album">Zero Seven Four One Zero</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://larsfredrikfroislie.bandcamp.com/album/gamle-mester', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="gamle mester.jpg" alt="Lars Fredrik Frøslie - Gamle Mester">
                     <div class="artist">Lars Fredrik Frøslie</div>
                     <div class="album">Gamle Mester</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://leatherhearsesl.bandcamp.com/album/burn-in-heaven-decalouge', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="leather hearse.jpg" alt="Leather Hearse - Burn in Heaven / Decalogue">
                     <div class="artist">Leather Hearse</div>
                     <div class="album">Burn in Heaven / Decalogue</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://lyrapramuk.bandcamp.com/album/hymnal', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="hymnal.jpg" alt="Lyra Pramuk - Hymnal">
                     <div class="artist">Lyra Pramuk</div>
                     <div class="album">Hymnal</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://militariegun.bandcamp.com/album/god-save-the-gun', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="god save the gun.jpg" alt="Militarie Gun - God Save The Gun">
                     <div class="artist">Militarie Gun</div>
                     <div class="album">God Save The Gun</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://militariegun.bandcamp.com/album/god-save-the-gun', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="natural information society - totality.jpg" alt="Natural Information Society - Totality">
                     <div class="artist">Natural Information Society & Bitchin' Bajas</div>
                     <div class="album">Totality</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://naxatras.bandcamp.com/album/v', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="naxatras v.jpg" alt="Naxatras - V">
                     <div class="artist">Naxatras</div>
                     <div class="album">V</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://www.newdad.live', '_blank')">
                     <div class="tonearm"></div>
+                    <img class="artwork" src="newdad.jpg" alt="NewDad - Altar">
                     <div class="artist">NewDad</div>
                     <div class="album">Altar</div>
                 </div>
                 <div class="release clickable" onclick="window.open('https://phantomspell.bandcamp.com/album/heather-hearth', '_blank')">
                     <div class="tonearm"></div>
-                    <div class="artist">Phantom Spell</div>
-                    <div class="album">Heather & Hearth</div>
-                </div>
+                        <img class="artwork" src="heather and hearth.jpg" alt="Phantom Spell - Heather & Hearth">
+                        <div class="artist">Phantom Spell</div>
+                        <div class="album">Heather & Hearth</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://rwake.bandcamp.com/album/the-return-of-magik', '_blank')">
                     <div class="tonearm"></div>
-                    <div class="artist">Rwake</div>
-                    <div class="album">The Return of Magick</div>
-                </div>
+                        <img class="artwork" src="the return of magik.jpg" alt="Rwake - The Return of Magick">
+                        <div class="artist">Rwake</div>
+                        <div class="album">The Return of Magick</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://squeakyfeet.bandcamp.com/album/overview-effect-2', '_blank')">
                     <div class="tonearm"></div>
-                    <div class="artist">Squeaky Feet</div>
-                    <div class="album">The Overview Effect</div>
-                </div>
+                        <img class="artwork" src="the overview effect.jpg" alt="Squeaky Feet - The Overview Effect">
+                        <div class="artist">Squeaky Feet</div>
+                        <div class="album">The Overview Effect</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://stevenwilsonhq.com', '_blank')">
                     <div class="tonearm"></div>
-                    <div class="artist">Steven Wilson</div>
-                    <div class="album">The Overview</div>
-                </div>
+                        <img class="artwork" src="steven wilson.webp" alt="Steven Wilson - The Overview">
+                        <div class="artist">Steven Wilson</div>
+                        <div class="album">The Overview</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://sunn.bandcamp.com/album/eternitys-pillars-b-w-raise-thechalice-reverential', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">sunn O)))</div>
-                    <div class="album">Eternity's Pillars b/w Raise The Chalice & Reverential</div>
-                </div>
+                        <img class="artwork" src="eternity's pillars.jpg" alt="sunn O))) - Eternity's Pillars">
+                        <div class="artist">sunn O)))</div>
+                        <div class="album">Eternity's Pillars b/w Raise The Chalice & Reverential</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://turnstilehardcore.com', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Turnstile</div>
-                    <div class="album">NEVER ENOUGH</div>
-                </div>
+                        <img class="artwork" src="turnstile.jpg" alt="Turnstile - NEVER ENOUGH">
+                        <div class="artist">Turnstile</div>
+                        <div class="album">NEVER ENOUGH</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://yelloweyes.bandcamp.com/album/confusion-gate', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Yellow Eyes</div>
-                    <div class="album">The Confusion Gate</div>
-                </div>
+                        <img class="artwork" src="confusion gate.jpg" alt="Yellow Eyes - The Confusion Gate">
+                        <div class="artist">Yellow Eyes</div>
+                        <div class="album">The Confusion Gate</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://yoodooright.bandcamp.com/album/yoo-ii-avec-nolan-potter', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Yoo Doo Right & Nolan Potter</div>
-                    <div class="album">Yoo II avec Nolan Potter</div>
-                </div>
+                        <img class="artwork" src="yoo II avec nolan potter.jpg" alt="Yoo Doo Right & Nolan Potter - Yoo II avec Nolan Potter">
+                        <div class="artist">Yoo Doo Right & Nolan Potter</div>
+                        <div class="album">Yoo II avec Nolan Potter</div>
+                    </div>
             </div>
         </div>
         
@@ -534,35 +575,35 @@
             <h2>Archival / Reissues</h2>
             <div class="releases">
                 <div class="release clickable" onclick="window.open('https://jethrotull.com/merch/still-living-in-the-past-boxset/', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Jethro Tull</div>
-                    <div class="album">Still Living in the Past</div>
-                </div>
+                        <img class="artwork" src="jethro tull.jpg" alt="Jethro Tull - Still Living in the Past">
+                        <div class="artist">Jethro Tull</div>
+                        <div class="album">Still Living in the Past</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://lesrallizesdenudes.bandcamp.com/album/jittoku-76', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Les Rallizes Dénudés</div>
-                    <div class="album">Jittoku '76</div>
-                </div>
+                        <img class="artwork" src="les rallizes denudes.jpg" alt="Les Rallizes Dénudés - Jittoku '76">
+                        <div class="artist">Les Rallizes Dénudés</div>
+                        <div class="album">Jittoku '76</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://imotorhead.com/the-manticore-tapes/', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Motörhead</div>
-                    <div class="album">The Manticore Tapes</div>
-                </div>
+                        <img class="artwork" src="motorhead.jpg" alt="Motörhead - The Manticore Tapes">
+                        <div class="artist">Motörhead</div>
+                        <div class="album">The Manticore Tapes</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://store.pinkfloyd.com/collections/live-at-pompeii', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Pink Floyd</div>
-                    <div class="album">Live at Pompeii - MCMLXXII</div>
-                </div>
+                        <img class="artwork" src="live in pompei.jpeg" alt="Pink Floyd - Live at Pompeii - MCMLXXII">
+                        <div class="artist">Pink Floyd</div>
+                        <div class="album">Live at Pompeii - MCMLXXII</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://shop.deeppurple.com/gb/deep-purple/special-collections/madein-japan/made-in-japan-super-deluxe-edition-5cdbr/0602475839507.html', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Deep Purple</div>
-                    <div class="album">Made in Japan Super Deluxe</div>
-                </div>
+                        <img class="artwork" src="made in japan.jpg" alt="Deep Purple - Made in Japan Super Deluxe">
+                        <div class="artist">Deep Purple</div>
+                        <div class="album">Made in Japan Super Deluxe</div>
+                    </div>
                 <div class="release clickable" onclick="window.open('https://store.zappa.com/collections/box-sets/products/cheeper-thancheep-2cd-blu-ray', '_blank')">
-                    <div class="tonearm"></div>
-                    <div class="artist">Frank Zappa</div>
-                    <div class="album">Cheaper Than Cheap</div>
-                </div>
+                        <img class="artwork" src="cheaper than cheap.jpg" alt="Frank Zappa - Cheaper Than Cheap">
+                        <div class="artist">Frank Zappa</div>
+                        <div class="album">Cheaper Than Cheap</div>
+                    </div>
             </div>
         </div>
     </div>
