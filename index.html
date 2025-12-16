@@ -351,6 +351,12 @@
             will-change: transform, opacity;
         }
 
+        /* Make circular artwork smaller for New Releases so it reads like a record label */
+        .section.new-releases .release .artwork {
+            width: 40%;
+            height: 40%;
+        }
+
         /* Full-cover artwork for archival box sets */
         .archival .release .artwork {
             width: 100%;
@@ -426,6 +432,12 @@
             
             .release {
                 padding: 25px;
+            }
+
+            /* Slightly larger label on small screens so artwork remains readable */
+            .section.new-releases .release .artwork {
+                width: 50%;
+                height: 50%;
             }
             
             .artist {
