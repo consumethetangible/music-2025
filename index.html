@@ -368,10 +368,20 @@
             text-shadow: 0 2px 8px rgba(0,0,0,0.8);
         }
 
-        /* Hide textual labels for archival/reissue boxset visuals */
+        /* Keep textual labels present in the DOM but hidden by default; reveal on hover */
         .archival .release .artist,
         .archival .release .album {
-            display: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 220ms ease, transform 220ms ease;
+            pointer-events: none;
+        }
+
+        .archival .release:hover .artist,
+        .archival .release:hover .album {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
         }
 
         @media (max-width: 768px) {
