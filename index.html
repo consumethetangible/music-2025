@@ -21,6 +21,16 @@
             position: relative;
             overflow-x: hidden;
         }
+
+        :root {
+            --spindle-size: 2%;
+            --spindle-sheen: rgba(255,255,255,0.14);
+            --spindle-ring-color: rgba(212,175,55,0.03);
+            --coarse-gap: 3px;
+            --fine-gap: 1px;
+            --conic-opacity: 0.02;
+            --vinyl-spin-speed: 2.8s;
+        }
         
         body::before {
             content: 'NOW PLAYING';
@@ -241,13 +251,18 @@
             color: inherit;
         }
         
-        .release.clickable:hover::after {
-            animation: spin 3s linear infinite;
-        }
-        
-        @keyframes spin {
+        /* vinyl spin animation (clockwise viewing from top) */
+        @keyframes vinyl-spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        /* trigger spin on hover or when .playing is present; use variable for speed */
+        .release.clickable:hover::after,
+        .release.playing::after {
+            animation: vinyl-spin var(--vinyl-spin-speed, 2.8s) linear infinite;
+            /* subtle motion blur illusion */
+            filter: contrast(1.02) saturate(0.98) blur(0.2px);
         }
         
         .release.no-link {
@@ -261,7 +276,7 @@
             font-size: 18px;
             margin-bottom: 8px;
             position: relative;
-            z-index: 5;
+            z-index: 30; /* ensure play button doesn't occlude text */
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
         
@@ -465,7 +480,7 @@
             opacity: 1;
         }
 
-        @media (max-width: 768px) {
+    @media (max-width: 768px) {
             .releases {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
                 gap: 20px;
@@ -504,6 +519,166 @@
                 font-size: 12px;
             }
         }
+        /* VINYL TEXTURE + LABEL RING (scoped to new releases so archival overrides remain intact) */
+        .section.new-releases .release {
+            /* make 3D transforms look more natural */
+            transform-style: preserve-3d;
+            perspective: 900px;
+        }
+
+        .section.new-releases .release::after {
+            /* Vinyl grooves as concentric rings (repeating-radial-gradient) for the
+               'groove' appearance, plus a very low-opacity conic overlay so rotation
+               still reads as motion. This gives primarily concentric rings while
+               preserving visible spinning.
+            */
+            /* keep the ::after fallback (in case JS is disabled) — still uses CSS vars */
+            background-image:
+                radial-gradient(circle at center, rgba(0,0,0,0.06) 60%, rgba(0,0,0,0.22) 100%),
+                radial-gradient(circle at center, transparent 0%, transparent 34%, rgba(0,0,0,0.22) 36%, transparent 38%),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.02) 0px var(--coarse-gap), transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.01) 0px var(--fine-gap), transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
+                repeating-conic-gradient(from 0deg, rgba(255,255,255,var(--conic-opacity)) 0deg 0.5deg, transparent 0.5deg 1deg);
+            background-blend-mode: overlay, multiply, normal, normal, overlay;
+            opacity: 0.92;
+            filter: contrast(1.05) saturate(0.98);
+            will-change: transform, opacity, background-position;
+            transform-origin: center center;
+        }
+
+        /* Element-based grooves (preferred) — injected by JS per .release so we can
+           ramp speed and animate transform on an actual element rather than a pseudo
+           element. This enables smooth ramp-up/ramp-down and per-card randomization.
+        */
+        .release .vinyl-grooves {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle at center, rgba(0,0,0,0.06) 60%, rgba(0,0,0,0.22) 100%),
+                radial-gradient(circle at center, transparent 0%, transparent 34%, rgba(0,0,0,0.22) 36%, transparent 38%),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.02) 0px var(--coarse-gap), transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.01) 0px var(--fine-gap), transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
+                repeating-conic-gradient(from 0deg, rgba(255,255,255,var(--conic-opacity)) 0deg 0.5deg, transparent 0.5deg 1deg);
+            background-blend-mode: overlay, multiply, normal, normal, overlay;
+            opacity: 0.95;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .release .vinyl-sheen {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            z-index: 2; /* sit above grooves but below artwork/text */
+            pointer-events: none;
+            background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.06), rgba(255,255,255,0) 30%);
+            mix-blend-mode: screen;
+            opacity: 0.0;
+            transition: opacity 220ms ease;
+            will-change: transform, opacity;
+        }
+
+        .release.hover-sheen .vinyl-sheen { opacity: 0.55; }
+
+        .section.new-releases .release::before {
+            /* emphasize inner label with a subtle bevel ring */
+            /* spindle hole uses a CSS variable so it's easy to tweak */
+            width: var(--spindle-size);
+            height: var(--spindle-size);
+            box-shadow: 0 0 0 0.6px rgba(0,0,0,0.34), 0 0 0 2px var(--spindle-ring-color) inset;
+            transition: box-shadow 160ms ease, width 140ms ease, height 140ms ease, background 160ms ease;
+            z-index: 3;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
+        }
+
+        .section.new-releases .release.clickable:hover::before {
+            box-shadow: 0 0 0 6px rgba(0,0,0,0.25), 0 0 30px 6px rgba(212,175,55,0.06) inset, 0 0 8px rgba(212,175,55,0.08);
+            /* subtle sheen centered slightly off-axis to simulate light catch */
+            background-image: radial-gradient(circle at 30% 28%, var(--spindle-sheen) 0%, rgba(255,255,255,0) 40%), radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
+            background-blend-mode: screen, normal;
+        }
+
+        /* entrance: fade + slide to give items a soft lift on load */
+        .release {
+            transform: translateY(8px) scale(0.996);
+            transition: opacity 420ms cubic-bezier(0.2,0.9,0.2,1), transform 420ms cubic-bezier(0.2,0.9,0.2,1);
+        }
+
+        .release.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* prefer reduced motion: keep opacity-only entrance */
+        @media (prefers-reduced-motion: reduce) {
+            .release {
+                transition: none;
+                transform: none !important;
+            }
+        }
+
+        /* subtle parallax tilt — baseline CSS fallback; exact tilt computed by JS when available */
+        .release.tilt-enabled {
+            will-change: transform;
+        }
+
+        /* Decorative corner flourishes (small, low-cost SVG accents) */
+        .corner-svg {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            fill: none;
+            stroke: rgba(212,175,55,0.12);
+            stroke-width: 1.25;
+            pointer-events: none;
+            z-index: 2;
+            filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+        }
+
+        .corner-svg.top-left { top: 18px; left: 18px; transform: rotate(-6deg); }
+        .corner-svg.bottom-right { bottom: 18px; right: 18px; transform: rotate(18deg); }
+        /* accessible play/pause button overlay */
+        .play-toggle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            z-index: 12;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            cursor: pointer;
+            transition: transform 180ms ease, background 180ms ease, opacity 160ms ease;
+            opacity: 0; /* hidden until hover/focus */
+        }
+
+        .release:hover .play-toggle,
+        .release:focus-within .play-toggle,
+        .release.playing .play-toggle {
+            opacity: 1;
+        }
+
+        .play-toggle:focus {
+            outline: 3px solid rgba(212,175,55,0.12);
+            outline-offset: 6px;
+            transform: translate(-50%, -50%) scale(1.02);
+        }
+
+        .play-toggle svg { width: 34px; height: 34px; display:block; }
+
+        /* screen-reader only helper */
+        .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     </style>
 </head>
 <body>
@@ -707,6 +882,17 @@
                     <div class="album">Yoo II avec Nolan Potter</div>
                 </a>
             </div>
+        <!-- Decorative SVG flourishes: kept lightweight and purely decorative -->
+        <svg class="corner-svg top-left" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M6 58 C18 42, 36 34, 58 18" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 50 C18 44, 30 38, 50 26" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        <svg class="corner-svg bottom-right" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M58 6 C46 22, 28 30, 6 46" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M54 14 C46 20, 34 26, 14 38" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
         </div>
         
         <div class="section archival">
@@ -774,6 +960,257 @@
                 }
             }
         })();
+    </script>
+    <script>
+    /* Parallax tilt per card (disabled for reduced-motion & touch devices) */
+    (function(){
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (('ontouchstart' in window) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) return;
+
+        var maxRotate = 6; // degrees
+        var maxTranslateY = -6; // px
+        var baseScale = 1.06;
+
+        function enableTiltFor(el) {
+            var raf = null;
+            var current = {rx:0, ry:0, ty:0, s:1};
+            var target = {rx:0, ry:0, ty:0, s:1};
+
+            function update() {
+                current.rx += (target.rx - current.rx) * 0.18;
+                current.ry += (target.ry - current.ry) * 0.18;
+                current.ty += (target.ty - current.ty) * 0.18;
+                current.s += (target.s - current.s) * 0.18;
+                el.style.transform = 'translateY(' + current.ty + 'px) scale(' + current.s + ') rotateX(' + current.rx + 'deg) rotateY(' + current.ry + 'deg)';
+                raf = requestAnimationFrame(update);
+            }
+
+            function onMove(e) {
+                var clientX = e.clientX, clientY = e.clientY;
+                if (e.touches && e.touches[0]) {
+                    clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
+                }
+                var rect = el.getBoundingClientRect();
+                var cx = rect.left + rect.width / 2;
+                var cy = rect.top + rect.height / 2;
+                var dx = (clientX - cx) / (rect.width / 2);
+                var dy = (clientY - cy) / (rect.height / 2);
+                var clamp = function(v){ return Math.max(-1, Math.min(1, v)); };
+                dx = clamp(dx); dy = clamp(dy);
+                target.ry = -dx * maxRotate;
+                target.rx = dy * maxRotate;
+                target.ty = maxTranslateY;
+                target.s = baseScale;
+                if (!raf) raf = requestAnimationFrame(update);
+            }
+
+            function onEnter(){ el.classList.add('tilt-enabled'); }
+            function onLeave(){
+                target.rx = target.ry = 0; target.ty = 0; target.s = 1;
+                el.classList.remove('tilt-enabled');
+                // allow smoothing back to identity then clear inline style
+                setTimeout(function(){
+                    if (raf) { cancelAnimationFrame(raf); raf = null; }
+                    el.style.transform = '';
+                }, 260);
+            }
+
+            el.addEventListener('mousemove', onMove);
+            el.addEventListener('mouseenter', onEnter);
+            el.addEventListener('mouseleave', onLeave);
+        }
+
+        var items = document.querySelectorAll('.section.new-releases .release.clickable');
+        items.forEach(function(it){
+            // skip archival items if any slipped through
+            if (it.closest('.archival')) return;
+            enableTiltFor(it);
+        });
+    })();
+    </script>
+    <script>
+    // Inject accessible play/pause buttons and <picture> wrappers for artworks.
+    (function(){
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            // still inject play buttons for accessibility, but avoid heavy motion changes
+        }
+
+        function makePlaySVG(isPlaying){
+            var ns = 'http://www.w3.org/2000/svg';
+            var svg = document.createElementNS(ns, 'svg');
+            svg.setAttribute('viewBox','0 0 24 24');
+            var path = document.createElementNS(ns, 'path');
+            path.setAttribute('fill','currentColor');
+            if (isPlaying) {
+                path.setAttribute('d','M6 5h3v14H6zM15 5h3v14h-3z');
+            } else {
+                path.setAttribute('d','M8 5v14l11-7z');
+            }
+            svg.appendChild(path);
+            return svg;
+        }
+
+        document.querySelectorAll('.section.new-releases .release.clickable').forEach(function(el){
+            if (el.closest('.archival')) return;
+
+            // inject play button if missing
+            if (!el.querySelector('.play-toggle')){
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'play-toggle';
+                btn.setAttribute('aria-pressed','false');
+                btn.setAttribute('aria-label','Play preview');
+                btn.appendChild(makePlaySVG(false));
+                var sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = 'Play preview'; btn.appendChild(sr);
+                // insert before artwork so it's above grooves
+                var art = el.querySelector('.artwork');
+                if (art) el.insertBefore(btn, art);
+                else el.appendChild(btn);
+
+                btn.addEventListener('click', function(evt){
+                    evt.preventDefault(); evt.stopPropagation();
+                    var wasPlaying = el.classList.contains('playing');
+                    // clear other playing
+                    document.querySelectorAll('.section.new-releases .release.playing').forEach(function(o){ if (o!==el) o.classList.remove('playing'); });
+                    if (wasPlaying){ el.classList.remove('playing'); btn.setAttribute('aria-pressed','false'); btn.setAttribute('aria-label','Play preview'); btn.replaceChild(makePlaySVG(false), btn.firstChild); }
+                    else { el.classList.add('playing'); btn.setAttribute('aria-pressed','true'); btn.setAttribute('aria-label','Pause preview'); btn.replaceChild(makePlaySVG(true), btn.firstChild); }
+                });
+
+                // keyboard handled natively by button: space/enter activates
+            }
+
+            // wrap artwork in <picture> with a .webp source if not already wrapped
+            (async function(){
+                var artwork = el.querySelector('img.artwork');
+                if (artwork && artwork.parentElement && artwork.parentElement.tagName.toLowerCase() !== 'picture'){
+                    var src = artwork.getAttribute('src');
+                    if (src){
+                        var webp = src.replace(/\.(jpe?g|png|jpeg)$/i, '.webp');
+                        try {
+                            // check that the webp actually exists before inserting the source
+                            var head = await fetch(webp, { method: 'HEAD' });
+                            if (head && head.ok) {
+                                var picture = document.createElement('picture');
+                                var source = document.createElement('source');
+                                source.setAttribute('type','image/webp');
+                                source.setAttribute('srcset', webp);
+                                picture.appendChild(source);
+                                // move img into picture
+                                artwork.parentNode.insertBefore(picture, artwork);
+                                picture.appendChild(artwork);
+                            }
+                        } catch (e) {
+                            // network error or file doesn't exist — leave original img in place
+                        }
+                    }
+                }
+            })();
+        });
+
+    })();
+    </script>
+    <script>
+    /* Vinyl grooves injection + spin ramping + randomized spacing + sheen
+       - Injects .vinyl-grooves and .vinyl-sheen elements into each new-release card
+       - Randomizes --coarse-gap and --fine-gap per card to simulate longer/shorter tracks
+       - Implements ramp-up/ramp-down spin on mouseenter/mouseleave and when toggled .playing
+       - Skips if prefers-reduced-motion or on coarse pointers
+    */
+    (function(){
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (('ontouchstart' in window) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) return;
+
+        var releases = document.querySelectorAll('.section.new-releases .release.clickable');
+
+        releases.forEach(function(el){
+            if (el.closest('.archival')) return;
+
+            // inject grooves + sheen if not present
+            if (!el.querySelector('.vinyl-grooves')) {
+                var grooves = document.createElement('span');
+                grooves.className = 'vinyl-grooves';
+                el.insertBefore(grooves, el.firstChild);
+            }
+            if (!el.querySelector('.vinyl-sheen')) {
+                var sheen = document.createElement('span');
+                sheen.className = 'vinyl-sheen';
+                el.insertBefore(sheen, el.firstChild);
+            }
+
+            // randomize groove spacing to simulate track-length variance
+            var coarse = Math.floor(Math.random() * 5) + 2; // 2..6 px
+            var fine = (Math.random() * 1.6 + 0.6).toFixed(2); // 0.6 .. 2.2 px
+            el.style.setProperty('--coarse-gap', coarse + 'px');
+            el.style.setProperty('--fine-gap', fine + 'px');
+
+            // ramping spin state
+            var g = el.querySelector('.vinyl-grooves');
+            var s = el.querySelector('.vinyl-sheen');
+            var angle = 0;
+            var speed = 0; // deg per ms
+            var target = 0;
+            var last = performance.now();
+            var running = false;
+            var period = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vinyl-spin-speed')) || 2.8; // seconds
+            var targetSpeed = 360 / (period * 1000); // deg per ms
+
+            function raf(now){
+                var dt = now - last; last = now;
+                // lerp speed towards target
+                speed += (target - speed) * 0.12;
+                if (Math.abs(speed) < 0.00001) speed = 0;
+                angle = (angle + speed * dt) % 360;
+                if (g) g.style.transform = 'rotate(' + angle + 'deg)';
+                if (s) s.style.transform = 'rotate(' + (angle * 1.25) + 'deg)';
+                if (running) requestAnimationFrame(raf);
+            }
+
+            function startSpin(){
+                target = targetSpeed;
+                if (!running) { running = true; last = performance.now(); requestAnimationFrame(raf); }
+            }
+            function stopSpin(){
+                target = 0;
+                // allow RAF to stop naturally when speed decays to ~0
+                setTimeout(function(){ if (Math.abs(speed) < 0.02) { running = false; } }, 600);
+            }
+
+            el.addEventListener('mouseenter', function(){ el.classList.add('hover-sheen'); startSpin(); });
+            el.addEventListener('mouseleave', function(){ el.classList.remove('hover-sheen'); stopSpin(); });
+
+            // if page wants to mark playing, keep spinning
+            var observer = new MutationObserver(function(m){
+                m.forEach(function(rec){
+                    if (rec.type !== 'attributes') return;
+                    if (el.classList.contains('playing')) startSpin(); else stopSpin();
+                });
+            });
+            observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+        });
+    })();
+    </script>
+    <script>
+    // Clicking a card toggles the .playing state and clears other playing cards.
+    (function(){
+        var releases = document.querySelectorAll('.section.new-releases .release.clickable');
+        if (!releases || releases.length === 0) return;
+        releases.forEach(function(el){
+            el.addEventListener('click', function(ev){
+                // Toggle playing on the clicked card and remove from others.
+                var currentlyPlaying = el.classList.contains('playing');
+                // clear others first
+                document.querySelectorAll('.section.new-releases .release.playing').forEach(function(o){
+                    if (o !== el) o.classList.remove('playing');
+                });
+                if (currentlyPlaying) {
+                    el.classList.remove('playing');
+                } else {
+                    el.classList.add('playing');
+                }
+                // Do not prevent default — keep link behavior (opens in new tab for target="_blank").
+            });
+        });
+    })();
     </script>
   </body>
   </html>
