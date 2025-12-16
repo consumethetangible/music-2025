@@ -224,6 +224,20 @@
                 inset 0 0 50px rgba(212, 175, 55, 0.1);
             border-color: #d4af37;
         }
+
+        /* Remove browser default link styling (underlines/visited color) for release anchors */
+        .release {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .release:link,
+        .release:visited,
+        .release:hover,
+        .release:active {
+            text-decoration: none;
+            color: inherit;
+        }
         
         .release.clickable:hover::after {
             animation: spin 3s linear infinite;
