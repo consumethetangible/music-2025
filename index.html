@@ -756,8 +756,8 @@
         (function() {
             function reveal() {
                 var releases = document.querySelectorAll('.releases .release');
-                releases.forEach(function(el, i) {
-                    var delay = i * 80; // ms
+                    releases.forEach(function(el, i) {
+                    var delay = i * 120; // ms (slower stagger for a more dramatic entrance)
                     el.style.setProperty('--stagger', delay + 'ms');
                     setTimeout(function() { el.classList.add('show'); }, delay);
                 });
