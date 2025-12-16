@@ -153,6 +153,10 @@
             );
             pointer-events: none;
             z-index: 0;
+            /* make rotations smoother and predictable */
+            transform: rotate(0deg);
+            transform-origin: center;
+            will-change: transform;
         }
         
         /* Tone arm base (fixed pivot point) */
@@ -344,6 +348,7 @@
             border-radius: 50%;
             z-index: 2;
             pointer-events: none;
+            will-change: transform, opacity;
         }
 
         /* Full-cover artwork for archival box sets */
@@ -382,6 +387,23 @@
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
+        }
+
+        /* Overlay for archival covers to improve text readability on hover/focus */
+        .archival .release .overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.15));
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 220ms ease;
+            pointer-events: none;
+        }
+
+        .archival .release:hover .overlay,
+        .archival .release:focus-within .overlay {
+            opacity: 1;
         }
 
         @media (max-width: 768px) {
@@ -613,37 +635,59 @@
             <h2>Archival / Reissues</h2>
             <div class="releases">
                 <div class="release clickable" onclick="window.open('https://jethrotull.com/merch/still-living-in-the-past-boxset/', '_blank')">
-                        <img loading="lazy" class="artwork" src="jethro-tull.jpg" alt="Jethro Tull - Still Living in the Past">
-                        <div class="artist">Jethro Tull</div>
+            <img loading="lazy" class="artwork" src="jethro-tull.jpg" alt="Jethro Tull - Still Living in the Past">
+            <div class="overlay" aria-hidden="true"></div>
+            <div class="artist">Jethro Tull</div>
                         <div class="album">Still Living in the Past</div>
                     </div>
                 <div class="release clickable" onclick="window.open('https://lesrallizesdenudes.bandcamp.com/album/jittoku-76', '_blank')">
-                        <img loading="lazy" class="artwork" src="les-rallizes-denudes.jpg" alt="Les Rallizes Dénudés - Jittoku '76">
-                        <div class="artist">Les Rallizes Dénudés</div>
+            <img loading="lazy" class="artwork" src="les-rallizes-denudes.jpg" alt="Les Rallizes Dénudés - Jittoku '76">
+            <div class="overlay" aria-hidden="true"></div>
+            <div class="artist">Les Rallizes Dénudés</div>
                         <div class="album">Jittoku '76</div>
                     </div>
                 <div class="release clickable" onclick="window.open('https://imotorhead.com/the-manticore-tapes/', '_blank')">
-                        <img loading="lazy" class="artwork" src="motorhead.jpg" alt="Motörhead - The Manticore Tapes">
-                        <div class="artist">Motörhead</div>
+            <img loading="lazy" class="artwork" src="motorhead.jpg" alt="Motörhead - The Manticore Tapes">
+            <div class="overlay" aria-hidden="true"></div>
+            <div class="artist">Motörhead</div>
                         <div class="album">The Manticore Tapes</div>
                     </div>
                 <div class="release clickable" onclick="window.open('https://store.pinkfloyd.com/collections/live-at-pompeii', '_blank')">
-                        <img loading="lazy" class="artwork" src="live-in-pompei.jpeg" alt="Pink Floyd - Live at Pompeii - MCMLXXII">
-                        <div class="artist">Pink Floyd</div>
+            <img loading="lazy" class="artwork" src="live-in-pompei.jpeg" alt="Pink Floyd - Live at Pompeii - MCMLXXII">
+            <div class="overlay" aria-hidden="true"></div>
+            <div class="artist">Pink Floyd</div>
                         <div class="album">Live at Pompeii - MCMLXXII</div>
                     </div>
                 <div class="release clickable" onclick="window.open('https://shop.deeppurple.com/gb/deep-purple/special-collections/madein-japan/made-in-japan-super-deluxe-edition-5cdbr/0602475839507.html', '_blank')">
-                        <img loading="lazy" class="artwork" src="made-in-japan.jpg" alt="Deep Purple - Made in Japan Super Deluxe">
-                        <div class="artist">Deep Purple</div>
+            <img loading="lazy" class="artwork" src="made-in-japan.jpg" alt="Deep Purple - Made in Japan Super Deluxe">
+            <div class="overlay" aria-hidden="true"></div>
+            <div class="artist">Deep Purple</div>
                         <div class="album">Made in Japan Super Deluxe</div>
                     </div>
                 <div class="release clickable" onclick="window.open('https://store.zappa.com/collections/box-sets/products/cheeper-thancheep-2cd-blu-ray', '_blank')">
-                        <img loading="lazy" class="artwork" src="cheaper-than-cheap.jpg" alt="Frank Zappa - Cheaper Than Cheap">
-                        <div class="artist">Frank Zappa</div>
+            <img loading="lazy" class="artwork" src="cheaper-than-cheap.jpg" alt="Frank Zappa - Cheaper Than Cheap">
+            <div class="overlay" aria-hidden="true"></div>
+            <div class="artist">Frank Zappa</div>
                         <div class="album">Cheaper Than Cheap</div>
                     </div>
             </div>
         </div>
     </div>
+</div>
+    <script>
+        // Make div.release elements with onclick focusable and keyboard-activatable
+        (function() {
+            var els = document.querySelectorAll('.release[onclick]');
+            els.forEach(function(el) {
+                if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+                el.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        el.click();
+                    }
+                });
+            });
+        })();
+    </script>
 </body>
 </html>
