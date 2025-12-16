@@ -170,7 +170,9 @@
             transform-origin: top center;
             transform: rotate(-60deg);
             opacity: 0;
-            transition: opacity 0.3s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            /* snappier, more natural easing for the tonearm */
+            transition: opacity 280ms ease, transform 600ms cubic-bezier(0.22, 0.9, 0.28, 1);
+            will-change: transform, opacity;
             border-radius: 2px 2px 0 0;
             box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
             z-index: 20;
@@ -365,6 +367,42 @@
             will-change: transform, opacity;
         }
 
+        /* microinteraction: subtle artwork lift on hover for new releases */
+        .section.new-releases .release.clickable:hover .artwork {
+            transform: translate(-50%, -50%) scale(1.04);
+            transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* initial load reveal (staggered) - opacity only to avoid transform conflicts */
+        .release {
+            opacity: 0;
+            transition: opacity 360ms ease;
+        }
+
+        .release.show {
+            opacity: 1;
+        }
+
+        /* staggered label reveal using a CSS variable set by JS */
+        .release .artist,
+        .release .album {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 260ms ease var(--stagger, 0ms), transform 260ms ease var(--stagger, 0ms);
+        }
+
+        .release.show .artist,
+        .release.show .album {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* visible focus for keyboard users */
+        .release:focus-visible {
+            outline: 3px solid rgba(212, 175, 55, 0.12);
+            outline-offset: 8px;
+        }
+
         /* Make circular artwork smaller for New Releases so it reads like a record label */
         .section.new-releases .release .artwork {
             width: 40%;
@@ -453,6 +491,9 @@
                 width: 50%;
                 height: 50%;
             }
+            
+            /* on small screens prefer opacity-only entrance for performance */
+            .release { transition: opacity 240ms ease; }
             
             .artist {
                 font-size: 15px;
@@ -709,5 +750,29 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+    <script>
+        // Staggered reveal of releases with respects to prefers-reduced-motion
+        (function() {
+            function reveal() {
+                var releases = document.querySelectorAll('.releases .release');
+                releases.forEach(function(el, i) {
+                    var delay = i * 80; // ms
+                    el.style.setProperty('--stagger', delay + 'ms');
+                    setTimeout(function() { el.classList.add('show'); }, delay);
+                });
+            }
+
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                // respect user preference: show everything immediately without motion
+                document.querySelectorAll('.releases .release').forEach(function(el){ el.classList.add('show'); });
+            } else {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', reveal);
+                } else {
+                    reveal();
+                }
+            }
+        })();
+    </script>
+  </body>
+  </html>
