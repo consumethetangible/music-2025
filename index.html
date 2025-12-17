@@ -228,6 +228,9 @@
             cursor: pointer;
         }
         
+        /* Simple CSS hover transform for clickable releases — hover lift is handled
+           by CSS while the tilt script only applies rotation. This avoids transform
+           composition conflicts because rotate and translate/scale compose cleanly. */
         .release.clickable:hover {
             transform: translateY(-6px) scale(1.06);
             box-shadow: 
@@ -257,9 +260,12 @@
             to { transform: rotate(360deg); }
         }
 
-        /* trigger spin on hover or when .playing is present; use variable for speed */
-        .release.clickable:hover::after,
-        .release.playing::after {
+        /* trigger spin on hover or when .playing is present; use variable for speed
+           Only use the CSS pseudo-element spin when a JS-injected .vinyl-grooves
+           element is NOT present. If JS injects grooves we add .has-grooves and
+           the JS ramping loop will handle rotation smoothly. */
+        .release:not(.has-grooves).clickable:hover::after,
+        .release:not(.has-grooves).playing::after {
             animation: vinyl-spin var(--vinyl-spin-speed, 2.8s) linear infinite;
             /* subtle motion blur illusion */
             filter: contrast(1.02) saturate(0.98) blur(0.2px);
@@ -285,7 +291,7 @@
             font-size: 14px;
             font-style: italic;
             position: relative;
-            z-index: 5;
+            z-index: 30; /* match artist so labels stay above artwork and overlays */
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
         
@@ -382,10 +388,11 @@
             will-change: transform, opacity;
         }
 
-        /* microinteraction: subtle artwork lift on hover for new releases */
-        .section.new-releases .release.clickable:hover .artwork {
+        /* microinteraction: subtle artwork lift on hover for new releases
+           Disabled when JS tilt is active to avoid competing transforms. */
+        .section.new-releases .release.clickable:hover:not(.tilt-controlled) .artwork {
             /* lift slightly and scale more for a punchier feel */
-            transform: translate(-50%, -52%) scale(1.08);
+            transform: translate(-50%, -50%) scale(1.08);
             transition: transform 320ms cubic-bezier(0.2, 1, 0.3, 1);
         }
 
@@ -572,7 +579,9 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            z-index: 2; /* sit above grooves but below artwork/text */
+            /* sit above grooves but below artwork/text; keep lower than artwork to
+               avoid occluding labels when artwork scales. */
+            z-index: 1;
             pointer-events: none;
             background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.06), rgba(255,255,255,0) 30%);
             mix-blend-mode: screen;
@@ -972,16 +981,16 @@
         var baseScale = 1.06;
 
         function enableTiltFor(el) {
+            // Tilt now only controls rotation (rotateX/rotateY). CSS will handle
+            // translateY/scale (hover lift). This avoids transform conflicts.
             var raf = null;
-            var current = {rx:0, ry:0, ty:0, s:1};
-            var target = {rx:0, ry:0, ty:0, s:1};
+            var current = {rx:0, ry:0};
+            var target = {rx:0, ry:0};
 
             function update() {
                 current.rx += (target.rx - current.rx) * 0.18;
                 current.ry += (target.ry - current.ry) * 0.18;
-                current.ty += (target.ty - current.ty) * 0.18;
-                current.s += (target.s - current.s) * 0.18;
-                el.style.transform = 'translateY(' + current.ty + 'px) scale(' + current.s + ') rotateX(' + current.rx + 'deg) rotateY(' + current.ry + 'deg)';
+                el.style.transform = 'rotateX(' + current.rx + 'deg) rotateY(' + current.ry + 'deg)';
                 raf = requestAnimationFrame(update);
             }
 
@@ -999,14 +1008,12 @@
                 dx = clamp(dx); dy = clamp(dy);
                 target.ry = -dx * maxRotate;
                 target.rx = dy * maxRotate;
-                target.ty = maxTranslateY;
-                target.s = baseScale;
                 if (!raf) raf = requestAnimationFrame(update);
             }
 
             function onEnter(){ el.classList.add('tilt-enabled'); }
             function onLeave(){
-                target.rx = target.ry = 0; target.ty = 0; target.s = 1;
+                target.rx = target.ry = 0;
                 el.classList.remove('tilt-enabled');
                 // allow smoothing back to identity then clear inline style
                 setTimeout(function(){
@@ -1085,22 +1092,42 @@
                 if (artwork && artwork.parentElement && artwork.parentElement.tagName.toLowerCase() !== 'picture'){
                     var src = artwork.getAttribute('src');
                     if (src){
+                        var avif = src.replace(/\.(jpe?g|png|jpeg)$/i, '.avif');
                         var webp = src.replace(/\.(jpe?g|png|jpeg)$/i, '.webp');
                         try {
-                            // check that the webp actually exists before inserting the source
-                            var head = await fetch(webp, { method: 'HEAD' });
-                            if (head && head.ok) {
+                            // Prefer AVIF when available, otherwise fall back to WebP.
+                            var okAvif = false;
+                            try { var hAvif = await fetch(avif, { method: 'HEAD' }); okAvif = !!(hAvif && hAvif.ok); } catch(e){}
+                            if (okAvif) {
                                 var picture = document.createElement('picture');
-                                var source = document.createElement('source');
-                                source.setAttribute('type','image/webp');
-                                source.setAttribute('srcset', webp);
-                                picture.appendChild(source);
+                                var sourceAvif = document.createElement('source');
+                                sourceAvif.setAttribute('type','image/avif');
+                                sourceAvif.setAttribute('srcset', avif);
+                                picture.appendChild(sourceAvif);
+                                // also add webp as a secondary fallback if present
+                                try { var hWebp = await fetch(webp, { method: 'HEAD' }); if (hWebp && hWebp.ok) { var sourceWebp = document.createElement('source'); sourceWebp.setAttribute('type','image/webp'); sourceWebp.setAttribute('srcset', webp); picture.appendChild(sourceWebp); } } catch(e){}
                                 // move img into picture
                                 artwork.parentNode.insertBefore(picture, artwork);
                                 picture.appendChild(artwork);
+                            } else {
+                                // try webp alone
+                                try {
+                                    var head = await fetch(webp, { method: 'HEAD' });
+                                    if (head && head.ok) {
+                                        var picture = document.createElement('picture');
+                                        var source = document.createElement('source');
+                                        source.setAttribute('type','image/webp');
+                                        source.setAttribute('srcset', webp);
+                                        picture.appendChild(source);
+                                        artwork.parentNode.insertBefore(picture, artwork);
+                                        picture.appendChild(artwork);
+                                    }
+                                } catch (e) {
+                                    // webp missing or network error — leave original img in place
+                                }
                             }
                         } catch (e) {
-                            // network error or file doesn't exist — leave original img in place
+                            // overall failure — leave original img as-is
                         }
                     }
                 }
@@ -1130,6 +1157,9 @@
                 var grooves = document.createElement('span');
                 grooves.className = 'vinyl-grooves';
                 el.insertBefore(grooves, el.firstChild);
+                // mark that this card uses JS-driven grooves so CSS pseudo-element
+                // animation doesn't compete with JS-driven transform.
+                el.classList.add('has-grooves');
             }
             if (!el.querySelector('.vinyl-sheen')) {
                 var sheen = document.createElement('span');
@@ -1210,6 +1240,88 @@
                 // Do not prevent default — keep link behavior (opens in new tab for target="_blank").
             });
         });
+    })();
+    </script>
+    <!-- Runtime DOM audit: collects per-release state and shows an overlay for easy copy -->
+    <script id="dom-audit">
+    (function(){
+        // run after microtasks so previous in-page scripts have initialized
+        function runAudit(){
+            try {
+                var releases = Array.from(document.querySelectorAll('.releases .release'));
+                var report = [];
+                var inspectCount = Math.min(12, releases.length);
+                for (var i=0;i<inspectCount;i++){
+                    var el = releases[i];
+                    var artwork = el.querySelector('img.artwork');
+                    var picture = artwork && artwork.parentElement && artwork.parentElement.tagName.toLowerCase() === 'picture';
+                    report.push({
+                        index: i+1,
+                        classes: Array.from(el.classList),
+                        hasVinylGrooves: !!el.querySelector('.vinyl-grooves'),
+                        hasVinylSheen: !!el.querySelector('.vinyl-sheen'),
+                        hasHasGroovesClass: el.classList.contains('has-grooves'),
+                        hasTiltControlledClass: el.classList.contains('tilt-controlled'),
+                        hasTiltEnabledClass: el.classList.contains('tilt-enabled'),
+                        inlineTransform: el.getAttribute('style') || null,
+                        artworkWrappedByPicture: !!picture,
+                        hasPlayToggle: !!el.querySelector('.play-toggle'),
+                        artworkSrc: artwork ? artwork.getAttribute('src') : null
+                    });
+                }
+
+                // log and render a small overlay for copy/paste
+                console.group('DOM Audit — first ' + inspectCount + ' release cards');
+                console.table(report);
+                console.groupEnd();
+
+                // build overlay
+                var overlay = document.createElement('pre');
+                overlay.id = 'dom-audit-overlay';
+                overlay.style.position = 'fixed';
+                overlay.style.right = '18px';
+                overlay.style.top = '18px';
+                overlay.style.zIndex = 99999;
+                overlay.style.maxWidth = '38vw';
+                overlay.style.maxHeight = '60vh';
+                overlay.style.overflow = 'auto';
+                overlay.style.background = 'rgba(10,10,10,0.9)';
+                overlay.style.color = '#fff';
+                overlay.style.padding = '12px';
+                overlay.style.borderRadius = '8px';
+                overlay.style.fontSize = '12px';
+                overlay.style.boxShadow = '0 10px 30px rgba(0,0,0,0.6)';
+                overlay.style.fontFamily = 'monospace';
+                overlay.textContent = JSON.stringify(report, null, 2);
+
+                var btn = document.createElement('button');
+                btn.textContent = 'Copy audit JSON';
+                btn.style.display = 'block';
+                btn.style.marginTop = '8px';
+                btn.style.width = '100%';
+                btn.style.cursor = 'pointer';
+                btn.addEventListener('click', function(){
+                    try { navigator.clipboard.writeText(JSON.stringify(report, null, 2)); btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy audit JSON',1500); } catch(e){ console.error(e); alert('Copy failed - check console.'); }
+                });
+
+                var container = document.createElement('div');
+                container.style.display = 'flex';
+                container.style.flexDirection = 'column';
+                container.appendChild(overlay);
+                container.appendChild(btn);
+                document.body.appendChild(container);
+
+                // also expose on window for manual inspection
+                window.__RELEASE_AUDIT = report;
+            } catch (err){ console.error('DOM audit failed', err); }
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive'){
+            // allow other scripts to run first
+            setTimeout(runAudit, 250);
+        } else {
+            document.addEventListener('DOMContentLoaded', function(){ setTimeout(runAudit, 250); });
+        }
     })();
     </script>
   </body>
