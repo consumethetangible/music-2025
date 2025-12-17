@@ -575,6 +575,12 @@
             will-change: transform;
         }
 
+        /* rotor receives rotation transforms; keep it as a 3D-aware layer */
+        .tilt-rotor {
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
         .release .vinyl-sheen {
             position: absolute;
             inset: 0;
@@ -981,8 +987,30 @@
         var baseScale = 1.06;
 
         function enableTiltFor(el) {
-            // Tilt now only controls rotation (rotateX/rotateY). CSS will handle
-            // translateY/scale (hover lift). This avoids transform conflicts.
+            // Create a rotor element inside the release that will receive the
+            // rotation transforms. Labels (.artist/.album) are left outside the
+            // rotor so they stay unrotated and keep their stacking order.
+            var rotor = el.querySelector('.tilt-rotor');
+            if (!rotor) {
+                rotor = document.createElement('div');
+                rotor.className = 'tilt-rotor';
+                // Move all children except artist, album, play-toggle, overlay
+                var children = Array.from(el.childNodes);
+                var preserve = ['artist','album','play-toggle','overlay'];
+                var toMove = [];
+                children.forEach(function(n){
+                    if (n.nodeType !== 1) { toMove.push(n); return; }
+                    var cls = n.classList;
+                    if (!cls) { toMove.push(n); return; }
+                    var keep = false;
+                    preserve.forEach(function(k){ if (cls.contains(k)) keep = true; });
+                    if (!keep) toMove.push(n);
+                });
+                // insert rotor as the first element
+                el.insertBefore(rotor, el.firstChild);
+                toMove.forEach(function(n){ rotor.appendChild(n); });
+            }
+
             var raf = null;
             var current = {rx:0, ry:0};
             var target = {rx:0, ry:0};
@@ -990,7 +1018,7 @@
             function update() {
                 current.rx += (target.rx - current.rx) * 0.18;
                 current.ry += (target.ry - current.ry) * 0.18;
-                el.style.transform = 'rotateX(' + current.rx + 'deg) rotateY(' + current.ry + 'deg)';
+                rotor.style.transform = 'rotateX(' + current.rx + 'deg) rotateY(' + current.ry + 'deg)';
                 raf = requestAnimationFrame(update);
             }
 
@@ -1018,7 +1046,7 @@
                 // allow smoothing back to identity then clear inline style
                 setTimeout(function(){
                     if (raf) { cancelAnimationFrame(raf); raf = null; }
-                    el.style.transform = '';
+                    rotor.style.transform = '';
                 }, 260);
             }
 
