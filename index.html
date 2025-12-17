@@ -1352,5 +1352,190 @@
         }
     })();
     </script>
+    <!-- Per-card hover diagnostics (on-demand) -->
+    <script id="hover-diagnostics">
+    (function(){
+        // Lightweight diagnostics to capture pointer angle, transforms, bounding boxes,
+        // and label occlusion for each `.release` during hover. Toggleable overlay
+        // so you can reproduce the quadrant-dependent disappearance and copy logs.
+        var enabled = false;
+        var logs = [];
+        var maxLogsPerCard = 120;
+
+        function createOverlay(){
+            var wrap = document.createElement('div');
+            wrap.id = 'diag-wrap';
+            wrap.style.position = 'fixed';
+            wrap.style.left = '12px';
+            wrap.style.bottom = '12px';
+            wrap.style.zIndex = 999999;
+            wrap.style.fontFamily = 'monospace';
+            wrap.style.fontSize = '12px';
+            wrap.style.color = '#fff';
+
+            var ctl = document.createElement('div');
+            ctl.style.display = 'flex';
+            ctl.style.gap = '8px';
+
+            var toggle = document.createElement('button');
+            toggle.textContent = 'Enable Hover Diagnostics';
+            toggle.style.padding = '8px 10px';
+            toggle.style.borderRadius = '8px';
+            toggle.style.border = 'none';
+            toggle.style.cursor = 'pointer';
+            toggle.style.background = 'rgba(212,175,55,0.12)';
+            toggle.style.color = '#fff';
+
+            var copy = document.createElement('button');
+            copy.textContent = 'Copy Logs';
+            copy.style.padding = '8px 10px';
+            copy.style.borderRadius = '8px';
+            copy.style.border = 'none';
+            copy.style.cursor = 'pointer';
+            copy.style.background = 'rgba(255,255,255,0.06)';
+            copy.style.color = '#fff';
+
+            var clear = document.createElement('button');
+            clear.textContent = 'Clear';
+            clear.style.padding = '8px 10px';
+            clear.style.borderRadius = '8px';
+            clear.style.border = 'none';
+            clear.style.cursor = 'pointer';
+            clear.style.background = 'rgba(255,255,255,0.04)';
+            clear.style.color = '#fff';
+
+            var area = document.createElement('textarea');
+            area.readOnly = true;
+            area.style.width = '360px';
+            area.style.height = '240px';
+            area.style.marginTop = '8px';
+            area.style.background = 'rgba(0,0,0,0.6)';
+            area.style.color = '#fff';
+            area.style.border = '1px solid rgba(255,255,255,0.04)';
+            area.style.padding = '8px';
+            area.style.borderRadius = '6px';
+
+            ctl.appendChild(toggle);
+            ctl.appendChild(copy);
+            ctl.appendChild(clear);
+            wrap.appendChild(ctl);
+            wrap.appendChild(area);
+            document.body.appendChild(wrap);
+
+            toggle.addEventListener('click', function(){
+                enabled = !enabled;
+                toggle.textContent = enabled ? 'Disable Hover Diagnostics' : 'Enable Hover Diagnostics';
+                if (!enabled) area.value = '';
+            });
+
+            copy.addEventListener('click', function(){
+                try { navigator.clipboard.writeText(area.value || JSON.stringify(logs, null, 2)); copy.textContent = 'Copied!'; setTimeout(()=>copy.textContent='Copy Logs',1200); } catch(e){ console.error(e); alert('Copy failed — see console'); }
+            });
+
+            clear.addEventListener('click', function(){ logs = []; area.value = ''; clear.textContent = 'Cleared'; setTimeout(()=>clear.textContent='Clear',800); });
+
+            return { area: area, toggle: toggle };
+        }
+
+        var diag = createOverlay();
+
+        function isElementTopmost(el, x, y){
+            try {
+                var top = document.elementFromPoint(x, y);
+                if (!top) return false;
+                return (top === el || el.contains(top));
+            } catch (e){ return false; }
+        }
+
+        function attachDiagnosticsTo(el, idx){
+            var lastTs = 0;
+            var raf = null;
+            var pending = null;
+
+            function sample(e){
+                if (!enabled) return;
+                var now = performance.now();
+                // throttle to ~60fps
+                if (now - lastTs < 60) { pending = e; return; }
+                lastTs = now;
+                var rect = el.getBoundingClientRect();
+                var cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+                var clientX = e.clientX, clientY = e.clientY;
+                if (e.touches && e.touches[0]) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
+                var dx = clientX - cx, dy = clientY - cy;
+                var ndx = dx / (rect.width/2), ndy = dy / (rect.height/2);
+                var clamp = function(v){ return Math.max(-1, Math.min(1, v)); };
+                ndx = clamp(ndx); ndy = clamp(ndy);
+                var angleRad = Math.atan2(ndy, ndx); // -PI..PI, 0 = right
+                var angleDeg = angleRad * 180 / Math.PI;
+                var quadrant = (angleDeg + 360) % 360; // 0..360
+
+                var rotor = el.querySelector('.tilt-rotor');
+                var g = el.querySelector('.vinyl-grooves');
+                var s = el.querySelector('.vinyl-sheen');
+                var art = el.querySelector('.artwork');
+                var artist = el.querySelector('.artist');
+                var album = el.querySelector('.album');
+
+                var artistRect = artist ? artist.getBoundingClientRect() : null;
+                var albumRect = album ? album.getBoundingClientRect() : null;
+
+                var artistCenter = artistRect ? [artistRect.left + artistRect.width/2, artistRect.top + artistRect.height/2] : null;
+
+                var artistTopmost = artistCenter ? isElementTopmost(artist, artistCenter[0], artistCenter[1]) : null;
+
+                var rotorTransform = rotor ? getComputedStyle(rotor).transform : null;
+                var artTransform = art ? getComputedStyle(art).transform : null;
+                var artistStyle = artist ? getComputedStyle(artist) : null;
+
+                var entry = {
+                    time: new Date().toISOString(),
+                    index: idx,
+                    angleDeg: Math.round(quadrant),
+                    ndx: Number(ndx.toFixed(3)), ndy: Number(ndy.toFixed(3)),
+                    rotorTransform: rotorTransform,
+                    artworkTransform: artTransform,
+                    artistOpacity: artistStyle ? artistStyle.opacity : null,
+                    artistVisibility: artistStyle ? artistStyle.visibility : null,
+                    artistTopmost: artistTopmost,
+                    artistRect: artistRect ? { left: Math.round(artistRect.left), top: Math.round(artistRect.top), width: Math.round(artistRect.width), height: Math.round(artistRect.height) } : null,
+                    releaseRect: { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) }
+                };
+
+                logs.push(entry);
+                // cap logs per card to avoid memory growth
+                if (logs.length > maxLogsPerCard * 10) logs.splice(0, logs.length - maxLogsPerCard * 10);
+
+                // update overlay with latest N entries
+                var recent = logs.slice(-120).map(function(l){ return '['+l.index+']@'+l.angleDeg+'° artT='+l.artworkTransform+' rotor='+l.rotorTransform+' artVis='+l.artistOpacity+' topmost='+l.artistTopmost; }).join('\n');
+                diag.area.value = recent;
+                // also console.debug the structured entry for easy inspection
+                console.debug('hover-diag', entry);
+
+                pending = null;
+            }
+
+            function onMove(e){
+                if (!enabled) return;
+                sample(e);
+            }
+
+            el.addEventListener('mousemove', onMove);
+            el.addEventListener('touchmove', onMove, { passive: true });
+
+            el.addEventListener('mouseleave', function(){ if (!enabled) return; logs.push({ time: new Date().toISOString(), index: idx, event: 'leave' }); });
+            el.addEventListener('mouseenter', function(){ if (!enabled) return; logs.push({ time: new Date().toISOString(), index: idx, event: 'enter' }); });
+        }
+
+        // Attach to the first 12 new-release clickable cards
+        function attachAll(){
+            var items = Array.from(document.querySelectorAll('.section.new-releases .release.clickable'));
+            items.slice(0,12).forEach(function(el, i){ attachDiagnosticsTo(el, i+1); });
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(attachAll, 120);
+        else document.addEventListener('DOMContentLoaded', function(){ setTimeout(attachAll, 120); });
+    })();
+    </script>
   </body>
   </html>
