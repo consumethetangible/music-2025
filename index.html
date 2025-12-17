@@ -694,6 +694,31 @@
 
         /* screen-reader only helper */
         .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+        /* Labels container: force labels above rotor/grooves for new releases to
+           avoid quadrant-dependent occlusion caused by 3D painting order. The
+           container is absolutely positioned and non-interactive by default so
+           it doesn't interfere with click/hover; we selectively allow pointer
+           events for focusable children when needed. */
+        .section.new-releases .release .labels {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 80; /* above grooves/sheen/artwork */
+            pointer-events: none; /* don't block clicks on the release */
+            transform: none; /* keep labels out of rotation/tilt flow */
+        }
+
+        .section.new-releases .release .labels .artist,
+        .section.new-releases .release .labels .album {
+            pointer-events: auto; /* allow keyboard focus/focus-visible to work */
+            position: relative;
+            z-index: 81;
+            transform: none !important;
+        }
     </style>
 </head>
 <body>
@@ -1535,6 +1560,33 @@
 
         if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(attachAll, 120);
         else document.addEventListener('DOMContentLoaded', function(){ setTimeout(attachAll, 120); });
+    })();
+    </script>
+    <!-- Label container shim: wrap artist/album into absolute .labels for new releases -->
+    <script id="labels-shim">
+    (function(){
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
+
+        function init(){
+            var items = document.querySelectorAll('.section.new-releases .release');
+            items.forEach(function(el){
+                // skip if already wrapped
+                if (el.querySelector('.labels')) return;
+                var artist = el.querySelector('.artist');
+                var album = el.querySelector('.album');
+                if (!artist && !album) return;
+                var labels = document.createElement('div');
+                labels.className = 'labels';
+                // insert labels as last child so they visually sit above artwork
+                el.appendChild(labels);
+                if (artist) labels.appendChild(artist);
+                if (album) labels.appendChild(album);
+                // keep CSS stagger variable if present
+                var stagger = el.style.getPropertyValue('--stagger');
+                if (stagger) labels.style.setProperty('--stagger', stagger);
+            });
+        }
     })();
     </script>
   </body>
