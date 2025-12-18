@@ -707,7 +707,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 80; /* above grooves/sheen/artwork */
+            z-index: 30; /* above grooves/sheen/artwork/tonearm */
             pointer-events: none; /* don't block clicks on the release */
             transform: none; /* keep labels out of rotation/tilt flow */
         }
@@ -716,7 +716,7 @@
         .section.new-releases .release .labels .album {
             pointer-events: auto; /* allow keyboard focus/focus-visible to work */
             position: relative;
-            z-index: 81;
+            z-index: 31;
             transform: none !important;
         }
     </style>
