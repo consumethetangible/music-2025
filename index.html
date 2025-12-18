@@ -12,9 +12,13 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        html {
+            scroll-behavior: smooth;
+        }
         
         body {
-            background: #0a0a0a;
+            background: radial-gradient(ellipse at top, #1a1520 0%, #0d0a12 40%, #0a0a0a 100%);
             font-family: 'Inter', sans-serif;
             padding: 60px 40px;
             min-height: 100vh;
@@ -63,34 +67,58 @@
         
         h1 {
             font-family: 'Oswald', sans-serif;
-            font-size: 52px;
+            font-size: 56px;
             text-align: center;
             background: linear-gradient(135deg, #d4af37 0%, #f4e4a6 50%, #d4af37 100%);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 15px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            letter-spacing: 4px;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4));
             line-height: 1.2;
             text-transform: uppercase;
             font-weight: 700;
+            animation: titleShimmer 8s ease-in-out infinite, fadeInUp 1s ease-out;
+        }
+
+        @keyframes titleShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .subtitle {
             text-align: center;
-            font-size: 16px;
-            color: #aaa;
+            font-size: 17px;
+            color: #bbb;
             font-weight: 400;
             margin-bottom: 50px;
             font-family: 'Courier Prime', monospace;
             font-style: italic;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
         
         .section {
             margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease-out backwards;
         }
+
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
         
         .section:last-child {
             margin-bottom: 0;
@@ -98,12 +126,24 @@
         
         h2 {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px;
+            font-size: 38px;
             color: #d4af37;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #333;
-            letter-spacing: 3px;
+            margin-bottom: 35px;
+            padding-bottom: 18px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, transparent 0%, #d4af37 20%, #d4af37 80%, transparent 100%) 1;
+            letter-spacing: 4px;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        h2::before {
+            content: '♪';
+            position: absolute;
+            left: -35px;
+            color: #d4af37;
+            opacity: 0.5;
+            font-size: 28px;
         }
         
         .releases {
@@ -123,12 +163,14 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border: 8px solid #1a1a1a;
-            box-shadow: 
+            box-shadow:
                 0 0 0 2px #333,
                 0 10px 30px rgba(0, 0, 0, 0.8),
-                inset 0 0 50px rgba(0, 0, 0, 0.5);
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 0 50px rgba(0, 0, 0, 0.5),
+                inset 0 2px 1px rgba(255, 255, 255, 0.03);
             overflow: visible;
         }
         
@@ -232,11 +274,14 @@
            by CSS while the tilt script only applies rotation. This avoids transform
            composition conflicts because rotate and translate/scale compose cleanly. */
         .release.clickable:hover {
-            transform: translateY(-6px) scale(1.06);
-            box-shadow: 
-                0 0 0 2px #d4af37,
-                0 20px 50px rgba(212, 175, 55, 0.4),
-                inset 0 0 50px rgba(212, 175, 55, 0.1);
+            transform: translateY(-8px) scale(1.08);
+            box-shadow:
+                0 0 0 3px #d4af37,
+                0 0 30px rgba(212, 175, 55, 0.6),
+                0 25px 60px rgba(212, 175, 55, 0.3),
+                0 35px 80px rgba(0, 0, 0, 0.6),
+                inset 0 0 60px rgba(212, 175, 55, 0.15),
+                inset 0 3px 2px rgba(255, 255, 255, 0.08);
             border-color: #d4af37;
         }
 
@@ -396,14 +441,17 @@
             transition: transform 320ms cubic-bezier(0.2, 1, 0.3, 1);
         }
 
-        /* initial load reveal (staggered) - opacity only to avoid transform conflicts */
+        /* initial load reveal (staggered) - enhanced with scale and transform */
         .release {
             opacity: 0;
-            transition: opacity 360ms ease;
+            transform: scale(0.9) translateY(20px);
+            transition: opacity 480ms cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 480ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .release.show {
             opacity: 1;
+            transform: scale(1) translateY(0);
         }
 
         /* staggered label reveal using a CSS variable set by JS */
@@ -564,12 +612,21 @@
             z-index: 0;
             pointer-events: none;
             background-image:
+                /* Subtle rainbow reflection at edge */
+                conic-gradient(from 0deg at 50% 50%,
+                    rgba(255, 0, 0, 0.03) 0deg,
+                    rgba(255, 127, 0, 0.03) 60deg,
+                    rgba(255, 255, 0, 0.03) 120deg,
+                    rgba(0, 255, 0, 0.03) 180deg,
+                    rgba(0, 0, 255, 0.03) 240deg,
+                    rgba(139, 0, 255, 0.03) 300deg,
+                    rgba(255, 0, 0, 0.03) 360deg),
                 radial-gradient(circle at center, rgba(0,0,0,0.06) 60%, rgba(0,0,0,0.22) 100%),
                 radial-gradient(circle at center, transparent 0%, transparent 34%, rgba(0,0,0,0.22) 36%, transparent 38%),
-                repeating-radial-gradient(circle at center, rgba(255,255,255,0.02) 0px var(--coarse-gap), transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
-                repeating-radial-gradient(circle at center, rgba(255,255,255,0.01) 0px var(--fine-gap), transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.03) 0px var(--coarse-gap), transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.02) 0px var(--fine-gap), transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
                 repeating-conic-gradient(from 0deg, rgba(255,255,255,var(--conic-opacity)) 0deg 0.5deg, transparent 0.5deg 1deg);
-            background-blend-mode: overlay, multiply, normal, normal, overlay;
+            background-blend-mode: screen, overlay, multiply, normal, normal, overlay;
             opacity: 0.95;
             transform-origin: center center;
             will-change: transform;
@@ -589,14 +646,16 @@
                avoid occluding labels when artwork scales. */
             z-index: 1;
             pointer-events: none;
-            background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.06), rgba(255,255,255,0) 30%);
+            background:
+                radial-gradient(circle at 30% 25%, rgba(255,255,255,0.12), rgba(255,255,255,0) 35%),
+                radial-gradient(circle at 70% 70%, rgba(212,175,55,0.08), rgba(212,175,55,0) 25%);
             mix-blend-mode: screen;
             opacity: 0.0;
-            transition: opacity 220ms ease;
+            transition: opacity 280ms ease;
             will-change: transform, opacity;
         }
 
-        .release.hover-sheen .vinyl-sheen { opacity: 0.55; }
+        .release.hover-sheen .vinyl-sheen { opacity: 0.7; }
 
         .section.new-releases .release::before {
             /* emphasize inner label with a subtle bevel ring */
