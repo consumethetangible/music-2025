@@ -634,6 +634,8 @@
 
         /* rotor receives rotation transforms; keep it as a 3D-aware layer */
         .tilt-rotor {
+            position: relative;
+            z-index: 3;
             transform-style: preserve-3d;
             will-change: transform;
         }
