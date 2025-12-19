@@ -1510,14 +1510,11 @@
             }
 
             var releases = document.querySelectorAll('.section.new-releases .release.clickable');
-            console.log('Found ' + releases.length + ' releases in new-releases section');
-            releases.forEach(function(el, index){
-            console.log('Processing release #' + (index + 1), el);
+            releases.forEach(function(el){
             if (el.closest('.archival')) return;
 
             // inject play button if missing
             if (!el.querySelector('.play-toggle')){
-                console.log('Injecting play button for release #' + (index + 1));
                 var btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'play-toggle';
@@ -1525,10 +1522,19 @@
                 btn.setAttribute('aria-label','Play preview');
                 btn.appendChild(makePlaySVG(false));
                 var sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = 'Play preview'; btn.appendChild(sr);
-                // insert before artwork so it's above grooves
+
+                // insert before artwork - handle both direct img and picture-wrapped img
                 var art = el.querySelector('.artwork');
-                if (art) el.insertBefore(btn, art);
-                else el.appendChild(btn);
+                var insertTarget = art;
+                if (art && art.parentElement && art.parentElement.tagName.toLowerCase() === 'picture') {
+                    // artwork is wrapped in picture - insert before the picture element
+                    insertTarget = art.parentElement;
+                }
+                if (insertTarget && insertTarget.parentElement === el) {
+                    el.insertBefore(btn, insertTarget);
+                } else {
+                    el.appendChild(btn);
+                }
 
                 btn.addEventListener('click', function(evt){
                     evt.preventDefault(); evt.stopPropagation();
