@@ -641,6 +641,23 @@
             z-index: 3;
             transform-style: preserve-3d;
             will-change: transform;
+            /* Don't clip children during 3D rotation */
+            overflow: visible;
+        }
+
+        /* Keep artwork and tonearm flat - don't let them inherit parent's 3D rotation */
+        .tilt-rotor .artwork,
+        .tilt-rotor .tonearm {
+            transform: translate(-50%, -50%) !important;
+            transform-style: flat;
+        }
+
+        .tilt-rotor .tonearm {
+            transform: rotate(-60deg) !important;
+        }
+
+        .release:hover .tilt-rotor .tonearm {
+            transform: rotate(-10deg) !important;
         }
 
         .release .vinyl-sheen {
