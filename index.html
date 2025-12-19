@@ -384,7 +384,8 @@
            by CSS while the tilt script only applies rotation. This avoids transform
            composition conflicts because rotate and translate/scale compose cleanly. */
         .release.clickable:hover {
-            transform: translateY(-8px) scale(1.08);
+            transform: translate3d(0, -8px, 0) scale(1.08);
+            will-change: transform;
             box-shadow:
                 /* Accent glow border */
                 0 0 0 3px var(--accent-color, #d4af37),
@@ -584,25 +585,23 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate3d(-50%, -50%, 0);
             width: 60%;
             height: 60%;
             object-fit: cover;
             border-radius: 50%;
             z-index: 2;
             pointer-events: none;
-            will-change: transform, opacity, filter;
+            will-change: transform;
             transform-style: flat;
-            transition: transform 350ms cubic-bezier(0.2, 1, 0.3, 1), filter 350ms ease;
-            filter: brightness(1) contrast(1) drop-shadow(0 0 0 transparent);
+            transition: transform 350ms cubic-bezier(0.2, 1, 0.3, 1);
         }
 
         /* microinteraction: enhanced artwork lift on hover for new releases
            Disabled when JS tilt is active to avoid competing transforms. */
         .section.new-releases .release.clickable:hover:not(.tilt-controlled) .artwork {
-            /* lift slightly and scale more with enhanced glow for depth */
-            transform: translate(-50%, -50%) scale(1.12);
-            filter: brightness(1.05) contrast(1.05) drop-shadow(0 0 20px rgba(0, 0, 0, 0.6));
+            /* lift slightly and scale more - removed expensive filters for Safari performance */
+            transform: translate3d(-50%, -50%, 0) scale(1.10);
         }
 
         /* initial load reveal (staggered) - enhanced with scale and transform */
