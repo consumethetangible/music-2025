@@ -986,6 +986,11 @@
             position: relative;
             z-index: 31;
             transform: none !important;
+            /* Constrain text to prevent spreading across vinyl */
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     </style>
 </head>
