@@ -1622,8 +1622,7 @@
     /* Vinyl grooves injection + spin ramping + randomized spacing + sheen
        - Injects .vinyl-grooves and .vinyl-sheen elements into each new-release card
        - Randomizes --coarse-gap and --fine-gap per card to simulate longer/shorter tracks
-       - Implements ramp-up/ramp-down spin on mouseenter/mouseleave and when toggled .playing
-       - Skips if prefers-reduced-motion or on coarse pointers
+       - ROTATION DISABLED FOR SAFARI DIAGNOSTIC
     */
     (function(){
         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1687,6 +1686,7 @@
             el.style.setProperty('--coarse-gap', coarse + 'px');
             el.style.setProperty('--fine-gap', fine + 'px');
 
+            /* ROTATION DISABLED FOR SAFARI DIAGNOSTIC
             // ramping spin state
             var g = el.querySelector('.vinyl-grooves');
             var s = el.querySelector('.vinyl-sheen');
@@ -1740,6 +1740,7 @@
                 });
             });
             observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+            */
         });
     })();
     </script>
