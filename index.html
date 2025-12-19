@@ -277,13 +277,56 @@
         .release.clickable:hover {
             transform: translateY(-8px) scale(1.08);
             box-shadow:
-                0 0 0 3px #d4af37,
-                0 0 30px rgba(212, 175, 55, 0.6),
-                0 25px 60px rgba(212, 175, 55, 0.3),
+                0 0 0 3px var(--accent-color, #d4af37),
+                0 0 30px var(--accent-glow, rgba(212, 175, 55, 0.6)),
+                0 25px 60px var(--accent-glow-soft, rgba(212, 175, 55, 0.3)),
                 0 35px 80px rgba(0, 0, 0, 0.6),
-                inset 0 0 60px rgba(212, 175, 55, 0.15),
+                inset 0 0 60px var(--accent-glow-inner, rgba(212, 175, 55, 0.15)),
                 inset 0 3px 2px rgba(255, 255, 255, 0.08);
-            border-color: #d4af37;
+            border-color: var(--accent-color, #d4af37);
+        }
+
+        /* Unique color accents for each vinyl based on artwork vibe */
+        .section.new-releases .release:nth-child(6n+1) {
+            --accent-color: #e8a0bf; /* soft pink */
+            --accent-glow: rgba(232, 160, 191, 0.6);
+            --accent-glow-soft: rgba(232, 160, 191, 0.3);
+            --accent-glow-inner: rgba(232, 160, 191, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+2) {
+            --accent-color: #7fb3d5; /* sky blue */
+            --accent-glow: rgba(127, 179, 213, 0.6);
+            --accent-glow-soft: rgba(127, 179, 213, 0.3);
+            --accent-glow-inner: rgba(127, 179, 213, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+3) {
+            --accent-color: #b19cd9; /* lavender */
+            --accent-glow: rgba(177, 156, 217, 0.6);
+            --accent-glow-soft: rgba(177, 156, 217, 0.3);
+            --accent-glow-inner: rgba(177, 156, 217, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+4) {
+            --accent-color: #a8d5ba; /* mint green */
+            --accent-glow: rgba(168, 213, 186, 0.6);
+            --accent-glow-soft: rgba(168, 213, 186, 0.3);
+            --accent-glow-inner: rgba(168, 213, 186, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+5) {
+            --accent-color: #f4a460; /* sandy orange */
+            --accent-glow: rgba(244, 164, 96, 0.6);
+            --accent-glow-soft: rgba(244, 164, 96, 0.3);
+            --accent-glow-inner: rgba(244, 164, 96, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+6) {
+            --accent-color: #d4af37; /* classic gold */
+            --accent-glow: rgba(212, 175, 55, 0.6);
+            --accent-glow-soft: rgba(212, 175, 55, 0.3);
+            --accent-glow-inner: rgba(212, 175, 55, 0.15);
         }
 
         /* Remove browser default link styling (underlines/visited color) for release anchors */
@@ -669,7 +712,7 @@
             z-index: 1;
             pointer-events: none;
             background:
-                radial-gradient(circle at 30% 25%, rgba(255,255,255,0.12), rgba(255,255,255,0) 35%),
+                radial-gradient(circle at var(--mouse-x, 30%) var(--mouse-y, 25%), rgba(255,255,255,0.18), rgba(255,255,255,0) 40%),
                 radial-gradient(circle at 70% 70%, rgba(212,175,55,0.08), rgba(212,175,55,0) 25%);
             mix-blend-mode: screen;
             opacity: 0.0;
@@ -677,7 +720,7 @@
             will-change: transform, opacity;
         }
 
-        .release.hover-sheen .vinyl-sheen { opacity: 0.7; }
+        .release.hover-sheen .vinyl-sheen { opacity: 0.85; }
 
         .section.new-releases .release::before {
             /* emphasize inner label with a subtle bevel ring */
@@ -1320,11 +1363,13 @@
             var last = performance.now();
             var running = false;
             var period = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vinyl-spin-speed')) || 2.8; // seconds
-            var targetSpeed = 360 / (period * 1000); // deg per ms
+            var normalSpeed = 360 / (period * 1000); // deg per ms
+            var hoverSpeed = normalSpeed * 2.5; // 2.5x faster on hover
+            var targetSpeed = normalSpeed;
 
             function raf(now){
                 var dt = now - last; last = now;
-                // lerp speed towards target
+                // lerp speed towards target with smooth acceleration
                 speed += (target - speed) * 0.12;
                 if (Math.abs(speed) < 0.00001) speed = 0;
                 angle = (angle + speed * dt) % 360;
@@ -1343,8 +1388,16 @@
                 setTimeout(function(){ if (Math.abs(speed) < 0.02) { running = false; } }, 600);
             }
 
-            el.addEventListener('mouseenter', function(){ el.classList.add('hover-sheen'); startSpin(); });
-            el.addEventListener('mouseleave', function(){ el.classList.remove('hover-sheen'); stopSpin(); });
+            el.addEventListener('mouseenter', function(){
+                el.classList.add('hover-sheen');
+                targetSpeed = hoverSpeed; // accelerate on hover
+                startSpin();
+            });
+            el.addEventListener('mouseleave', function(){
+                el.classList.remove('hover-sheen');
+                targetSpeed = normalSpeed; // back to normal speed
+                stopSpin();
+            });
 
             // if page wants to mark playing, keep spinning
             var observer = new MutationObserver(function(m){
@@ -1376,6 +1429,28 @@
                     el.classList.add('playing');
                 }
                 // Do not prevent default — keep link behavior (opens in new tab for target="_blank").
+            });
+        });
+    })();
+    </script>
+    <script>
+    // Dynamic spotlight effect that follows cursor
+    (function(){
+        var releases = document.querySelectorAll('.section.new-releases .release');
+
+        releases.forEach(function(release){
+            release.addEventListener('mousemove', function(e){
+                var rect = release.getBoundingClientRect();
+                var x = ((e.clientX - rect.left) / rect.width) * 100;
+                var y = ((e.clientY - rect.top) / rect.height) * 100;
+
+                release.style.setProperty('--mouse-x', x + '%');
+                release.style.setProperty('--mouse-y', y + '%');
+            });
+
+            release.addEventListener('mouseleave', function(){
+                release.style.setProperty('--mouse-x', '30%');
+                release.style.setProperty('--mouse-y', '25%');
             });
         });
     })();
