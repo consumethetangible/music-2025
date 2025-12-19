@@ -1488,26 +1488,28 @@
     <script>
     // Inject accessible play/pause buttons and <picture> wrappers for artworks.
     (function(){
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            // still inject play buttons for accessibility, but avoid heavy motion changes
-        }
-
-        function makePlaySVG(isPlaying){
-            var ns = 'http://www.w3.org/2000/svg';
-            var svg = document.createElementNS(ns, 'svg');
-            svg.setAttribute('viewBox','0 0 24 24');
-            var path = document.createElementNS(ns, 'path');
-            path.setAttribute('fill','currentColor');
-            if (isPlaying) {
-                path.setAttribute('d','M6 5h3v14H6zM15 5h3v14h-3z');
-            } else {
-                path.setAttribute('d','M8 5v14l11-7z');
+        // Ensure we wait for all content to be loaded
+        function init() {
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                // still inject play buttons for accessibility, but avoid heavy motion changes
             }
-            svg.appendChild(path);
-            return svg;
-        }
 
-        document.querySelectorAll('.section.new-releases .release.clickable').forEach(function(el){
+            function makePlaySVG(isPlaying){
+                var ns = 'http://www.w3.org/2000/svg';
+                var svg = document.createElementNS(ns, 'svg');
+                svg.setAttribute('viewBox','0 0 24 24');
+                var path = document.createElementNS(ns, 'path');
+                path.setAttribute('fill','currentColor');
+                if (isPlaying) {
+                    path.setAttribute('d','M6 5h3v14H6zM15 5h3v14h-3z');
+                } else {
+                    path.setAttribute('d','M8 5v14l11-7z');
+                }
+                svg.appendChild(path);
+                return svg;
+            }
+
+            document.querySelectorAll('.section.new-releases .release.clickable').forEach(function(el){
             if (el.closest('.archival')) return;
 
             // inject play button if missing
@@ -1583,7 +1585,14 @@
                 }
             })();
         });
+        }
 
+        // Run init when DOM is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     })();
     </script>
     <script>
