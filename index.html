@@ -221,10 +221,11 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            will-change: transform, opacity;
             transition:
-                transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-                border-color 0.4s ease;
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s ease;
             border: 8px solid #1a1a1a;
             box-shadow:
                 /* Outer edge ring */
@@ -385,7 +386,6 @@
            composition conflicts because rotate and translate/scale compose cleanly. */
         .release.clickable:hover {
             transform: translate3d(0, -8px, 0) scale(1.08);
-            will-change: transform;
             box-shadow:
                 /* Accent glow border */
                 0 0 0 3px var(--accent-color, #d4af37),
@@ -594,14 +594,14 @@
             pointer-events: none;
             will-change: transform;
             transform-style: flat;
-            transition: transform 350ms cubic-bezier(0.2, 1, 0.3, 1);
+            transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* microinteraction: enhanced artwork lift on hover for new releases
            Disabled when JS tilt is active to avoid competing transforms. */
         .section.new-releases .release.clickable:hover:not(.tilt-controlled) .artwork {
             /* lift slightly and scale more - removed expensive filters for Safari performance */
-            transform: translate3d(-50%, -50%, 0) scale(1.10);
+            transform: translate3d(-50%, -50%, 0) scale(1.08);
         }
 
         /* initial load reveal (staggered) - enhanced with scale and transform */
