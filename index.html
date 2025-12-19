@@ -28,8 +28,7 @@
             overflow-x: hidden;
         }
 
-        /* Neon instrument background images - TEMPORARILY DISABLED FOR SAFARI DIAGNOSTIC */
-        /*
+        /* Neon instrument background images */
         body::before {
             content: '';
             position: fixed;
@@ -37,8 +36,11 @@
             z-index: 0;
             pointer-events: none;
             background-image:
+                /* Blue speakers - top left */
                 url('now-playing-blue-speakers.webp'),
+                /* Red drums - bottom right */
                 url('now-playing-red-drums.webp'),
+                /* Yellow mic - middle right accent */
                 url('now-playing-yellow-mic.webp');
             background-position:
                 -10% 10%,
@@ -52,6 +54,7 @@
             opacity: 0.22;
         }
 
+        /* Additional atmospheric glow layer */
         body::after {
             content: '';
             position: fixed;
@@ -63,7 +66,6 @@
                 radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 90% 50%, rgba(255, 215, 0, 0.12) 0%, transparent 35%);
         }
-        */
 
         :root {
             --spindle-size: 2%;
@@ -770,64 +772,24 @@
             z-index: 0;
             pointer-events: none;
             background-image:
-                /* Enhanced depth with micro-reflections */
-                radial-gradient(circle at 35% 35%, rgba(255,255,255,0.06), transparent 25%),
-                radial-gradient(circle at 65% 65%, rgba(255,255,255,0.04), transparent 20%),
-                /* Subtle rainbow reflection at edge */
-                conic-gradient(from 0deg at 50% 50%,
-                    rgba(255, 0, 0, 0.04) 0deg,
-                    rgba(255, 127, 0, 0.04) 60deg,
-                    rgba(255, 255, 0, 0.04) 120deg,
-                    rgba(0, 255, 0, 0.04) 180deg,
-                    rgba(0, 0, 255, 0.04) 240deg,
-                    rgba(139, 0, 255, 0.04) 300deg,
-                    rgba(255, 0, 0, 0.04) 360deg),
-                /* Depth gradient with multi-layer shading */
-                radial-gradient(circle at center, rgba(0,0,0,0.04) 55%, rgba(0,0,0,0.14) 70%, rgba(0,0,0,0.28) 100%),
+                /* Depth gradient */
+                radial-gradient(circle at center, rgba(0,0,0,0.06) 60%, rgba(0,0,0,0.22) 100%),
                 /* Center label area shadow */
-                radial-gradient(circle at center, transparent 0%, transparent 34%, rgba(0,0,0,0.28) 36%, rgba(0,0,0,0.12) 38%, transparent 40%),
-                /* Fine detail grooves with depth simulation */
-                repeating-radial-gradient(circle at center,
-                    rgba(0,0,0,0.15) 0px,
-                    rgba(255,255,255,0.04) calc(var(--coarse-gap) * 0.5),
-                    rgba(0,0,0,0.08) var(--coarse-gap),
-                    transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
-                /* Micro grooves for texture */
-                repeating-radial-gradient(circle at center,
-                    rgba(0,0,0,0.1) 0px,
-                    rgba(255,255,255,0.03) calc(var(--fine-gap) * 0.5),
-                    rgba(0,0,0,0.05) var(--fine-gap),
-                    transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
+                radial-gradient(circle at center, transparent 0%, transparent 34%, rgba(0,0,0,0.22) 36%, transparent 38%),
+                /* Coarse grooves */
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.02) 0px var(--coarse-gap), transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
+                /* Fine grooves */
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.01) 0px var(--fine-gap), transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
                 /* Spinning reflection lines */
-                repeating-conic-gradient(from 0deg, rgba(255,255,255,calc(var(--conic-opacity) * 1.2)) 0deg 0.5deg, transparent 0.5deg 1deg);
-            background-blend-mode: screen, screen, screen, overlay, multiply, normal, normal, overlay;
-            opacity: 0.96;
+                repeating-conic-gradient(from 0deg, rgba(255,255,255,var(--conic-opacity)) 0deg 0.5deg, transparent 0.5deg 1deg);
+            opacity: 0.92;
             transform-origin: center center;
             will-change: transform;
         }
 
-        /* Animated reflection layer - rotates slowly for shimmer effect */
+        /* Animated reflection layer - DISABLED for Safari performance */
         .release .vinyl-reflection {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
-            background-image:
-                /* Slow-rotating rainbow shimmer */
-                conic-gradient(from 0deg at 50% 50%,
-                    rgba(255, 0, 0, 0.06) 0deg,
-                    rgba(255, 127, 0, 0.06) 60deg,
-                    rgba(255, 255, 0, 0.06) 120deg,
-                    rgba(0, 255, 0, 0.06) 180deg,
-                    rgba(0, 255, 255, 0.06) 210deg,
-                    rgba(0, 0, 255, 0.06) 240deg,
-                    rgba(139, 0, 255, 0.06) 300deg,
-                    rgba(255, 0, 0, 0.06) 360deg);
-            mix-blend-mode: screen;
-            opacity: 0.7;
-            transform-origin: center center;
-            animation: vinyl-reflection-spin 25s linear infinite;
+            display: none;
         }
 
         @keyframes vinyl-reflection-spin {
@@ -872,7 +834,6 @@
             background:
                 radial-gradient(circle at var(--mouse-x, 30%) var(--mouse-y, 25%), rgba(255,255,255,0.18), rgba(255,255,255,0) 40%),
                 radial-gradient(circle at 70% 70%, rgba(212,175,55,0.08), rgba(212,175,55,0) 25%);
-            mix-blend-mode: screen;
             opacity: 0.0;
             transition: opacity 280ms ease;
             will-change: transform, opacity;
