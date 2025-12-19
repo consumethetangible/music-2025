@@ -169,11 +169,20 @@
                 border-color 0.4s ease;
             border: 8px solid #1a1a1a;
             box-shadow:
+                /* Outer edge ring */
                 0 0 0 2px #333,
+                /* Main depth shadows */
                 0 10px 30px rgba(0, 0, 0, 0.8),
                 0 20px 60px rgba(0, 0, 0, 0.4),
+                /* Beveled edge - inner shadows for depth */
                 inset 0 0 50px rgba(0, 0, 0, 0.5),
-                inset 0 2px 1px rgba(255, 255, 255, 0.03);
+                inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                inset 0 3px 6px rgba(0, 0, 0, 0.3),
+                /* Beveled edge - highlights for 3D effect */
+                inset -2px -2px 4px rgba(255, 255, 255, 0.04),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.02),
+                /* Subtle top highlight catch */
+                inset 0 4px 2px rgba(255, 255, 255, 0.06);
             overflow: visible;
         }
         
@@ -241,8 +250,10 @@
             will-change: transform, opacity;
             border-radius: 2.5px 2.5px 0 0;
             box-shadow:
-                /* Main shadow */
-                4px 4px 12px rgba(0, 0, 0, 0.8),
+                /* Main shadow - enhanced depth */
+                5px 5px 15px rgba(0, 0, 0, 0.85),
+                /* Secondary softer shadow for realism */
+                3px 3px 25px rgba(0, 0, 0, 0.4),
                 /* Edge highlight */
                 inset -1px 0 1px rgba(255, 255, 255, 0.15),
                 /* Depth shadow */
@@ -291,14 +302,15 @@
                 linear-gradient(to bottom, #505050, #303030);
             border-radius: 2px 2px 4px 4px;
             box-shadow:
-                /* Cartridge shadow */
-                0 3px 8px rgba(0, 0, 0, 0.7),
+                /* Enhanced cartridge shadow with contact point */
+                0 4px 12px rgba(0, 0, 0, 0.8),
+                0 2px 20px rgba(0, 0, 0, 0.5),
                 /* Inner detail */
                 inset 0 1px 2px rgba(255, 255, 255, 0.1),
                 inset 0 -1px 1px rgba(0, 0, 0, 0.5),
                 /* Golden stylus glow */
-                0 0 8px rgba(212, 175, 55, 0.7),
-                0 0 4px rgba(212, 175, 55, 0.9);
+                0 0 10px rgba(212, 175, 55, 0.8),
+                0 0 6px rgba(212, 175, 55, 0.95);
         }
         
         .release:hover .tonearm {
@@ -316,9 +328,17 @@
         .release.clickable:hover {
             transform: translateY(-8px) scale(1.08);
             box-shadow:
+                /* Accent glow border */
                 0 0 0 3px var(--accent-color, #d4af37),
                 0 0 30px var(--accent-glow, rgba(212, 175, 55, 0.6)),
                 0 25px 60px var(--accent-glow-soft, rgba(212, 175, 55, 0.3)),
+                /* Enhanced beveled edge on hover */
+                inset 0 0 60px rgba(0, 0, 0, 0.6),
+                inset 0 -4px 8px rgba(0, 0, 0, 0.5),
+                inset 0 4px 8px rgba(0, 0, 0, 0.4),
+                inset -3px -3px 6px rgba(255, 255, 255, 0.08),
+                inset 3px 3px 6px rgba(255, 255, 255, 0.04),
+                inset 0 6px 3px rgba(255, 255, 255, 0.1),
                 0 35px 80px rgba(0, 0, 0, 0.6),
                 inset 0 0 60px var(--accent-glow-inner, rgba(212, 175, 55, 0.15)),
                 inset 0 3px 2px rgba(255, 255, 255, 0.08);
@@ -513,16 +533,18 @@
             border-radius: 50%;
             z-index: 2;
             pointer-events: none;
-            will-change: transform, opacity;
+            will-change: transform, opacity, filter;
             transform-style: flat;
+            transition: transform 350ms cubic-bezier(0.2, 1, 0.3, 1), filter 350ms ease;
+            filter: brightness(1) contrast(1) drop-shadow(0 0 0 transparent);
         }
 
-        /* microinteraction: subtle artwork lift on hover for new releases
+        /* microinteraction: enhanced artwork lift on hover for new releases
            Disabled when JS tilt is active to avoid competing transforms. */
         .section.new-releases .release.clickable:hover:not(.tilt-controlled) .artwork {
-            /* lift slightly and scale more for a punchier feel */
-            transform: translate(-50%, -50%) scale(1.08);
-            transition: transform 320ms cubic-bezier(0.2, 1, 0.3, 1);
+            /* lift slightly and scale more with enhanced glow for depth */
+            transform: translate(-50%, -50%) scale(1.12);
+            filter: brightness(1.05) contrast(1.05) drop-shadow(0 0 20px rgba(0, 0, 0, 0.6));
         }
 
         /* initial load reveal (staggered) - enhanced with scale and transform */
@@ -732,6 +754,35 @@
             will-change: transform;
         }
 
+        /* Animated reflection layer - rotates slowly for shimmer effect */
+        .release .vinyl-reflection {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                /* Slow-rotating rainbow shimmer */
+                conic-gradient(from 0deg at 50% 50%,
+                    rgba(255, 0, 0, 0.06) 0deg,
+                    rgba(255, 127, 0, 0.06) 60deg,
+                    rgba(255, 255, 0, 0.06) 120deg,
+                    rgba(0, 255, 0, 0.06) 180deg,
+                    rgba(0, 255, 255, 0.06) 210deg,
+                    rgba(0, 0, 255, 0.06) 240deg,
+                    rgba(139, 0, 255, 0.06) 300deg,
+                    rgba(255, 0, 0, 0.06) 360deg);
+            mix-blend-mode: screen;
+            opacity: 0.7;
+            transform-origin: center center;
+            animation: vinyl-reflection-spin 25s linear infinite;
+        }
+
+        @keyframes vinyl-reflection-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         /* rotor receives rotation transforms; keep it as a 3D-aware layer */
         .tilt-rotor {
             position: absolute;
@@ -776,6 +827,52 @@
         }
 
         .release.hover-sheen .vinyl-sheen { opacity: 0.85; }
+
+        /* Smooth transitions for playing state */
+        .release.playing {
+            transition:
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.5s ease;
+        }
+
+        .release.playing .vinyl-sheen {
+            opacity: 0.9;
+            transition: opacity 400ms ease;
+        }
+
+        .release.playing .tonearm {
+            opacity: 1;
+            transform: rotate(-10deg);
+            transition:
+                opacity 350ms ease,
+                transform 700ms cubic-bezier(0.22, 0.9, 0.28, 1);
+        }
+
+        /* Enhanced glow when playing */
+        .release.playing {
+            border-color: var(--accent-color, #d4af37);
+            box-shadow:
+                /* Outer edge ring */
+                0 0 0 2px var(--accent-color, #d4af37),
+                /* Intensified glow */
+                0 0 40px var(--accent-glow, rgba(212, 175, 55, 0.7)),
+                0 0 60px var(--accent-glow-soft, rgba(212, 175, 55, 0.4)),
+                /* Main depth shadows */
+                0 15px 40px rgba(0, 0, 0, 0.8),
+                0 25px 70px rgba(0, 0, 0, 0.4),
+                /* Beveled edge - inner shadows for depth */
+                inset 0 0 50px rgba(0, 0, 0, 0.5),
+                inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                inset 0 3px 6px rgba(0, 0, 0, 0.3),
+                /* Beveled edge - highlights for 3D effect */
+                inset -2px -2px 4px rgba(255, 255, 255, 0.04),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.02),
+                /* Enhanced inner glow when playing */
+                inset 0 0 80px var(--accent-glow-inner, rgba(212, 175, 55, 0.2)),
+                /* Subtle top highlight catch */
+                inset 0 4px 2px rgba(255, 255, 255, 0.06);
+        }
 
         /* Vinyl center label - realistic record label */
         .release .vinyl-label {
@@ -924,7 +1021,7 @@
 
         .corner-svg.top-left { top: 18px; left: 18px; transform: rotate(-6deg); }
         .corner-svg.bottom-right { bottom: 18px; right: 18px; transform: rotate(18deg); }
-        /* accessible play/pause button overlay */
+        /* accessible play/pause button overlay - enhanced integration */
         .play-toggle {
             position: absolute;
             left: 50%;
@@ -933,16 +1030,27 @@
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: rgba(0,0,0,0.55);
-            border: 1px solid rgba(255,255,255,0.06);
+            background:
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08), transparent 60%),
+                rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            border: 2px solid var(--accent-color, rgba(212,175,55,0.15));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
+            color: var(--accent-color, #d4af37);
             z-index: 12;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            box-shadow:
+                0 8px 24px rgba(0,0,0,0.7),
+                0 0 20px var(--accent-glow-inner, rgba(212,175,55,0.1)),
+                inset 0 1px 2px rgba(255,255,255,0.08);
             cursor: pointer;
-            transition: transform 180ms ease, background 180ms ease, opacity 160ms ease;
+            transition:
+                transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 200ms ease,
+                opacity 180ms ease,
+                box-shadow 200ms ease,
+                border-color 200ms ease;
             opacity: 0; /* hidden until hover/focus */
         }
 
@@ -952,10 +1060,22 @@
             opacity: 1;
         }
 
+        .play-toggle:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            border-color: var(--accent-color, #d4af37);
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.8),
+                0 0 30px var(--accent-glow, rgba(212,175,55,0.4)),
+                inset 0 1px 3px rgba(255,255,255,0.12);
+        }
+
+        .play-toggle:active {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
         .play-toggle:focus {
-            outline: 3px solid rgba(212,175,55,0.12);
+            outline: 3px solid var(--accent-color, rgba(212,175,55,0.3));
             outline-offset: 6px;
-            transform: translate(-50%, -50%) scale(1.02);
         }
 
         .play-toggle svg { width: 34px; height: 34px; display:block; }
@@ -1495,6 +1615,13 @@
                 var sheen = document.createElement('span');
                 sheen.className = 'vinyl-sheen';
                 el.insertBefore(sheen, el.firstChild);
+            }
+
+            // inject animated reflection layer
+            if (!el.querySelector('.vinyl-reflection')) {
+                var reflection = document.createElement('span');
+                reflection.className = 'vinyl-reflection';
+                el.insertBefore(reflection, el.firstChild);
             }
 
             // inject center label with artist/album info
