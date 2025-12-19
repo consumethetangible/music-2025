@@ -51,15 +51,9 @@
                 50%,
                 35%;
             background-repeat: no-repeat;
-            opacity: 0.15;
+            opacity: 0.18;
             mix-blend-mode: screen;
-            animation: subtleFloat 20s ease-in-out infinite;
-        }
-
-        @keyframes subtleFloat {
-            0%, 100% { transform: translate(0, 0); }
-            33% { transform: translate(-10px, 10px); }
-            66% { transform: translate(10px, -10px); }
+            will-change: auto;
         }
 
         /* Additional atmospheric glow layer */
@@ -70,15 +64,10 @@
             z-index: 0;
             pointer-events: none;
             background:
-                radial-gradient(circle at 20% 20%, rgba(79, 172, 254, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 50%, rgba(255, 215, 0, 0.06) 0%, transparent 35%);
-            animation: pulseGlow 8s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 0.9; }
+                radial-gradient(circle at 20% 20%, rgba(79, 172, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 35%);
+            opacity: 0.7;
         }
 
         :root {
@@ -94,15 +83,13 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(10, 10, 10, 0.75);
-            backdrop-filter: blur(12px) saturate(1.2);
-            -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            background: rgba(10, 10, 10, 0.88);
             border-radius: 20px;
             padding: 60px 50px;
             box-shadow:
                 0 30px 60px rgba(0, 0, 0, 0.8),
-                inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
             z-index: 1;
         }
