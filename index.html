@@ -94,11 +94,15 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(10, 10, 10, 0.95);
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
             border-radius: 20px;
             padding: 60px 50px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-            border: 1px solid #333;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             z-index: 1;
         }
