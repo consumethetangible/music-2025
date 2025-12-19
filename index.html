@@ -1509,11 +1509,15 @@
                 return svg;
             }
 
-            document.querySelectorAll('.section.new-releases .release.clickable').forEach(function(el){
+            var releases = document.querySelectorAll('.section.new-releases .release.clickable');
+            console.log('Found ' + releases.length + ' releases in new-releases section');
+            releases.forEach(function(el, index){
+            console.log('Processing release #' + (index + 1), el);
             if (el.closest('.archival')) return;
 
             // inject play button if missing
             if (!el.querySelector('.play-toggle')){
+                console.log('Injecting play button for release #' + (index + 1));
                 var btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'play-toggle';
