@@ -1161,12 +1161,16 @@
             el.addEventListener('mouseleave', onLeave);
         }
 
+        // Disable tilt for new releases to prevent artwork/tonearm clipping
+        // The circular border-radius clips elements when they rotate in 3D space
+        /*
         var items = document.querySelectorAll('.section.new-releases .release.clickable');
         items.forEach(function(it){
             // skip archival items if any slipped through
             if (it.closest('.archival')) return;
             enableTiltFor(it);
         });
+        */
     })();
     </script>
     <script>
