@@ -18,12 +18,67 @@
         }
         
         body {
-            background: radial-gradient(ellipse at top, #1a1520 0%, #0d0a12 40%, #0a0a0a 100%);
+            background:
+                /* Dark atmospheric gradient */
+                radial-gradient(ellipse at top, #1a1520 0%, #0d0a12 40%, #0a0a0a 100%);
             font-family: 'Inter', sans-serif;
             padding: 60px 40px;
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+        }
+
+        /* Neon instrument background images */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                /* Blue speakers - top left */
+                url('now-playing-blue-speakers.webp'),
+                /* Red drums - bottom right */
+                url('now-playing-red-drums.webp'),
+                /* Yellow mic - middle right accent */
+                url('now-playing-yellow-mic.webp');
+            background-position:
+                -10% 10%,
+                110% 90%,
+                95% 50%;
+            background-size:
+                45%,
+                50%,
+                35%;
+            background-repeat: no-repeat;
+            opacity: 0.15;
+            mix-blend-mode: screen;
+            animation: subtleFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes subtleFloat {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(-10px, 10px); }
+            66% { transform: translate(10px, -10px); }
+        }
+
+        /* Additional atmospheric glow layer */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(79, 172, 254, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 50%, rgba(255, 215, 0, 0.06) 0%, transparent 35%);
+            animation: pulseGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.9; }
         }
 
         :root {
@@ -35,24 +90,7 @@
             --conic-opacity: 0.02;
             --vinyl-spin-speed: 2.8s;
         }
-        
-        body::before {
-            content: 'NOW PLAYING';
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-5deg);
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 18vw;
-            font-weight: bold;
-            color: rgba(212, 175, 55, 0.08);
-            z-index: 0;
-            pointer-events: none;
-            letter-spacing: 0.15em;
-            white-space: nowrap;
-            text-shadow: 0 0 80px rgba(212, 175, 55, 0.2);
-        }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -66,26 +104,55 @@
         }
         
         h1 {
-            font-family: 'Oswald', sans-serif;
-            font-size: 56px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
             text-align: center;
-            background: linear-gradient(135deg, #d4af37 0%, #f4e4a6 50%, #d4af37 100%);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 15px;
-            letter-spacing: 4px;
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4));
-            line-height: 1.2;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+            line-height: 1.1;
             text-transform: uppercase;
-            font-weight: 700;
-            animation: titleShimmer 8s ease-in-out infinite, fadeInUp 1s ease-out;
+            font-weight: 400;
+            position: relative;
+            animation: fadeInUp 1s ease-out, neonFlicker 4s ease-in-out infinite;
+            text-shadow:
+                /* Bright white core */
+                0 0 10px #fff,
+                0 0 20px #fff,
+                /* Colored neon glow */
+                0 0 40px #4FACFE,
+                0 0 80px #4FACFE,
+                0 0 120px #4FACFE,
+                /* Secondary orange glow */
+                0 0 160px #FF6B35,
+                /* Depth shadow */
+                0 4px 8px rgba(0, 0, 0, 0.8);
         }
 
-        @keyframes titleShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        /* Subtle neon flicker effect */
+        @keyframes neonFlicker {
+            0%, 100% {
+                opacity: 1;
+                text-shadow:
+                    0 0 10px #fff,
+                    0 0 20px #fff,
+                    0 0 40px #4FACFE,
+                    0 0 80px #4FACFE,
+                    0 0 120px #4FACFE,
+                    0 0 160px #FF6B35,
+                    0 4px 8px rgba(0, 0, 0, 0.8);
+            }
+            45%, 55% {
+                opacity: 0.98;
+                text-shadow:
+                    0 0 8px #fff,
+                    0 0 18px #fff,
+                    0 0 35px #4FACFE,
+                    0 0 70px #4FACFE,
+                    0 0 100px #4FACFE,
+                    0 0 140px #FF6B35,
+                    0 4px 8px rgba(0, 0, 0, 0.8);
+            }
         }
 
         @keyframes fadeInUp {
