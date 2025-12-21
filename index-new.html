@@ -89,37 +89,56 @@
         /* RECORD STORE SHELF STYLING */
         .shelf {
             position: relative;
-            margin-bottom: 50px;
-            padding: 20px 0 40px 0;
-            background-image: repeating-linear-gradient(
-                to bottom,
-                transparent 0px,
-                transparent calc(clamp(160px, 20vw, 240px)),
-                rgba(139, 90, 43, 1) calc(clamp(160px, 20vw, 240px)),
-                rgba(101, 67, 33, 1) calc(clamp(160px, 20vw, 240px) + 15px),
-                rgba(70, 40, 20, 1) calc(clamp(160px, 20vw, 240px) + 30px),
-                transparent calc(clamp(160px, 20vw, 240px) + 60px)
-            );
-            background-position: 0 0;
+            margin-bottom: 60px;
+            padding-bottom: 35px;
         }
 
-        /* Front edges for shelves */
+        /* Main shelf plank */
         .shelf::before {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
+            height: 35px;
+            background:
+                linear-gradient(90deg,
+                    rgba(101, 67, 33, 0.5) 0%,
+                    rgba(139, 90, 43, 0.5) 10%,
+                    rgba(101, 67, 33, 0.5) 20%,
+                    rgba(139, 90, 43, 0.5) 30%,
+                    rgba(101, 67, 33, 0.5) 40%),
+                linear-gradient(180deg,
+                    rgba(139, 90, 43, 1) 0%,
+                    rgba(101, 67, 33, 1) 50%,
+                    rgba(70, 40, 20, 1) 100%);
+            border-radius: 4px;
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.8),
+                0 8px 20px rgba(0, 0, 0, 0.6),
+                inset 0 2px 3px rgba(255, 200, 150, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+            z-index: 0;
+        }
+
+        /* Front edge of shelf */
+        .shelf::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
             height: 10px;
             background: linear-gradient(180deg, rgba(70, 40, 20, 1) 0%, rgba(50, 30, 15, 1) 100%);
+            border-radius: 0 0 4px 4px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.9);
-            z-index: 1;
+            z-index: 0;
         }
 
         .albums {
             display: flex;
             gap: clamp(20px, 3vw, 30px);
-            padding: 0 clamp(20px, 5vw, 40px) 15px;
+            padding: 0 clamp(20px, 5vw, 40px) 5px;
             justify-content: center;
             flex-wrap: wrap;
             align-items: flex-end;
@@ -136,7 +155,7 @@
             text-decoration: none;
             color: inherit;
             transform-style: preserve-3d;
-            margin-bottom: 30px;
+            margin-bottom: 5px;
         }
 
         /* Left edge of album (visible when tilted) */
