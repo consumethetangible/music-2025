@@ -151,13 +151,15 @@
             position: relative;
             width: 220px;
             cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             color: inherit;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .album-cover:hover {
-            transform: translateY(-15px) scale(1.05);
+            transform: translateY(-20px) scale(1.12) rotateY(-8deg) rotateX(5deg);
             z-index: 10;
         }
 
