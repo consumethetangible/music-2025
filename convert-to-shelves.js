@@ -1,0 +1,483 @@
+const fs = require('fs');
+
+// Read the current index.html
+const html = fs.readFileSync('index.html', 'utf-8');
+
+// Genre mapping
+const genres = [
+    { key: 'metal', name: 'Metal' },
+    { key: 'stoner-psych', name: 'Stoner & Psych' },
+    { key: 'prog', name: 'Prog' },
+    { key: 'rock-pop', name: 'Rock & Pop' },
+    { key: 'alternative', name: 'Alternative' }
+];
+
+// Extract albums by genre
+const genreAlbums = {};
+
+genres.forEach(genre => {
+    const genreRegex = new RegExp(`<div class="releases" data-genre="${genre.key}"[\\s\\S]*?(?=<\\/div>\\s*<!--)`, 'g');
+    const match = html.match(genreRegex);
+
+    if (!match) {
+        genreAlbums[genre.key] = [];
+        return;
+    }
+
+    const section = match[0];
+    const releaseRegex = /<a class="release[^"]*" href="([^"]+)"[^>]*>[\s\S]*?<div class="artist">([^<]+)<\/div>[\s\S]*?<div class="album">([^<]+)<\/div>[\s\S]*?<\/a>/g;
+
+    const albums = [];
+    let releaseMatch;
+
+    while ((releaseMatch = releaseRegex.exec(section)) !== null) {
+        const href = releaseMatch[1];
+        const artist = releaseMatch[2].trim();
+        const album = releaseMatch[3].trim();
+
+        // Extract artwork
+        const artworkRegex = /<(?:source[^>]*srcset|img[^>]*src)="([^"]+\.(?:webp|jpg|png))"/;
+        const releaseHTML = releaseMatch[0];
+        const artworkMatch = releaseHTML.match(artworkRegex);
+        const artwork = artworkMatch ? artworkMatch[1] : '';
+
+        if (artist && album && artwork) {
+            albums.push({ href, artist, album, artwork });
+        }
+    }
+
+    genreAlbums[genre.key] = albums;
+});
+
+// Build the new HTML
+let newHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Music Favorites - Record Store</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@700&family=Inter:wght@400;600&family=Courier+Prime:ital@0;1&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: radial-gradient(ellipse at top, #1a1520 0%, #0d0a12 40%, #0a0a0a 100%);
+            font-family: 'Inter', sans-serif;
+            padding: 60px 40px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.88);
+            border-radius: 20px;
+            padding: 60px 50px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            text-shadow:
+                0 0 10px #fff,
+                0 0 20px #fff,
+                0 0 40px #4FACFE,
+                0 0 80px #4FACFE,
+                0 4px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 17px;
+            color: #bbb;
+            margin-bottom: 50px;
+            font-family: 'Courier Prime', monospace;
+            font-style: italic;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 38px;
+            color: #d4af37;
+            margin-bottom: 35px;
+            padding-bottom: 18px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, transparent 0%, #d4af37 20%, #d4af37 80%, transparent 100%) 1;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* RECORD STORE SHELF STYLING */
+        .shelf {
+            position: relative;
+            margin-bottom: 40px;
+            padding: 30px 0 80px 0;
+            background:
+                /* Wood grain texture simulation */
+                linear-gradient(90deg,
+                    rgba(101, 67, 33, 0.3) 0%,
+                    rgba(139, 90, 43, 0.3) 10%,
+                    rgba(101, 67, 33, 0.3) 20%,
+                    rgba(139, 90, 43, 0.3) 30%,
+                    rgba(101, 67, 33, 0.3) 40%),
+                linear-gradient(180deg,
+                    rgba(101, 67, 33, 0.6) 0%,
+                    rgba(139, 90, 43, 0.8) 50%,
+                    rgba(101, 67, 33, 0.6) 100%);
+            border-radius: 8px;
+            box-shadow:
+                0 4px 0 rgba(70, 40, 20, 0.8),
+                0 8px 0 rgba(50, 30, 15, 0.6),
+                0 12px 20px rgba(0, 0, 0, 0.8),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.6),
+                inset 0 2px 2px rgba(255, 200, 150, 0.1);
+        }
+
+        .shelf::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background:
+                linear-gradient(180deg,
+                    transparent 0%,
+                    rgba(70, 40, 20, 0.9) 20%,
+                    rgba(50, 30, 15, 0.95) 100%);
+            border-radius: 0 0 8px 8px;
+            box-shadow:
+                0 8px 16px rgba(0, 0, 0, 0.9),
+                inset 0 4px 8px rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        .albums {
+            display: flex;
+            gap: 30px;
+            padding: 0 40px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        /* Album cover styling */
+        .album-cover {
+            position: relative;
+            width: 280px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .album-cover:hover {
+            transform: translateY(-20px) scale(1.08);
+            z-index: 10;
+        }
+
+        .album-artwork {
+            width: 280px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.9),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 2px rgba(255, 255, 255, 0.05);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .album-cover:hover .album-artwork {
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 1),
+                0 0 0 2px rgba(212, 175, 55, 0.6),
+                0 0 30px rgba(212, 175, 55, 0.3),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .album-info {
+            margin-top: 12px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .album-cover:hover .album-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .artist {
+            font-weight: 600;
+            color: #f4e4a6;
+            font-size: 16px;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .album {
+            color: #999;
+            font-size: 13px;
+            font-style: italic;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Modal for enlarged view */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 600px;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow:
+                0 0 0 1px rgba(212, 175, 55, 0.3),
+                0 30px 80px rgba(0, 0, 0, 0.9);
+            text-align: center;
+        }
+
+        .modal-artwork {
+            width: 400px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-artist {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #d4af37;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .modal-album {
+            font-size: 20px;
+            color: #bbb;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .modal-link {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .modal-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.6);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 32px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .albums {
+                justify-content: center;
+                padding: 0 20px;
+            }
+
+            .album-cover {
+                width: 200px;
+            }
+
+            .album-artwork {
+                width: 200px;
+                height: 200px;
+            }
+
+            .modal-content {
+                max-width: 90%;
+                padding: 30px 20px;
+            }
+
+            .modal-artwork {
+                width: 100%;
+                height: auto;
+            }
+
+            h1 {
+                font-size: 42px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2025 Music Favorites</h1>
+        <p class="subtitle">A curated collection of this year's standout releases</p>
+
+        <!-- Modal for enlarged view -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <img id="modal-artwork" class="modal-artwork" src="" alt="">
+                <div id="modal-artist" class="modal-artist"></div>
+                <div id="modal-album" class="modal-album"></div>
+                <a id="modal-link" class="modal-link" href="" target="_blank" rel="noopener noreferrer">Listen on Bandcamp</a>
+            </div>
+        </div>
+
+`;
+
+// Add each genre section
+let summary = [];
+genres.forEach(genre => {
+    const albums = genreAlbums[genre.key];
+    if (!albums || albums.length === 0) return;
+
+    newHTML += `        <!-- ${genre.name} Section -->
+        <div class="section">
+            <h2>${genre.name}</h2>\n`;
+
+    // Split into shelves (max 4 per shelf)
+    const shelves = [];
+    for (let i = 0; i < albums.length; i += 4) {
+        shelves.push(albums.slice(i, i + 4));
+    }
+
+    // Create each shelf
+    shelves.forEach((shelfAlbums, shelfIndex) => {
+        newHTML += `            <div class="shelf">
+                <div class="albums" data-genre="${genre.key}">\n`;
+
+        shelfAlbums.forEach(album => {
+            newHTML += `                    <a class="album-cover" href="#" data-bandcamp="${album.href}">
+                        <img class="album-artwork" src="${album.artwork}" alt="${album.artist} - ${album.album}" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">${album.artist}</div>
+                            <div class="album">${album.album}</div>
+                        </div>
+                    </a>\n`;
+        });
+
+        newHTML += `                </div>
+            </div>\n`;
+    });
+
+    newHTML += `        </div>\n\n`;
+    summary.push(`  ${genre.name}: ${albums.length} albums (${shelves.length} shelf${shelves.length > 1 ? 'ves' : ''})`);
+});
+
+newHTML += `    </div>
+
+    <script>
+        // Modal functionality
+        function openModal(artwork, artist, album, bandcampUrl) {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modal-artwork').src = artwork;
+            document.getElementById('modal-artist').textContent = artist;
+            document.getElementById('modal-album').textContent = album;
+            document.getElementById('modal-link').href = bandcampUrl;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Close modal on background click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Attach click handlers to album covers
+        document.querySelectorAll('.album-cover').forEach(cover => {
+            cover.addEventListener('click', function(e) {
+                e.preventDefault();
+                const artwork = this.querySelector('.album-artwork').src;
+                const artist = this.querySelector('.artist').textContent;
+                const album = this.querySelector('.album').textContent;
+                const bandcampUrl = this.dataset.bandcamp;
+                openModal(artwork, artist, album, bandcampUrl);
+            });
+        });
+    </script>
+</body>
+</html>`;
+
+// Write the new file
+fs.writeFileSync('index-new.html', newHTML, 'utf-8');
+
+console.log('✅ Conversion complete! New file created: index-new.html');
+console.log('\nGenre Summary:');
+console.log(summary.join('\n'));

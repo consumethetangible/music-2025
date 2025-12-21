@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Music Favorites - Record Store</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@700&family=Inter:wght@400;600&family=Courier+Prime:ital@0;1&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: radial-gradient(ellipse at top, #1a1520 0%, #0d0a12 40%, #0a0a0a 100%);
+            font-family: 'Inter', sans-serif;
+            padding: 60px 40px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.88);
+            border-radius: 20px;
+            padding: 60px 50px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            text-shadow:
+                0 0 10px #fff,
+                0 0 20px #fff,
+                0 0 40px #4FACFE,
+                0 0 80px #4FACFE,
+                0 4px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 17px;
+            color: #bbb;
+            margin-bottom: 50px;
+            font-family: 'Courier Prime', monospace;
+            font-style: italic;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 38px;
+            color: #d4af37;
+            margin-bottom: 35px;
+            padding-bottom: 18px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, transparent 0%, #d4af37 20%, #d4af37 80%, transparent 100%) 1;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* RECORD STORE SHELF STYLING */
+        .shelf {
+            position: relative;
+            margin-bottom: 40px;
+            padding: 30px 0 80px 0;
+            background:
+                /* Wood grain texture simulation */
+                linear-gradient(90deg,
+                    rgba(101, 67, 33, 0.3) 0%,
+                    rgba(139, 90, 43, 0.3) 10%,
+                    rgba(101, 67, 33, 0.3) 20%,
+                    rgba(139, 90, 43, 0.3) 30%,
+                    rgba(101, 67, 33, 0.3) 40%),
+                linear-gradient(180deg,
+                    rgba(101, 67, 33, 0.6) 0%,
+                    rgba(139, 90, 43, 0.8) 50%,
+                    rgba(101, 67, 33, 0.6) 100%);
+            border-radius: 8px;
+            box-shadow:
+                0 4px 0 rgba(70, 40, 20, 0.8),
+                0 8px 0 rgba(50, 30, 15, 0.6),
+                0 12px 20px rgba(0, 0, 0, 0.8),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.6),
+                inset 0 2px 2px rgba(255, 200, 150, 0.1);
+        }
+
+        .shelf::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background:
+                linear-gradient(180deg,
+                    transparent 0%,
+                    rgba(70, 40, 20, 0.9) 20%,
+                    rgba(50, 30, 15, 0.95) 100%);
+            border-radius: 0 0 8px 8px;
+            box-shadow:
+                0 8px 16px rgba(0, 0, 0, 0.9),
+                inset 0 4px 8px rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        .albums {
+            display: flex;
+            gap: 30px;
+            padding: 0 40px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        /* Album cover styling */
+        .album-cover {
+            position: relative;
+            width: 280px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .album-cover:hover {
+            transform: translateY(-20px) scale(1.08);
+            z-index: 10;
+        }
+
+        .album-artwork {
+            width: 280px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.9),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 2px rgba(255, 255, 255, 0.05);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .album-cover:hover .album-artwork {
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 1),
+                0 0 0 2px rgba(212, 175, 55, 0.6),
+                0 0 30px rgba(212, 175, 55, 0.3),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .album-info {
+            margin-top: 12px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .album-cover:hover .album-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .artist {
+            font-weight: 600;
+            color: #f4e4a6;
+            font-size: 16px;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .album {
+            color: #999;
+            font-size: 13px;
+            font-style: italic;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Modal for enlarged view */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 600px;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow:
+                0 0 0 1px rgba(212, 175, 55, 0.3),
+                0 30px 80px rgba(0, 0, 0, 0.9);
+            text-align: center;
+        }
+
+        .modal-artwork {
+            width: 400px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-artist {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #d4af37;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .modal-album {
+            font-size: 20px;
+            color: #bbb;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .modal-link {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .modal-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.6);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 32px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .albums {
+                justify-content: center;
+                padding: 0 20px;
+            }
+
+            .album-cover {
+                width: 200px;
+            }
+
+            .album-artwork {
+                width: 200px;
+                height: 200px;
+            }
+
+            .modal-content {
+                max-width: 90%;
+                padding: 30px 20px;
+            }
+
+            .modal-artwork {
+                width: 100%;
+                height: auto;
+            }
+
+            h1 {
+                font-size: 42px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2025 Music Favorites</h1>
+        <p class="subtitle">A curated collection of this year's standout releases</p>
+
+        <!-- Modal for enlarged view -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <img id="modal-artwork" class="modal-artwork" src="" alt="">
+                <div id="modal-artist" class="modal-artist"></div>
+                <div id="modal-album" class="modal-album"></div>
+                <a id="modal-link" class="modal-link" href="" target="_blank" rel="noopener noreferrer">Listen on Bandcamp</a>
+            </div>
+        </div>
+
+        <!-- Metal Section -->
+        <div class="section">
+            <h2>Metal</h2>
+            <div class="shelf">
+                <div class="albums" data-genre="metal">
+                    <a class="album-cover" href="#" data-bandcamp="https://deafheavens.bandcamp.com/album/lonely-people-with-power">
+                        <img class="album-artwork" src="deafheaven.webp" alt="Deafheaven - Lonely People With Power" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Deafheaven</div>
+                            <div class="album">Lonely People With Power</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://rwake.bandcamp.com/album/the-return-of-magik">
+                        <img class="album-artwork" src="the-return-of-magik.jpg" alt="Rwake - The Return of Magick" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Rwake</div>
+                            <div class="album">The Return of Magick</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://sunn.bandcamp.com/album/eternitys-pillars-b-w-raise-thechalice-reverential">
+                        <img class="album-artwork" src="eternitys-pillars.jpg" alt="sunn O))) - Eternity's Pillars b/w Raise The Chalice & Reverential" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">sunn O)))</div>
+                            <div class="album">Eternity's Pillars b/w Raise The Chalice & Reverential</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://yelloweyes.bandcamp.com/album/confusion-gate">
+                        <img class="album-artwork" src="confusion-gate.jpg" alt="Yellow Eyes - The Confusion Gate" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Yellow Eyes</div>
+                            <div class="album">The Confusion Gate</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stoner & Psych Section -->
+        <div class="section">
+            <h2>Stoner & Psych</h2>
+            <div class="shelf">
+                <div class="albums" data-genre="stoner-psych">
+                    <a class="album-cover" href="#" data-bandcamp="https://basknc.bandcamp.com/album/the-turning">
+                        <img class="album-artwork" src="the-turning.jpg" alt="Bask - The Turning" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Bask</div>
+                            <div class="album">The Turning</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://brasscamelband.bandcamp.com/album/camel">
+                        <img class="album-artwork" src="brass-camel.jpg" alt="Brass Camel - Camel" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Brass Camel</div>
+                            <div class="album">Camel</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://giobiagiobia.bandcamp.com/album/x-on">
+                        <img class="album-artwork" src="giobia.jpg" alt="Giöbia - X-ÆON" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Giöbia</div>
+                            <div class="album">X-ÆON</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://leatherhearsesl.bandcamp.com/album/burn-in-heaven-decalouge">
+                        <img class="album-artwork" src="leather-hearse.jpg" alt="Leather Hearse - Burn in Heaven / Decalogue" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Leather Hearse</div>
+                            <div class="album">Burn in Heaven / Decalogue</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="shelf">
+                <div class="albums" data-genre="stoner-psych">
+                    <a class="album-cover" href="#" data-bandcamp="https://naxatras.bandcamp.com/album/v">
+                        <img class="album-artwork" src="naxatras-v.jpg" alt="Naxatras - V" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Naxatras</div>
+                            <div class="album">V</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://phantomspell.bandcamp.com/album/heather-hearth">
+                        <img class="album-artwork" src="heather-and-hearth.jpg" alt="Phantom Spell - Heather & Hearth" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Phantom Spell</div>
+                            <div class="album">Heather & Hearth</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prog Section -->
+        <div class="section">
+            <h2>Prog</h2>
+            <div class="shelf">
+                <div class="albums" data-genre="prog">
+                    <a class="album-cover" href="#" data-bandcamp="https://blackcountrynewroad.bandcamp.com/">
+                        <img class="album-artwork" src="black-country-new-road.jpg" alt="Black Country, New Road - Forever Howlong" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Black Country, New Road</div>
+                            <div class="album">Forever Howlong</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://hedvigmollestadtrio.bandcamp.com/album/bees-in-the-bonnet">
+                        <img class="album-artwork" src="hedvig-mollestad.jpg" alt="Hedvig Mollestad Trio - Bees in the Bonnet" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Hedvig Mollestad Trio</div>
+                            <div class="album">Bees in the Bonnet</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://hiromimusic.bandcamp.com/album/out-there">
+                        <img class="album-artwork" src="hiromi.jpg" alt="Hiromi - Out There" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Hiromi</div>
+                            <div class="album">Out There</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://larsfredrikfroislie.bandcamp.com/album/gamle-mester">
+                        <img class="album-artwork" src="gamle-mester.jpg" alt="Lars Fredrik Frøslie - Gamle Mester" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Lars Fredrik Frøslie</div>
+                            <div class="album">Gamle Mester</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="shelf">
+                <div class="albums" data-genre="prog">
+                    <a class="album-cover" href="#" data-bandcamp="https://stevenwilsonhq.com">
+                        <img class="album-artwork" src="steven-wilson.webp" alt="Steven Wilson - The Overview" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Steven Wilson</div>
+                            <div class="album">The Overview</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rock & Pop Section -->
+        <div class="section">
+            <h2>Rock & Pop</h2>
+            <div class="shelf">
+                <div class="albums" data-genre="rock-pop">
+                    <a class="album-cover" href="#" data-bandcamp="https://automatic-band.bandcamp.com/album/is-it-now">
+                        <img class="album-artwork" src="automatic.jpg" alt="Automatic - Is It Now?" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Automatic</div>
+                            <div class="album">Is It Now?</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://thedirtynil.bandcamp.com/album/the-lash">
+                        <img class="album-artwork" src="dirty-nil.jpg" alt="The Dirty Nil - The Lash" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">The Dirty Nil</div>
+                            <div class="album">The Lash</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://militariegun.bandcamp.com/album/god-save-the-gun">
+                        <img class="album-artwork" src="god-save-the-gun.jpg" alt="Militarie Gun - God Save The Gun" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Militarie Gun</div>
+                            <div class="album">God Save The Gun</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://www.newdad.live">
+                        <img class="album-artwork" src="newdad.jpg" alt="NewDad - Altar" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">NewDad</div>
+                            <div class="album">Altar</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="shelf">
+                <div class="albums" data-genre="rock-pop">
+                    <a class="album-cover" href="#" data-bandcamp="https://turnstilehardcore.com">
+                        <img class="album-artwork" src="turnstile.jpg" alt="Turnstile - NEVER ENOUGH" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Turnstile</div>
+                            <div class="album">NEVER ENOUGH</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternative Section -->
+        <div class="section">
+            <h2>Alternative</h2>
+            <div class="shelf">
+                <div class="albums" data-genre="alternative">
+                    <a class="album-cover" href="#" data-bandcamp="https://annahstasia.bandcamp.com/album/tether">
+                        <img class="album-artwork" src="annahstasia.jpg" alt="Annahstasia - Tether" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Annahstasia</div>
+                            <div class="album">Tether</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://clairerousay.bandcamp.com/album/no-floor">
+                        <img class="album-artwork" src="no-floor.jpg" alt="Claire Rousay & More Ease - No Floor" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Claire Rousay & More Ease</div>
+                            <div class="album">No Floor</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://cleoforshort.bandcamp.com/album/cuntry">
+                        <img class="album-artwork" src="cleo-reed.jpg" alt="Cleo Reed - Cuntry" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Cleo Reed</div>
+                            <div class="album">Cuntry</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://dominicsanderson.bandcamp.com/album/blazing-revelations">
+                        <img class="album-artwork" src="blazing-revelation.jpg" alt="Dominic Sanderson - Blazing Revelations" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Dominic Sanderson</div>
+                            <div class="album">Blazing Revelations</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="shelf">
+                <div class="albums" data-genre="alternative">
+                    <a class="album-cover" href="#" data-bandcamp="https://gokurosawa.bandcamp.com/album/soft-shakes">
+                        <img class="album-artwork" src="soft-shakes.jpg" alt="Go Kurosawa - soft shakes" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Go Kurosawa</div>
+                            <div class="album">soft shakes</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://guerillatoss.bandcamp.com/album/youre-weird-now">
+                        <img class="album-artwork" src="youre-weird-now.jpg" alt="Guerrilla Toss - You're Weird Now" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Guerrilla Toss</div>
+                            <div class="album">You're Weird Now</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://ivslys.bandcamp.com/album/zero-seven-four-one-zero">
+                        <img class="album-artwork" src="ivslys.jpg" alt="IVSLYS - Zero Seven Four One Zero" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">IVSLYS</div>
+                            <div class="album">Zero Seven Four One Zero</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://lyrapramuk.bandcamp.com/album/hymnal">
+                        <img class="album-artwork" src="hymnal.jpg" alt="Lyra Pramuk - Hymnal" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Lyra Pramuk</div>
+                            <div class="album">Hymnal</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="shelf">
+                <div class="albums" data-genre="alternative">
+                    <a class="album-cover" href="#" data-bandcamp="https://militariegun.bandcamp.com/album/god-save-the-gun">
+                        <img class="album-artwork" src="natural-information-society-totality.jpg" alt="Natural Information Society & Bitchin' Bajas - Totality" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Natural Information Society & Bitchin' Bajas</div>
+                            <div class="album">Totality</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://squeakyfeet.bandcamp.com/album/overview-effect-2">
+                        <img class="album-artwork" src="the-overview-effect.jpg" alt="Squeaky Feet - The Overview Effect" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Squeaky Feet</div>
+                            <div class="album">The Overview Effect</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://yoodooright.bandcamp.com/album/yoo-ii-avec-nolan-potter">
+                        <img class="album-artwork" src="yoo-ii-avec-nolan-potter.jpg" alt="Yoo Doo Right & Nolan Potter - Yoo II avec Nolan Potter" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Yoo Doo Right & Nolan Potter</div>
+                            <div class="album">Yoo II avec Nolan Potter</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Modal functionality
+        function openModal(artwork, artist, album, bandcampUrl) {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modal-artwork').src = artwork;
+            document.getElementById('modal-artist').textContent = artist;
+            document.getElementById('modal-album').textContent = album;
+            document.getElementById('modal-link').href = bandcampUrl;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Close modal on background click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Attach click handlers to album covers
+        document.querySelectorAll('.album-cover').forEach(cover => {
+            cover.addEventListener('click', function(e) {
+                e.preventDefault();
+                const artwork = this.querySelector('.album-artwork').src;
+                const artist = this.querySelector('.artist').textContent;
+                const album = this.querySelector('.album').textContent;
+                const bandcampUrl = this.dataset.bandcamp;
+                openModal(artwork, artist, album, bandcampUrl);
+            });
+        });
+    </script>
+</body>
+</html>

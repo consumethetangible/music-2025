@@ -136,27 +136,48 @@ app.post('/api/add-album', async (req, res) => {
         const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
-        // Create the album entry
-        const albumEntry = `        <a class="release clickable" href="${bandcampUrl}" target="_blank" rel="noopener noreferrer">
-            <div class="tonearm"></div>
-            <picture>
-                <source type="image/webp" srcset="${webpFilename}">
-                <img loading="lazy" class="artwork" src="${jpgFilename}" alt="${artist} - ${album}">
-            </picture>
-            <div class="artist">${artist}</div>
-            <div class="album">${album}</div>
-        </a>`;
+        // Create the album entry (new shelf format)
+        const albumEntry = `                    <a class="album-cover" href="#" data-bandcamp="${bandcampUrl}">
+                        <img class="album-artwork" src="${webpFilename}" alt="${artist} - ${album}" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">${artist}</div>
+                            <div class="album">${album}</div>
+                        </div>
+                    </a>`;
 
-        // Find the correct genre section using data-genre attribute
-        const genreMatch = html.match(new RegExp(`<div class="releases" data-genre="${genreClass}">[\\s\\S]*?(?=\\s*<\\/div>\\s*<!--)`));
-        
-        if (!genreMatch) {
+        // Find all shelves for this genre
+        const shelfRegex = new RegExp(`<div class="albums" data-genre="${genreClass}">[\\s\\S]*?(?=\\s*</div>\\s*</div>)`, 'g');
+        const shelves = [...html.matchAll(shelfRegex)];
+
+        if (shelves.length === 0) {
             return res.status(400).json({ error: `Could not find genre section: ${genre}` });
         }
 
-        // Insert the new album at the end of the releases div, before the closing tag
-        const insertPosition = genreMatch.index + genreMatch[0].length;
-        html = html.slice(0, insertPosition) + '\n' + albumEntry + '\n' + html.slice(insertPosition);
+        // Get the last shelf
+        const lastShelf = shelves[shelves.length - 1];
+        const lastShelfContent = lastShelf[0];
+
+        // Count albums in the last shelf
+        const albumCount = (lastShelfContent.match(/class="album-cover"/g) || []).length;
+
+        let insertPosition;
+
+        if (albumCount >= 4) {
+            // Create a new shelf
+            const newShelf = `            <div class="shelf">
+                <div class="albums" data-genre="${genreClass}">
+${albumEntry}
+                </div>
+            </div>`;
+
+            // Find the end of the last shelf and insert new shelf after it
+            const lastShelfEnd = lastShelf.index + lastShelfContent.length + '</div>\n            </div>'.length;
+            html = html.slice(0, lastShelfEnd) + '\n' + newShelf + html.slice(lastShelfEnd);
+        } else {
+            // Add to existing last shelf
+            insertPosition = lastShelf.index + lastShelfContent.length;
+            html = html.slice(0, insertPosition) + '\n' + albumEntry + html.slice(insertPosition);
+        }
 
         // Write the updated HTML back
         await fs.writeFile(indexPath, html, 'utf-8');
