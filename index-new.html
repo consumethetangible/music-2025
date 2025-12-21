@@ -18,7 +18,12 @@
         }
 
         body {
-            background: radial-gradient(ellipse at top, #1a1520 0%, #0d0a12 40%, #0a0a0a 100%);
+            background:
+                /* Subtle noise texture */
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 3px, rgba(0,0,0,.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,.03) 3px, rgba(0,0,0,.03) 4px),
+                /* Warm dim record store atmosphere */
+                radial-gradient(ellipse at top, #1a1612 0%, #0f0d0a 40%, #0a0908 100%);
             font-family: 'Inter', sans-serif;
             padding: 60px 40px;
             min-height: 100vh;
@@ -29,13 +34,13 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(10, 10, 10, 0.88);
+            background: rgba(12, 10, 8, 0.85);
             border-radius: 20px;
             padding: 60px 50px;
             box-shadow:
-                0 30px 60px rgba(0, 0, 0, 0.8),
-                inset 0 1px 1px rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+                0 30px 60px rgba(0, 0, 0, 0.9),
+                inset 0 1px 1px rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(139, 90, 43, 0.15);
             position: relative;
             z-index: 1;
         }
@@ -131,6 +136,7 @@
             text-decoration: none;
             color: inherit;
             transform-style: preserve-3d;
+            margin-bottom: 30px;
         }
 
         /* Left edge of album (visible when tilted) */
