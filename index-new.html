@@ -84,60 +84,72 @@
         /* RECORD STORE SHELF STYLING */
         .shelf {
             position: relative;
-            margin-bottom: 40px;
-            padding: 30px 0 80px 0;
-            background:
-                /* Wood grain texture simulation */
-                linear-gradient(90deg,
-                    rgba(101, 67, 33, 0.3) 0%,
-                    rgba(139, 90, 43, 0.3) 10%,
-                    rgba(101, 67, 33, 0.3) 20%,
-                    rgba(139, 90, 43, 0.3) 30%,
-                    rgba(101, 67, 33, 0.3) 40%),
-                linear-gradient(180deg,
-                    rgba(101, 67, 33, 0.6) 0%,
-                    rgba(139, 90, 43, 0.8) 50%,
-                    rgba(101, 67, 33, 0.6) 100%);
-            border-radius: 8px;
-            box-shadow:
-                0 4px 0 rgba(70, 40, 20, 0.8),
-                0 8px 0 rgba(50, 30, 15, 0.6),
-                0 12px 20px rgba(0, 0, 0, 0.8),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.6),
-                inset 0 2px 2px rgba(255, 200, 150, 0.1);
+            margin-bottom: 50px;
+            padding-bottom: 20px;
         }
 
-        .shelf::after {
+        /* The actual shelf plank */
+        .shelf::before {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            height: 30px;
+            background:
+                /* Wood grain texture */
+                linear-gradient(90deg,
+                    rgba(101, 67, 33, 0.4) 0%,
+                    rgba(139, 90, 43, 0.4) 10%,
+                    rgba(101, 67, 33, 0.4) 20%,
+                    rgba(139, 90, 43, 0.4) 30%,
+                    rgba(101, 67, 33, 0.4) 40%),
+                linear-gradient(180deg,
+                    rgba(139, 90, 43, 0.9) 0%,
+                    rgba(101, 67, 33, 0.95) 50%,
+                    rgba(70, 40, 20, 0.98) 100%);
+            border-radius: 4px;
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.8),
+                0 8px 20px rgba(0, 0, 0, 0.6),
+                inset 0 2px 3px rgba(255, 200, 150, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        /* Front edge of shelf */
+        .shelf::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 8px;
             background:
                 linear-gradient(180deg,
-                    transparent 0%,
-                    rgba(70, 40, 20, 0.9) 20%,
-                    rgba(50, 30, 15, 0.95) 100%);
-            border-radius: 0 0 8px 8px;
+                    rgba(70, 40, 20, 0.95) 0%,
+                    rgba(50, 30, 15, 0.98) 100%);
+            border-radius: 0 0 4px 4px;
             box-shadow:
-                0 8px 16px rgba(0, 0, 0, 0.9),
-                inset 0 4px 8px rgba(0, 0, 0, 0.7);
-            z-index: -1;
+                0 6px 15px rgba(0, 0, 0, 0.9);
+            z-index: 0;
         }
 
         .albums {
             display: flex;
-            gap: 30px;
-            padding: 0 40px;
+            gap: 25px;
+            padding: 0 40px 15px 40px;
             justify-content: flex-start;
             flex-wrap: wrap;
+            align-items: flex-end;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Album cover styling */
+        /* Album cover styling - smaller and sitting on shelf */
         .album-cover {
             position: relative;
-            width: 280px;
+            width: 220px;
             cursor: pointer;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
@@ -145,41 +157,49 @@
         }
 
         .album-cover:hover {
-            transform: translateY(-20px) scale(1.08);
+            transform: translateY(-15px) scale(1.05);
             z-index: 10;
         }
 
         .album-artwork {
-            width: 280px;
-            height: 280px;
+            width: 220px;
+            height: 220px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 3px;
             box-shadow:
-                0 10px 30px rgba(0, 0, 0, 0.9),
+                0 8px 20px rgba(0, 0, 0, 0.9),
                 0 0 0 1px rgba(255, 255, 255, 0.1),
                 inset 0 1px 2px rgba(255, 255, 255, 0.05);
             transition: box-shadow 0.3s ease;
+            display: block;
         }
 
         .album-cover:hover .album-artwork {
             box-shadow:
-                0 20px 50px rgba(0, 0, 0, 1),
+                0 15px 40px rgba(0, 0, 0, 1),
                 0 0 0 2px rgba(212, 175, 55, 0.6),
                 0 0 30px rgba(212, 175, 55, 0.3),
                 inset 0 1px 2px rgba(255, 255, 255, 0.1);
         }
 
+        /* Text overlay in center of album on hover */
         .album-info {
-            margin-top: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
             opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.3s ease;
+            width: 90%;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
         }
 
         .album-cover:hover .album-info {
             opacity: 1;
-            transform: translateY(0);
         }
 
         .artist {
@@ -293,16 +313,20 @@
         @media (max-width: 768px) {
             .albums {
                 justify-content: center;
-                padding: 0 20px;
+                padding: 0 20px 15px 20px;
             }
 
             .album-cover {
-                width: 200px;
+                width: 160px;
             }
 
             .album-artwork {
-                width: 200px;
-                height: 200px;
+                width: 160px;
+                height: 160px;
+            }
+
+            .album-info {
+                padding: 15px;
             }
 
             .modal-content {
