@@ -137,19 +137,36 @@
 
         .albums {
             display: flex;
-            gap: clamp(20px, 3vw, 30px);
-            padding: 0 clamp(20px, 5vw, 40px) 5px;
+            gap: clamp(15px, 2.5vw, 25px);
+            padding: 0 clamp(15px, 4vw, 30px) 5px;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             align-items: flex-end;
             position: relative;
             perspective: 1200px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139, 90, 43, 0.5) transparent;
+        }
+
+        .albums::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .albums::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .albums::-webkit-scrollbar-thumb {
+            background: rgba(139, 90, 43, 0.5);
+            border-radius: 4px;
         }
 
         /* Album cover styling - responsive with 3D depth */
         .album-cover {
             position: relative;
-            width: clamp(160px, 20vw, 240px);
+            width: clamp(140px, 18vw, 220px);
+            flex-shrink: 0;
             cursor: pointer;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
