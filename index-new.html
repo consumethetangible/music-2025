@@ -85,7 +85,7 @@
         .shelf {
             position: relative;
             margin-bottom: 50px;
-            padding-bottom: 20px;
+            padding-bottom: 30px;
         }
 
         /* The actual shelf plank */
@@ -95,44 +95,44 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 30px;
+            height: 35px;
             background:
                 /* Wood grain texture */
                 linear-gradient(90deg,
-                    rgba(101, 67, 33, 0.4) 0%,
-                    rgba(139, 90, 43, 0.4) 10%,
-                    rgba(101, 67, 33, 0.4) 20%,
-                    rgba(139, 90, 43, 0.4) 30%,
-                    rgba(101, 67, 33, 0.4) 40%),
+                    rgba(101, 67, 33, 0.5) 0%,
+                    rgba(139, 90, 43, 0.5) 10%,
+                    rgba(101, 67, 33, 0.5) 20%,
+                    rgba(139, 90, 43, 0.5) 30%,
+                    rgba(101, 67, 33, 0.5) 40%),
                 linear-gradient(180deg,
-                    rgba(139, 90, 43, 0.9) 0%,
-                    rgba(101, 67, 33, 0.95) 50%,
-                    rgba(70, 40, 20, 0.98) 100%);
+                    rgba(139, 90, 43, 1) 0%,
+                    rgba(101, 67, 33, 1) 50%,
+                    rgba(70, 40, 20, 1) 100%);
             border-radius: 4px;
             box-shadow:
                 0 4px 8px rgba(0, 0, 0, 0.8),
                 0 8px 20px rgba(0, 0, 0, 0.6),
-                inset 0 2px 3px rgba(255, 200, 150, 0.1),
+                inset 0 2px 3px rgba(255, 200, 150, 0.15),
                 inset 0 -2px 4px rgba(0, 0, 0, 0.6);
-            z-index: 1;
+            z-index: 5;
         }
 
         /* Front edge of shelf */
         .shelf::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -10px;
             left: 0;
             right: 0;
-            height: 8px;
+            height: 10px;
             background:
                 linear-gradient(180deg,
-                    rgba(70, 40, 20, 0.95) 0%,
-                    rgba(50, 30, 15, 0.98) 100%);
+                    rgba(70, 40, 20, 1) 0%,
+                    rgba(50, 30, 15, 1) 100%);
             border-radius: 0 0 4px 4px;
             box-shadow:
                 0 6px 15px rgba(0, 0, 0, 0.9);
-            z-index: 0;
+            z-index: 4;
         }
 
         .albums {
@@ -143,8 +143,7 @@
             flex-wrap: wrap;
             align-items: flex-end;
             position: relative;
-            z-index: 2;
-            perspective: 1200px;
+            perspective: 1000px;
         }
 
         /* Album cover styling - smaller and sitting on shelf */
@@ -156,10 +155,11 @@
             text-decoration: none;
             color: inherit;
             transform-style: preserve-3d;
+            transform: perspective(800px) rotateY(-12deg) rotateX(6deg);
         }
 
         .album-cover:hover {
-            transform: translateY(-20px) scale(1.12) rotateY(-8deg) rotateX(5deg);
+            transform: perspective(800px) rotateY(-12deg) rotateX(6deg) translateY(-15px) scale(1.1);
             z-index: 10;
         }
 
