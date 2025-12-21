@@ -137,19 +137,19 @@
 
         .albums {
             display: flex;
-            gap: 25px;
-            padding: 0 40px 15px 40px;
-            justify-content: flex-start;
+            gap: clamp(20px, 3vw, 30px);
+            padding: 0 clamp(20px, 5vw, 40px) 15px;
+            justify-content: center;
             flex-wrap: wrap;
             align-items: flex-end;
             position: relative;
-            perspective: 1000px;
+            perspective: 1200px;
         }
 
-        /* Album cover styling - smaller and sitting on shelf */
+        /* Album cover styling - responsive with 3D depth */
         .album-cover {
             position: relative;
-            width: 220px;
+            width: clamp(160px, 20vw, 240px);
             cursor: pointer;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
@@ -157,14 +157,52 @@
             transform-style: preserve-3d;
         }
 
+        /* Left edge of album (visible when tilted) */
+        .album-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -15px;
+            width: 15px;
+            height: 100%;
+            background: linear-gradient(to right, #1a1a1a, #2a2a2a);
+            transform-origin: right;
+            transform: rotateY(90deg);
+            border-radius: 3px 0 0 3px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Bottom edge of album (visible when tilted) */
+        .album-cover::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+            transform-origin: top;
+            transform: rotateX(-90deg);
+            border-radius: 0 0 3px 3px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
         .album-cover:hover {
             transform: perspective(800px) rotateY(-12deg) rotateX(6deg) translateY(-15px) scale(1.1);
             z-index: 10;
         }
 
+        .album-cover:hover::before,
+        .album-cover:hover::after {
+            opacity: 1;
+        }
+
         .album-artwork {
-            width: 220px;
-            height: 220px;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1;
             object-fit: cover;
             border-radius: 3px;
             box-shadow:
@@ -312,22 +350,17 @@
         }
 
         @media (max-width: 768px) {
-            .albums {
-                justify-content: center;
-                padding: 0 20px 15px 20px;
-            }
-
-            .album-cover {
-                width: 160px;
-            }
-
-            .album-artwork {
-                width: 160px;
-                height: 160px;
-            }
-
             .album-info {
-                padding: 15px;
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .artist {
+                font-size: 14px;
+            }
+
+            .album {
+                font-size: 11px;
             }
 
             .modal-content {
@@ -341,7 +374,21 @@
             }
 
             h1 {
-                font-size: 42px;
+                font-size: clamp(32px, 8vw, 72px);
+            }
+
+            h2 {
+                font-size: clamp(24px, 6vw, 38px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .album-info {
+                padding: 10px;
+            }
+
+            .shelf {
+                margin-bottom: 40px;
             }
         }
     </style>
