@@ -19,11 +19,11 @@
 
         body {
             background:
-                /* Subtle noise texture */
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 3px, rgba(0,0,0,.03) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,.03) 3px, rgba(0,0,0,.03) 4px),
-                /* Warm dim record store atmosphere */
-                radial-gradient(ellipse at top, #1a1612 0%, #0f0d0a 40%, #0a0908 100%);
+                /* Subtle texture */
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(101, 67, 33, .05) 3px, rgba(101, 67, 33, .05) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(101, 67, 33, .05) 3px, rgba(101, 67, 33, .05) 4px),
+                /* Warm record store atmosphere */
+                linear-gradient(180deg, #2a1f1a 0%, #1a120e 50%, #0f0a08 100%);
             font-family: 'Inter', sans-serif;
             padding: 60px 40px;
             min-height: 100vh;
@@ -34,13 +34,13 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(12, 10, 8, 0.85);
+            background: rgba(20, 15, 12, 0.90);
             border-radius: 20px;
             padding: 60px 50px;
             box-shadow:
                 0 30px 60px rgba(0, 0, 0, 0.9),
-                inset 0 1px 1px rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(139, 90, 43, 0.15);
+                inset 0 1px 1px rgba(139, 90, 43, 0.1);
+            border: 1px solid rgba(139, 90, 43, 0.25);
             position: relative;
             z-index: 1;
         }
