@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music 2025 - Admin</title>
+    <title>Music 2025 Admin</title>
     <style>
         * {
             margin: 0;
@@ -12,86 +12,72 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1520 0%, #0d0a12 50%, #0a0a0a 100%);
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(30, 30, 30, 0.9);
+            background: white;
             border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
         }
 
         h1 {
-            font-size: 36px;
-            margin-bottom: 10px;
-            color: #4FACFE;
-            text-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
-        }
-
-        .subtitle {
-            color: #999;
-            margin-bottom: 40px;
-            font-size: 14px;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            color: #ccc;
+            color: #555;
             font-weight: 500;
         }
 
-        input[type="text"],
-        select {
+        input, select {
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
-            color: #fff;
-            font-size: 15px;
-            transition: all 0.3s ease;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
 
-        input[type="text"]:focus,
-        select:focus {
+        input:focus, select:focus {
             outline: none;
-            border-color: #4FACFE;
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-
-        select option {
-            background: #1a1520;
-            color: #fff;
+            border-color: #667eea;
         }
 
         button {
-            padding: 12px 32px;
-            background: linear-gradient(135deg, #4FACFE 0%, #00C9FF 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             border: none;
+            padding: 14px 28px;
             border-radius: 8px;
-            color: #fff;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(79, 172, 254, 0.4);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
         button:active {
@@ -99,136 +85,101 @@
         }
 
         button:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
         .preview {
-            margin-top: 40px;
-            padding: 24px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
             display: none;
         }
 
-        .preview.show {
+        .preview.visible {
             display: block;
         }
 
         .preview h3 {
-            margin-bottom: 16px;
-            color: #4FACFE;
+            margin-bottom: 15px;
+            color: #333;
         }
 
-        .preview-content {
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
-
-        .preview-image {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
+        .preview img {
+            max-width: 200px;
             border-radius: 8px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .preview-details {
-            color: #ccc;
+        .preview-info {
+            margin: 10px 0;
+            color: #555;
         }
 
-        .preview-details p {
-            margin-bottom: 8px;
-        }
-
-        .preview-details strong {
-            color: #fff;
+        .preview-info strong {
+            color: #333;
         }
 
         .message {
-            padding: 16px;
+            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             display: none;
         }
 
-        .message.show {
+        .message.visible {
             display: block;
         }
 
         .message.success {
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid #4CAF50;
-            color: #4CAF50;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
         .message.error {
-            background: rgba(244, 67, 54, 0.2);
-            border: 1px solid #f44336;
-            color: #f44336;
-        }
-
-        .message.info {
-            background: rgba(79, 172, 254, 0.2);
-            border: 1px solid #4FACFE;
-            color: #4FACFE;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
         .loading {
+            text-align: center;
+            color: #667eea;
+            margin: 10px 0;
             display: none;
-            align-items: center;
-            color: #4FACFE;
-            margin-top: 16px;
         }
 
-        .loading.show {
-            display: flex;
+        .loading.visible {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Music 2025 Admin</h1>
-        <div class="subtitle">Add new albums to your music collection</div>
+        <h1>🎵 Music 2025 Admin</h1>
 
         <div id="message" class="message"></div>
+        <div id="loading" class="loading">⏳ Processing...</div>
 
-        <form id="albumForm">
+        <form id="albumForm" onsubmit="event.preventDefault();">
             <div class="form-group">
-                <label for="bandcampUrl">Bandcamp URL *</label>
-                <input type="text" id="bandcampUrl" name="bandcampUrl" 
-                       placeholder="https://artist.bandcamp.com/album/album-name" required>
+                <label for="bandcampUrl">Bandcamp URL</label>
+                <input 
+                    type="text" 
+                    id="bandcampUrl" 
+                    placeholder="https://artist.bandcamp.com/album/album-name"
+                    required
+                    onkeypress="if(event.key === 'Enter') { event.preventDefault(); fetchMetadata(); }"
+                >
             </div>
 
             <div class="form-group">
-                <label for="genre">Genre *</label>
-                <select id="genre" name="genre" required>
-                    <option value="">-- Select a genre --</option>
+                <label for="genre">Genre</label>
+                <select id="genre" required>
                     <option value="metal">Metal</option>
                     <option value="stoner-psych">Stoner & Psych</option>
                     <option value="prog">Prog</option>
@@ -238,69 +189,55 @@
                 </select>
             </div>
 
-            <button type="button" id="fetchBtn" onclick="fetchMetadata()">Fetch Album Info</button>
-
-            <div class="loading" id="loading">
-                <span class="spinner"></span>
-                <span>Fetching album information...</span>
-            </div>
+            <button type="button" onclick="fetchMetadata()">Fetch Album Info</button>
         </form>
 
         <div id="preview" class="preview">
-            <h3>Album Preview</h3>
-            <div class="preview-content">
-                <img id="previewImage" class="preview-image" src="" alt="Album artwork">
-                <div class="preview-details">
-                    <p><strong>Artist:</strong> <span id="previewArtist"></span></p>
-                    <p><strong>Album:</strong> <span id="previewAlbum"></span></p>
-                    <p><strong>Genre:</strong> <span id="previewGenre"></span></p>
-                    <p><strong>Filename:</strong> <span id="previewFilename"></span>.jpg</p>
-                </div>
-            </div>
-            <div class="buttons">
-                <button type="button" id="addBtn" onclick="addAlbum()">Add to Site</button>
-                <button type="button" onclick="reset()">Start Over</button>
-            </div>
+            <h3>Preview</h3>
+            <img id="previewArtwork" alt="Album artwork">
+            <div class="preview-info"><strong>Artist:</strong> <span id="previewArtist"></span></div>
+            <div class="preview-info"><strong>Album:</strong> <span id="previewAlbum"></span></div>
+            <div class="preview-info"><strong>Genre:</strong> <span id="previewGenre"></span></div>
+            <button onclick="addAlbum()">Add to Site</button>
         </div>
     </div>
 
     <script>
         let currentMetadata = null;
 
-        function showMessage(message, type) {
-            const msgEl = document.getElementById('message');
-            msgEl.textContent = message;
-            msgEl.className = `message show ${type}`;
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = `message ${type} visible`;
             setTimeout(() => {
-                msgEl.classList.remove('show');
+                msg.className = 'message';
             }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').className = show ? 'loading visible' : 'loading';
         }
 
         async function fetchMetadata() {
             const url = document.getElementById('bandcampUrl').value.trim();
-            const genre = document.getElementById('genre').value;
-
+            
             if (!url) {
                 showMessage('Please enter a Bandcamp URL', 'error');
                 return;
             }
 
-            if (!genre) {
-                showMessage('Please select a genre', 'error');
+            if (!url.includes('bandcamp.com')) {
+                showMessage('Please enter a valid Bandcamp URL', 'error');
                 return;
             }
 
-            // Show loading
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('fetchBtn').disabled = true;
+            showLoading(true);
+            document.getElementById('preview').classList.remove('visible');
 
             try {
-                // Scrape Bandcamp metadata
                 const response = await fetch('http://localhost:3000/api/scrape-bandcamp', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url })
                 });
 
@@ -311,67 +248,61 @@
                 }
 
                 currentMetadata = data;
-                currentMetadata.genre = genre;
-
+                
                 // Show preview
-                document.getElementById('previewImage').src = data.artworkUrl;
+                document.getElementById('previewArtwork').src = data.artworkUrl;
                 document.getElementById('previewArtist').textContent = data.artist;
                 document.getElementById('previewAlbum').textContent = data.album;
-                document.getElementById('previewGenre').textContent = genre;
-                document.getElementById('previewFilename').textContent = data.suggestedFilename;
+                document.getElementById('previewGenre').textContent = document.getElementById('genre').selectedOptions[0].text;
+                document.getElementById('preview').classList.add('visible');
 
-                document.getElementById('preview').classList.add('show');
-                showMessage('Album information fetched successfully!', 'success');
+                showMessage('Album info fetched successfully!', 'success');
 
             } catch (error) {
                 showMessage(error.message, 'error');
+                console.error('Error:', error);
             } finally {
-                document.getElementById('loading').classList.remove('show');
-                document.getElementById('fetchBtn').disabled = false;
+                showLoading(false);
             }
         }
 
         async function addAlbum() {
             if (!currentMetadata) {
-                showMessage('Please fetch album information first', 'error');
+                showMessage('Please fetch album info first', 'error');
                 return;
             }
 
-            document.getElementById('addBtn').disabled = true;
-            showMessage('Downloading artwork and adding album...', 'info');
+            showLoading(true);
 
             try {
-                // Download artwork
-                const artworkResponse = await fetch('http://localhost:3000/api/download-artwork', {
+                // Step 1: Download artwork
+                const downloadResponse = await fetch('http://localhost:3000/api/download-artwork', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         artworkUrl: currentMetadata.artworkUrl,
-                        filename: currentMetadata.suggestedFilename
+                        artist: currentMetadata.artist,
+                        album: currentMetadata.album
                     })
                 });
 
-                const artworkData = await artworkResponse.json();
+                const downloadData = await downloadResponse.json();
 
-                if (!artworkResponse.ok) {
-                    throw new Error(artworkData.error || 'Failed to download artwork');
+                if (!downloadResponse.ok) {
+                    throw new Error(downloadData.error || 'Failed to download artwork');
                 }
 
-                // Add album to index.html
+                // Step 2: Add album to index.html
                 const addResponse = await fetch('http://localhost:3000/api/add-album', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         artist: currentMetadata.artist,
                         album: currentMetadata.album,
-                        url: currentMetadata.originalUrl,
-                        genre: currentMetadata.genre,
-                        filename: currentMetadata.suggestedFilename,
-                        useWebP: true
+                        bandcampUrl: currentMetadata.bandcampUrl,
+                        genre: document.getElementById('genre').value,
+                        jpgFilename: downloadData.jpgFilename,
+                        webpFilename: downloadData.webpFilename
                     })
                 });
 
@@ -381,29 +312,20 @@
                     throw new Error(addData.error || 'Failed to add album');
                 }
 
-                showMessage('Album added successfully! ✓', 'success');
-                setTimeout(reset, 2000);
+                showMessage('✅ Album added successfully!', 'success');
+                
+                // Reset form
+                document.getElementById('albumForm').reset();
+                document.getElementById('preview').classList.remove('visible');
+                currentMetadata = null;
 
             } catch (error) {
                 showMessage(error.message, 'error');
-                document.getElementById('addBtn').disabled = false;
+                console.error('Error:', error);
+            } finally {
+                showLoading(false);
             }
         }
-
-        function reset() {
-            document.getElementById('albumForm').reset();
-            document.getElementById('preview').classList.remove('show');
-            currentMetadata = null;
-            document.getElementById('addBtn').disabled = false;
-        }
-
-        // Allow Enter key to fetch metadata
-        document.getElementById('bandcampUrl').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                fetchMetadata();
-            }
-        });
     </script>
 </body>
 </html>
