@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 Music Favorites - Record Store</title>
+    <title>Consuming Music in 2025</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@700&family=Inter:wght@400;600&family=Courier+Prime:ital@0;1&display=swap');
 
@@ -47,18 +47,23 @@
 
         h1 {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 72px;
+            font-size: clamp(42px, 8vw, 72px);
             text-align: center;
-            color: #fff;
+            color: transparent;
             margin-bottom: 20px;
             letter-spacing: 8px;
             text-transform: uppercase;
+            font-weight: 400;
+            -webkit-text-stroke: 2px #00d9ff;
+            text-stroke: 2px #00d9ff;
             text-shadow:
-                0 0 10px #fff,
-                0 0 20px #fff,
-                0 0 40px #4FACFE,
-                0 0 80px #4FACFE,
-                0 4px 8px rgba(0, 0, 0, 0.8);
+                0 0 5px #00d9ff,
+                0 0 10px #00d9ff,
+                0 0 20px #00d9ff,
+                0 0 40px #00d9ff,
+                0 0 80px #00b8d4,
+                0 0 120px #00b8d4;
+            filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.8));
         }
 
         .subtitle {
@@ -413,7 +418,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>2025 Music Favorites</h1>
+        <h1>Consuming Music in 2025</h1>
         <p class="subtitle">A curated collection of this year's standout releases</p>
 
         <!-- Modal for enlarged view -->
