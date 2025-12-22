@@ -353,11 +353,12 @@ app.put('/api/edit-album', async (req, res) => {
             const albumParts = containerContent.split('<a class="album-cover"');
 
             // Skip first part (it's before the first album)
+            let cumulativePos = albumParts[0].length; // Start after the first part (before first album)
             for (let i = 1; i < albumParts.length; i++) {
                 const albumHTML = '<a class="album-cover"' + albumParts[i];
 
-                // Find where this album starts in the full HTML
-                const albumStart = containerMatch.index + containerMatch[0].length + containerContent.indexOf('<a class="album-cover"' + albumParts[i]);
+                // Calculate where this album starts in the full HTML
+                const albumStart = containerMatch.index + containerMatch[0].length + cumulativePos;
 
                 // Find the end of the album (find the closing </a>)
                 let albumEndSearch = albumStart;
@@ -380,6 +381,9 @@ app.put('/api/edit-album', async (req, res) => {
                     position: albumStart,
                     length: albumEndSearch - albumStart
                 });
+
+                // Update cumulative position for next album
+                cumulativePos += '<a class="album-cover"'.length + albumParts[i].length;
             }
         }
 
