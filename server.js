@@ -193,18 +193,17 @@ ${albumEntry}
             const insertPos = lastShelfGlobalIndex + lastShelfContent.length;
             html = html.slice(0, insertPos) + newShelf + html.slice(insertPos);
         } else {
-            // Find the closing </div></div> of the albums container in the last shelf
-            const albumsClosing = '</div>\n            </div>';
-            const albumsClosingIndex = lastShelfContent.lastIndexOf(albumsClosing);
+            // Find the last </a> tag (end of last album) and insert after it
+            const lastAlbumEnd = lastShelfContent.lastIndexOf('</a>');
 
-            if (albumsClosingIndex === -1) {
-                return res.status(500).json({ error: 'Could not find proper shelf structure' });
+            if (lastAlbumEnd === -1) {
+                return res.status(500).json({ error: 'Could not find album structure in shelf' });
             }
 
-            // Insert before the closing tags
-            const beforeClosing = lastShelfContent.substring(0, albumsClosingIndex);
-            const afterClosing = lastShelfContent.substring(albumsClosingIndex);
-            const updatedShelf = beforeClosing + '\n' + albumEntry + '\n                ' + afterClosing;
+            // Insert the new album after the last </a> tag
+            const beforeInsert = lastShelfContent.substring(0, lastAlbumEnd + 4); // +4 for </a>
+            const afterInsert = lastShelfContent.substring(lastAlbumEnd + 4);
+            const updatedShelf = beforeInsert + '\n' + albumEntry + afterInsert;
 
             // Replace in the full HTML
             html = html.replace(lastShelfContent, updatedShelf);
