@@ -127,8 +127,19 @@ app.post('/api/add-album', async (req, res) => {
             'archival': 'archival'
         };
 
+        // Map genre to section name (for HTML comments)
+        const genreNameMap = {
+            'metal': 'Metal',
+            'stoner-psych': 'Stoner & Psych',
+            'prog': 'Prog',
+            'rock-pop': 'Rock & Pop',
+            'alternative': 'Alternative',
+            'archival': 'Archival / Reissues'
+        };
+
         const genreClass = genreMap[genre];
-        if (!genreClass) {
+        const genreName = genreNameMap[genre];
+        if (!genreClass || !genreName) {
             return res.status(400).json({ error: 'Invalid genre' });
         }
 
@@ -146,11 +157,11 @@ app.post('/api/add-album', async (req, res) => {
                     </a>`;
 
         // Find the genre section
-        const sectionRegex = new RegExp(`<!-- ${genre} Section -->([\\s\\S]*?)(?=<!-- \\w|<script)`, '');
+        const sectionRegex = new RegExp(`<!-- ${genreName} Section -->([\\s\\S]*?)(?=<!-- \\w|<script)`, '');
         const sectionMatch = html.match(sectionRegex);
 
         if (!sectionMatch) {
-            return res.status(400).json({ error: `Could not find genre section: ${genre}` });
+            return res.status(400).json({ error: `Could not find genre section: ${genreName}` });
         }
 
         // Find all shelf containers in this section
