@@ -452,42 +452,60 @@ app.delete('/api/delete-album', async (req, res) => {
         const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
-        // Find all albums in the genre
-        const genreRegex = new RegExp(`(<div class="albums" data-genre="${genre}">)([\\s\\S]*?)(</div>\\s*</div>)`, 'g');
-        const albumRegex = /<a class="album-cover"[\s\S]*?<\/a>/g;
+        // Find all albums in the genre using same method as edit endpoint
+        const containerRegex = new RegExp(`<div class="albums" data-genre="${genre}">`, 'g');
+        let containerMatch;
+        let allAlbums = [];
 
-        let genreMatch;
-        let allMatches = [];
+        while ((containerMatch = containerRegex.exec(html)) !== null) {
+            const containerStart = containerMatch.index + containerMatch[0].length;
 
-        while ((genreMatch = genreRegex.exec(html)) !== null) {
-            let albumMatch;
-            let startPos = genreMatch.index + genreMatch[1].length;
-            let albumsHTML = genreMatch[2];
+            // Find the closing </div> using depth tracking
+            let depth = 1;
+            let pos = containerStart;
+            while (depth > 0 && pos < html.length) {
+                if (html.substring(pos, pos + 5) === '<div ' || html.substring(pos, pos + 5) === '<div>') {
+                    depth++;
+                } else if (html.substring(pos, pos + 6) === '</div>') {
+                    depth--;
+                }
+                if (depth === 0) break;
+                pos++;
+            }
 
-            while ((albumMatch = albumRegex.exec(albumsHTML)) !== null) {
-                allMatches.push({
-                    fullMatch: albumMatch[0],
-                    position: startPos + albumMatch.index,
-                    length: albumMatch[0].length
-                });
+            const containerContent = html.substring(containerStart, pos);
+
+            // Split by album-cover anchor tags
+            const albumParts = containerContent.split('<a class="album-cover"');
+
+            // Process each album (skip first part which is before any albums)
+            for (let i = 1; i < albumParts.length; i++) {
+                const albumHTML = '<a class="album-cover"' + albumParts[i];
+
+                // Extract just the album block (find closing </a>)
+                const closingTag = albumHTML.indexOf('</a>');
+                if (closingTag !== -1) {
+                    const fullAlbumHTML = albumHTML.substring(0, closingTag + 4);
+                    allAlbums.push(fullAlbumHTML);
+                }
             }
         }
 
-        if (index >= allMatches.length) {
+        if (index >= allAlbums.length) {
             return res.status(404).json({ error: 'Album not found at specified index' });
         }
 
-        const targetAlbum = allMatches[index];
+        const targetAlbumHTML = allAlbums[index];
 
         // Extract artist and album name for response message
-        const artistMatch = targetAlbum.fullMatch.match(/<div class="artist">([^<]*)<\/div>/);
-        const albumMatch = targetAlbum.fullMatch.match(/<div class="album">([^<]*)<\/div>/);
+        const artistMatch = targetAlbumHTML.match(/<div class="artist">([^<]*)<\/div>/);
+        const albumMatch = targetAlbumHTML.match(/<div class="album">([^<]*)<\/div>/);
 
         const artistName = artistMatch ? artistMatch[1] : 'Unknown';
         const albumName = albumMatch ? albumMatch[1] : 'Unknown';
 
-        // Remove the album HTML
-        html = html.slice(0, targetAlbum.position) + html.slice(targetAlbum.position + targetAlbum.length);
+        // Remove the album HTML using string replacement
+        html = html.replace(targetAlbumHTML, '');
 
         await fs.writeFile(indexPath, html, 'utf-8');
 
