@@ -164,49 +164,63 @@ app.post('/api/add-album', async (req, res) => {
             return res.status(400).json({ error: `Could not find genre section: ${genreName}` });
         }
 
-        // Find all shelf containers in this section
-        const shelfPattern = /<div class="shelf">[\s\S]*?<div class="albums" data-genre="[^"]+">[\s\S]*?<\/div>\s*<\/div>/g;
-        const shelves = [...sectionMatch[0].matchAll(shelfPattern)];
+        // Find all albums containers for this genre
+        const albumsPattern = new RegExp(`<div class="albums" data-genre="${genreClass}">`, 'g');
+        const matches = [...html.matchAll(albumsPattern)];
 
-        if (shelves.length === 0) {
-            return res.status(400).json({ error: `Could not find shelves in ${genre} section` });
+        if (matches.length === 0) {
+            return res.status(400).json({ error: `Could not find any albums containers for ${genreName}` });
         }
 
-        // Get the last shelf
-        const lastShelf = shelves[shelves.length - 1];
-        const lastShelfContent = lastShelf[0];
+        // Get the position of the last albums container for this genre
+        const lastMatch = matches[matches.length - 1];
+        const lastAlbumsStart = lastMatch.index;
 
-        // Count albums in the last shelf
-        const albumCount = (lastShelfContent.match(/class="album-cover"/g) || []).length;
+        // Find the end of this albums container (first </div> after the albums start)
+        let searchPos = lastAlbumsStart + lastMatch[0].length;
+        let depth = 1;
+        let lastAlbumsEnd = -1;
+
+        while (depth > 0 && searchPos < html.length) {
+            const nextOpen = html.indexOf('<div', searchPos);
+            const nextClose = html.indexOf('</div>', searchPos);
+
+            if (nextClose === -1) break;
+
+            if (nextOpen !== -1 && nextOpen < nextClose) {
+                depth++;
+                searchPos = nextOpen + 4;
+            } else {
+                depth--;
+                if (depth === 0) {
+                    lastAlbumsEnd = nextClose;
+                }
+                searchPos = nextClose + 6;
+            }
+        }
+
+        if (lastAlbumsEnd === -1) {
+            return res.status(500).json({ error: 'Could not parse albums container structure' });
+        }
+
+        const albumsContent = html.substring(lastAlbumsStart, lastAlbumsEnd);
+
+        // Count albums in this container
+        const albumCount = (albumsContent.match(/class="album-cover"/g) || []).length;
 
         if (albumCount >= 4) {
-            // Create a new shelf after the last shelf
+            // Create a new shelf - find the shelf end (next closing div after albums end)
+            const shelfEnd = html.indexOf('</div>', lastAlbumsEnd + 6);
             const newShelf = `
             <div class="shelf">
                 <div class="albums" data-genre="${genreClass}">
 ${albumEntry}
                 </div>
             </div>`;
-
-            // Find where the last shelf ends in the full HTML
-            const lastShelfGlobalIndex = html.indexOf(lastShelfContent);
-            const insertPos = lastShelfGlobalIndex + lastShelfContent.length;
-            html = html.slice(0, insertPos) + newShelf + html.slice(insertPos);
+            html = html.slice(0, shelfEnd + 6) + newShelf + html.slice(shelfEnd + 6);
         } else {
-            // Find the last </a> tag (end of last album) and insert after it
-            const lastAlbumEnd = lastShelfContent.lastIndexOf('</a>');
-
-            if (lastAlbumEnd === -1) {
-                return res.status(500).json({ error: 'Could not find album structure in shelf' });
-            }
-
-            // Insert the new album after the last </a> tag
-            const beforeInsert = lastShelfContent.substring(0, lastAlbumEnd + 4); // +4 for </a>
-            const afterInsert = lastShelfContent.substring(lastAlbumEnd + 4);
-            const updatedShelf = beforeInsert + '\n' + albumEntry + afterInsert;
-
-            // Replace in the full HTML
-            html = html.replace(lastShelfContent, updatedShelf);
+            // Add to existing albums container - insert before the closing </div>
+            html = html.slice(0, lastAlbumsEnd) + '\n' + albumEntry + '\n                ' + html.slice(lastAlbumsEnd);
         }
 
         // Write the updated HTML back
