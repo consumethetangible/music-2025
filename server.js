@@ -122,9 +122,10 @@ app.post('/api/add-album', async (req, res) => {
             'metal': 'metal',
             'stoner-psych': 'stoner-psych',
             'prog': 'prog',
-            'rock-pop': 'rock-pop',
-            'alternative': 'alternative',
-            'archival': 'archival'
+            'rock-roll': 'rock-roll',
+            'alternative-other': 'alternative-other',
+            'live-albums': 'live-albums',
+            'pop-soul-rb': 'pop-soul-rb'
         };
 
         // Map genre to section name (for HTML comments)
@@ -132,9 +133,10 @@ app.post('/api/add-album', async (req, res) => {
             'metal': 'Metal',
             'stoner-psych': 'Stoner & Psych',
             'prog': 'Prog',
-            'rock-pop': 'Rock & Pop',
-            'alternative': 'Alternative',
-            'archival': 'Archival / Reissues'
+            'rock-roll': 'Rock & Roll',
+            'alternative-other': 'Alternative/Other',
+            'live-albums': 'Live Albums',
+            'pop-soul-rb': 'Pop, Soul, R&B'
         };
 
         const genreClass = genreMap[genre];
