@@ -274,13 +274,14 @@ app.get('/api/list-albums', async (req, res) => {
                 const containerContent = html.substring(containerStart, pos);
                 console.log(`Genre ${genre}, container ${containerCount}: content length = ${containerContent.length}`);
 
-                // Now extract ALL albums from this container
-                const albumRegex = /<a class="album-cover"[\s\S]*?<\/a>/g;
-                let albumMatch;
+                // Split by album-cover anchor tags to get each album
+                const albumParts = containerContent.split('<a class="album-cover"');
+                console.log(`  Split into ${albumParts.length} parts`);
                 let albumsInContainer = 0;
 
-                while ((albumMatch = albumRegex.exec(containerContent)) !== null) {
-                    const albumHTML = albumMatch[0];
+                // Skip first part (it's before the first album)
+                for (let i = 1; i < albumParts.length; i++) {
+                    const albumHTML = '<a class="album-cover"' + albumParts[i];
 
                     // Extract album data
                     const bandcampMatch = albumHTML.match(/data-bandcamp="([^"]*)"/);
