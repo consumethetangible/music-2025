@@ -112,7 +112,7 @@ app.post('/api/download-artwork', async (req, res) => {
     }
 });
 
-// API endpoint to add album to index.html
+// API endpoint to add album to index-new.html
 app.post('/api/add-album', async (req, res) => {
     try {
         const { artist, album, bandcampUrl, genre, jpgFilename, webpFilename } = req.body;
@@ -132,8 +132,8 @@ app.post('/api/add-album', async (req, res) => {
             return res.status(400).json({ error: 'Invalid genre' });
         }
 
-        // Read index.html
-        const indexPath = path.join(__dirname, 'index.html');
+        // Read index-new.html
+        const indexPath = path.join(__dirname, 'index-new.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
         // Create the album entry (new shelf format)
@@ -189,7 +189,7 @@ ${albumEntry}
 
     } catch (error) {
         console.error('Add album error:', error);
-        res.status(500).json({ error: 'Failed to add album to index.html' });
+        res.status(500).json({ error: 'Failed to add album to index-new.html' });
     }
 });
 
