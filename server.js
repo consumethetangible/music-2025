@@ -317,10 +317,10 @@ app.put('/api/edit-album', async (req, res) => {
         const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
-        // Find all albums in the current genre using the SAME method as list endpoint
+        // Find all albums in the current genre using simple split method
         const containerRegex = new RegExp(`<div class="albums" data-genre="${currentGenre}">`, 'g');
         let containerMatch;
-        let allMatches = [];
+        let allAlbums = [];
 
         while ((containerMatch = containerRegex.exec(html)) !== null) {
             const containerStart = containerMatch.index + containerMatch[0].length;
@@ -340,60 +340,27 @@ app.put('/api/edit-album', async (req, res) => {
 
             const containerContent = html.substring(containerStart, pos);
 
-            // Split by album-cover anchor tags to get each album
+            // Split by album-cover anchor tags
             const albumParts = containerContent.split('<a class="album-cover"');
 
-            // Skip first part (it's before the first album)
-            let cumulativePos = albumParts[0].length; // Start after the first part (before first album)
+            // Process each album (skip first part which is before any albums)
             for (let i = 1; i < albumParts.length; i++) {
                 const albumHTML = '<a class="album-cover"' + albumParts[i];
 
-                // Calculate where this album starts in the full HTML
-                const albumStart = containerMatch.index + containerMatch[0].length + cumulativePos;
-
-                // Find the end of the album (find the closing </a>)
-                let albumEndSearch = albumStart;
-                let aDepth = 1;
-                while (aDepth > 0 && albumEndSearch < html.length) {
-                    const char = html[albumEndSearch];
-
-                    // Check for opening <a tag (must be followed by space or >)
-                    if (html.substring(albumEndSearch, albumEndSearch + 3) === '<a ' ||
-                        html.substring(albumEndSearch, albumEndSearch + 3) === '<a>') {
-                        aDepth++;
-                        albumEndSearch += 3;
-                    }
-                    // Check for closing </a> tag
-                    else if (html.substring(albumEndSearch, albumEndSearch + 4) === '</a>') {
-                        aDepth--;
-                        if (aDepth === 0) {
-                            albumEndSearch += 4;
-                            break;
-                        }
-                        albumEndSearch += 4;
-                    }
-                    else {
-                        albumEndSearch++;
-                    }
+                // Extract just the album block (find closing </a>)
+                const closingTag = albumHTML.indexOf('</a>');
+                if (closingTag !== -1) {
+                    const fullAlbumHTML = albumHTML.substring(0, closingTag + 4);
+                    allAlbums.push(fullAlbumHTML);
                 }
-
-                allMatches.push({
-                    fullMatch: html.substring(albumStart, albumEndSearch),
-                    position: albumStart,
-                    length: albumEndSearch - albumStart
-                });
-
-                // Update cumulative position for next album
-                cumulativePos += '<a class="album-cover"'.length + albumParts[i].length;
             }
         }
 
-        if (index >= allMatches.length) {
+        if (index >= allAlbums.length) {
             return res.status(404).json({ error: 'Album not found at specified index' });
         }
 
-        const targetAlbum = allMatches[index];
-        const oldAlbumHTML = targetAlbum.fullMatch;
+        const oldAlbumHTML = allAlbums[index];
 
         // Create updated album HTML
         const artistMatch = oldAlbumHTML.match(/<div class="artist">([^<]*)<\/div>/);
@@ -411,15 +378,9 @@ app.put('/api/edit-album', async (req, res) => {
 
         // If moving to a different genre, remove from current and add to new
         if (newGenre && newGenre !== currentGenre) {
-            // Remove from current genre
-            console.log(`Removing album at position ${targetAlbum.position}, length ${targetAlbum.length}`);
-            console.log(`HTML length before removal: ${html.length}`);
-            html = html.slice(0, targetAlbum.position) + html.slice(targetAlbum.position + targetAlbum.length);
-            console.log(`HTML length after removal: ${html.length}`);
-
-            // Check if target genre still exists after removal
-            const genreStillExists = html.includes(`data-genre="${newGenre}"`);
-            console.log(`Genre ${newGenre} still exists after removal: ${genreStillExists}`);
+            // Remove album using string replacement (more reliable than position-based)
+            const albumWithWhitespace = '\n' + oldAlbumHTML.trim();
+            html = html.replace(oldAlbumHTML, ''); // Remove the album
 
             // Add to new genre (at the end of last shelf) - simpler string-based approach
             // Find all occurrences of this genre's containers
@@ -438,13 +399,6 @@ app.put('/api/edit-album', async (req, res) => {
 
             // Use the last container found
             const lastGenrePos = genrePositions[genrePositions.length - 1];
-
-            // Find the opening tag start (search backwards for <div)
-            let tagStart = lastGenrePos;
-            while (tagStart > 0 && html.substring(tagStart - 5, tagStart) !== '<div ') {
-                tagStart--;
-            }
-            tagStart -= 5;
 
             // Find the closing > of the opening tag
             let searchPos = html.indexOf('>', lastGenrePos) + 1;
