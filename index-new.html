@@ -78,9 +78,9 @@
 
         h2 {
             font-family: 'Righteous', sans-serif;
-            font-size: clamp(28px, 5vw, 42px);
+            font-size: clamp(24px, 4.5vw, 36px);
             color: #0af;
-            margin-bottom: 35px;
+            margin-bottom: 50px;
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 400;
@@ -91,6 +91,52 @@
                 0 0 15px rgba(0, 184, 212, 0.5),
                 0 0 25px rgba(0, 184, 212, 0.3);
             filter: drop-shadow(0 0 6px rgba(0, 217, 255, 0.4));
+            position: relative;
+            padding: 20px 40px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Chrome cylinder bar behind genre label */
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 50px;
+            background:
+                /* Chrome reflections - top highlight */
+                linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.4) 0%,
+                    rgba(200, 200, 200, 0.3) 15%,
+                    rgba(140, 140, 140, 0.5) 30%,
+                    rgba(100, 100, 100, 0.6) 45%,
+                    rgba(80, 80, 80, 0.7) 50%,
+                    rgba(100, 100, 100, 0.6) 55%,
+                    rgba(140, 140, 140, 0.5) 70%,
+                    rgba(200, 200, 200, 0.3) 85%,
+                    rgba(255, 255, 255, 0.4) 100%);
+            border-radius: 25px;
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.8),
+                0 4px 10px rgba(0, 0, 0, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        /* Bottom shadow for cylinder depth */
+        h2::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            bottom: -8px;
+            height: 8px;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
+            z-index: -2;
         }
 
         /* RECORD STORE SHELF STYLING */
@@ -100,7 +146,7 @@
             padding-bottom: 35px;
         }
 
-        /* Main shelf plank */
+        /* Main shelf plank - brushed metal */
         .shelf::before {
             content: '';
             position: absolute;
@@ -109,26 +155,29 @@
             right: 0;
             height: 35px;
             background:
-                linear-gradient(90deg,
-                    rgba(101, 67, 33, 0.5) 0%,
-                    rgba(139, 90, 43, 0.5) 10%,
-                    rgba(101, 67, 33, 0.5) 20%,
-                    rgba(139, 90, 43, 0.5) 30%,
-                    rgba(101, 67, 33, 0.5) 40%),
+                /* Brushed metal texture */
+                repeating-linear-gradient(90deg,
+                    rgba(180, 180, 180, 0.3) 0px,
+                    rgba(200, 200, 200, 0.3) 1px,
+                    rgba(180, 180, 180, 0.3) 2px,
+                    rgba(160, 160, 160, 0.3) 3px),
+                /* Main metallic gradient */
                 linear-gradient(180deg,
-                    rgba(139, 90, 43, 1) 0%,
-                    rgba(101, 67, 33, 1) 50%,
-                    rgba(70, 40, 20, 1) 100%);
+                    rgba(200, 200, 200, 1) 0%,
+                    rgba(160, 160, 160, 1) 20%,
+                    rgba(120, 120, 120, 1) 50%,
+                    rgba(140, 140, 140, 1) 80%,
+                    rgba(160, 160, 160, 1) 100%);
             border-radius: 4px;
             box-shadow:
                 0 4px 8px rgba(0, 0, 0, 0.8),
                 0 8px 20px rgba(0, 0, 0, 0.6),
-                inset 0 2px 3px rgba(255, 200, 150, 0.15),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+                inset 0 2px 3px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.5);
             z-index: 0;
         }
 
-        /* Front edge of shelf */
+        /* Front edge of shelf - darker metal */
         .shelf::after {
             content: '';
             position: absolute;
@@ -136,7 +185,7 @@
             left: 0;
             right: 0;
             height: 10px;
-            background: linear-gradient(180deg, rgba(70, 40, 20, 1) 0%, rgba(50, 30, 15, 1) 100%);
+            background: linear-gradient(180deg, rgba(100, 100, 100, 1) 0%, rgba(70, 70, 70, 1) 100%);
             border-radius: 0 0 4px 4px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.9);
             z-index: 0;
@@ -153,7 +202,7 @@
             perspective: 1200px;
             overflow-x: auto;
             scrollbar-width: thin;
-            scrollbar-color: rgba(139, 90, 43, 0.5) transparent;
+            scrollbar-color: rgba(140, 140, 140, 0.5) transparent;
         }
 
         .albums::-webkit-scrollbar {
@@ -165,7 +214,7 @@
         }
 
         .albums::-webkit-scrollbar-thumb {
-            background: rgba(139, 90, 43, 0.5);
+            background: rgba(140, 140, 140, 0.5);
             border-radius: 4px;
         }
 
@@ -439,11 +488,25 @@
             <h2>Metal</h2>
             <div class="shelf">
                 <div class="albums" data-genre="metal">
+                    <a class="album-cover" href="#" data-bandcamp="https://agriculturemusic.bandcamp.com/album/the-spiritual-sound">
+                        <img class="album-artwork" src="agriculture-the-spiritual-sound.webp" alt="Agriculture - The Spiritual Sound" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Agriculture</div>
+                            <div class="album">The Spiritual Sound</div>
+                        </div>
+                    </a>
                     <a class="album-cover" href="#" data-bandcamp="https://deafheavens.bandcamp.com/album/lonely-people-with-power">
                         <img class="album-artwork" src="deafheaven.webp" alt="Deafheaven - Lonely People With Power" loading="lazy">
                         <div class="album-info">
                             <div class="artist">Deafheaven</div>
                             <div class="album">Lonely People With Power</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://leatherhearsesl.bandcamp.com/album/burn-in-heaven-decalouge">
+                        <img class="album-artwork" src="leather-hearse.jpg" alt="Leather Hearse - Burn in Heaven / Decalogue" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Leather Hearse</div>
+                            <div class="album">Burn in Heaven / Decalogue</div>
                         </div>
                     </a>
                     <a class="album-cover" href="#" data-bandcamp="https://rwake.bandcamp.com/album/the-return-of-magik">
@@ -453,6 +516,10 @@
                             <div class="album">The Return of Magick</div>
                         </div>
                     </a>
+                </div>
+            </div>
+            <div class="shelf">
+                <div class="albums" data-genre="metal">
                     <a class="album-cover" href="#" data-bandcamp="https://sunn.bandcamp.com/album/eternitys-pillars-b-w-raise-thechalice-reverential">
                         <img class="album-artwork" src="eternitys-pillars.jpg" alt="sunn O))) - Eternity's Pillars b/w Raise The Chalice & Reverential" loading="lazy">
                         <div class="album-info">
@@ -465,24 +532,6 @@
                         <div class="album-info">
                             <div class="artist">Yellow Eyes</div>
                             <div class="album">The Confusion Gate</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="shelf">
-                <div class="albums" data-genre="metal">
-                    <a class="album-cover" href="#" data-bandcamp="https://leatherhearsesl.bandcamp.com/album/burn-in-heaven-decalouge">
-                        <img class="album-artwork" src="leather-hearse.jpg" alt="Leather Hearse - Burn in Heaven / Decalogue" loading="lazy">
-                        <div class="album-info">
-                            <div class="artist">Leather Hearse</div>
-                            <div class="album">Burn in Heaven / Decalogue</div>
-                        </div>
-                    </a>
-                    <a class="album-cover" href="#" data-bandcamp="https://agriculturemusic.bandcamp.com/album/the-spiritual-sound">
-                        <img class="album-artwork" src="agriculture-the-spiritual-sound.webp" alt="Agriculture - The Spiritual Sound" loading="lazy">
-                        <div class="album-info">
-                            <div class="artist">Agriculture</div>
-                            <div class="album">The Spiritual Sound</div>
                         </div>
                     </a>
                 </div>
@@ -531,6 +580,13 @@
                             <div class="album">Forever Howlong</div>
                         </div>
                     </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://brasscamelband.bandcamp.com/album/camel">
+                        <img class="album-artwork" src="brass-camel.jpg" alt="Brass Camel - Camel" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">Brass Camel</div>
+                            <div class="album">Camel</div>
+                        </div>
+                    </a>
                     <a class="album-cover" href="#" data-bandcamp="https://hedvigmollestadtrio.bandcamp.com/album/bees-in-the-bonnet">
                         <img class="album-artwork" src="hedvig-mollestad.jpg" alt="Hedvig Mollestad Trio - Bees in the Bonnet" loading="lazy">
                         <div class="album-info">
@@ -545,22 +601,15 @@
                             <div class="album">Out There</div>
                         </div>
                     </a>
+                </div>
+            </div>
+            <div class="shelf">
+                <div class="albums" data-genre="prog">
                     <a class="album-cover" href="#" data-bandcamp="https://larsfredrikfroislie.bandcamp.com/album/gamle-mester">
                         <img class="album-artwork" src="gamle-mester.jpg" alt="Lars Fredrik Frøslie - Gamle Mester" loading="lazy">
                         <div class="album-info">
                             <div class="artist">Lars Fredrik Frøslie</div>
                             <div class="album">Gamle Mester</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="shelf">
-                <div class="albums" data-genre="prog">
-                    <a class="album-cover" href="#" data-bandcamp="https://brasscamelband.bandcamp.com/album/camel">
-                        <img class="album-artwork" src="brass-camel.jpg" alt="Brass Camel - Camel" loading="lazy">
-                        <div class="album-info">
-                            <div class="artist">Brass Camel</div>
-                            <div class="album">Camel</div>
                         </div>
                     </a>
                     <a class="album-cover" href="#" data-bandcamp="https://phantomspell.bandcamp.com/album/heather-hearth">
@@ -593,13 +642,6 @@
                             <div class="album">Is It Now?</div>
                         </div>
                     </a>
-                    <a class="album-cover" href="#" data-bandcamp="https://thedirtynil.bandcamp.com/album/the-lash">
-                        <img class="album-artwork" src="dirty-nil.jpg" alt="The Dirty Nil - The Lash" loading="lazy">
-                        <div class="album-info">
-                            <div class="artist">The Dirty Nil</div>
-                            <div class="album">The Lash</div>
-                        </div>
-                    </a>
                     <a class="album-cover" href="#" data-bandcamp="https://militariegun.bandcamp.com/album/god-save-the-gun">
                         <img class="album-artwork" src="god-save-the-gun.jpg" alt="Militarie Gun - God Save The Gun" loading="lazy">
                         <div class="album-info">
@@ -612,6 +654,13 @@
                         <div class="album-info">
                             <div class="artist">NewDad</div>
                             <div class="album">Altar</div>
+                        </div>
+                    </a>
+                    <a class="album-cover" href="#" data-bandcamp="https://thedirtynil.bandcamp.com/album/the-lash">
+                        <img class="album-artwork" src="dirty-nil.jpg" alt="The Dirty Nil - The Lash" loading="lazy">
+                        <div class="album-info">
+                            <div class="artist">The Dirty Nil</div>
+                            <div class="album">The Lash</div>
                         </div>
                     </a>
                 </div>
