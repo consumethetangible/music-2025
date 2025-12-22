@@ -414,6 +414,15 @@ app.put('/api/edit-album', async (req, res) => {
             const newGenreMatches = [...html.matchAll(newGenreRegex)];
 
             console.log(`Looking for genre: ${newGenre}`);
+            console.log(`Regex pattern: <div class="albums" data-genre="${newGenre}">`);
+
+            // Debug: Show the actual HTML around this genre
+            const genreIndex = html.indexOf(`data-genre="${newGenre}"`);
+            if (genreIndex !== -1) {
+                const snippet = html.substring(Math.max(0, genreIndex - 50), genreIndex + 100);
+                console.log('HTML snippet around genre:', snippet);
+            }
+
             console.log(`Found ${newGenreMatches.length} matches`);
 
             if (newGenreMatches.length === 0) {
