@@ -586,22 +586,26 @@
                 const response = await fetch('http://localhost:3000/api/list-albums');
                 const data = await response.json();
 
+                console.log('API Response:', data);
+
                 if (!response.ok) {
                     throw new Error(data.error || 'Failed to load albums');
                 }
 
                 allAlbums = data.albums;
+                console.log('Albums loaded:', allAlbums);
                 renderAlbums(data.albums);
 
             } catch (error) {
                 showMessage('manageMessage', error.message, 'error');
-                console.error('Error:', error);
+                console.error('Load albums error:', error);
             } finally {
                 showLoading('manageLoading', false);
             }
         }
 
         function renderAlbums(albumsByGenre) {
+            console.log('Rendering albums:', albumsByGenre);
             const container = document.getElementById('albumsList');
             container.innerHTML = '';
 
@@ -614,8 +618,17 @@
                 'archival': 'Archival / Reissues'
             };
 
+            let hasAlbums = false;
+
             Object.entries(albumsByGenre).forEach(([genre, albums]) => {
-                if (albums.length === 0) return;
+                console.log(`Genre ${genre}:`, albums);
+
+                if (!albums || albums.length === 0) {
+                    console.log(`Skipping empty genre: ${genre}`);
+                    return;
+                }
+
+                hasAlbums = true;
 
                 const section = document.createElement('div');
                 section.className = 'section-group';
@@ -646,6 +659,12 @@
                 section.appendChild(grid);
                 container.appendChild(section);
             });
+
+            if (!hasAlbums) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">No albums found</p>';
+            }
+
+            console.log('Rendering complete');
         }
 
         // Edit functionality
