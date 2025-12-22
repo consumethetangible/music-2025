@@ -406,6 +406,9 @@ app.put('/api/edit-album', async (req, res) => {
             const newGenreRegex = new RegExp(`<div class="albums" data-genre="${newGenre}">`, 'g');
             const newGenreMatches = [...html.matchAll(newGenreRegex)];
 
+            console.log(`Looking for genre: ${newGenre}`);
+            console.log(`Found ${newGenreMatches.length} matches`);
+
             if (newGenreMatches.length === 0) {
                 return res.status(404).json({ error: `Genre ${newGenre} not found` });
             }
