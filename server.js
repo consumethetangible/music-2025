@@ -248,15 +248,19 @@ app.get('/api/list-albums', async (req, res) => {
 
         genres.forEach(genre => {
             albums[genre] = [];
-            const genreRegex = new RegExp(`<div class="albums" data-genre="${genre}">([\\s\\S]*?)</div>\\s*</div>`, 'g');
-            let match;
 
-            while ((match = genreRegex.exec(html)) !== null) {
-                const albumsHTML = match[1];
-                const albumRegex = /<a class="album-cover"[\s\S]*?href="#"[\s\S]*?data-bandcamp="([^"]*)"[\s\S]*?<img class="album-artwork" src="([^"]*)"[\s\S]*?<div class="artist">([^<]*)<\/div>[\s\S]*?<div class="album">([^<]*)<\/div>/g;
+            // Find all shelves for this genre
+            const shelfRegex = new RegExp(`<div class="albums" data-genre="${genre}">[\\s\\S]*?</div>\\s*</div>`, 'g');
+            let shelfMatch;
+
+            while ((shelfMatch = shelfRegex.exec(html)) !== null) {
+                const shelfHTML = shelfMatch[0];
+
+                // Extract albums from this shelf - simpler pattern
+                const albumRegex = /<a class="album-cover"[^>]*?data-bandcamp="([^"]*)"[^>]*?>[\s\S]*?src="([^"]*)"[\s\S]*?<div class="artist">([^<]*)<\/div>[\s\S]*?<div class="album">([^<]*)<\/div>[\s\S]*?<\/a>/g;
 
                 let albumMatch;
-                while ((albumMatch = albumRegex.exec(albumsHTML)) !== null) {
+                while ((albumMatch = albumRegex.exec(shelfHTML)) !== null) {
                     albums[genre].push({
                         bandcampUrl: albumMatch[1],
                         artwork: albumMatch[2],
