@@ -355,16 +355,26 @@ app.put('/api/edit-album', async (req, res) => {
                 let albumEndSearch = albumStart;
                 let aDepth = 1;
                 while (aDepth > 0 && albumEndSearch < html.length) {
-                    if (html.substring(albumEndSearch, albumEndSearch + 2) === '<a') {
+                    const char = html[albumEndSearch];
+
+                    // Check for opening <a tag (must be followed by space or >)
+                    if (html.substring(albumEndSearch, albumEndSearch + 3) === '<a ' ||
+                        html.substring(albumEndSearch, albumEndSearch + 3) === '<a>') {
                         aDepth++;
-                    } else if (html.substring(albumEndSearch, albumEndSearch + 4) === '</a>') {
+                        albumEndSearch += 3;
+                    }
+                    // Check for closing </a> tag
+                    else if (html.substring(albumEndSearch, albumEndSearch + 4) === '</a>') {
                         aDepth--;
                         if (aDepth === 0) {
                             albumEndSearch += 4;
                             break;
                         }
+                        albumEndSearch += 4;
                     }
-                    albumEndSearch++;
+                    else {
+                        albumEndSearch++;
+                    }
                 }
 
                 allMatches.push({
