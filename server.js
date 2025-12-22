@@ -112,7 +112,7 @@ app.post('/api/download-artwork', async (req, res) => {
     }
 });
 
-// API endpoint to add album to index-new.html
+// API endpoint to add album to index.html
 app.post('/api/add-album', async (req, res) => {
     try {
         const { artist, album, bandcampUrl, genre, jpgFilename, webpFilename } = req.body;
@@ -143,8 +143,8 @@ app.post('/api/add-album', async (req, res) => {
             return res.status(400).json({ error: 'Invalid genre' });
         }
 
-        // Read index-new.html
-        const indexPath = path.join(__dirname, 'index-new.html');
+        // Read index.html
+        const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
         // Create the album entry (new shelf format)
@@ -233,14 +233,14 @@ ${albumEntry}
 
     } catch (error) {
         console.error('Add album error:', error);
-        res.status(500).json({ error: 'Failed to add album to index-new.html' });
+        res.status(500).json({ error: 'Failed to add album to index.html' });
     }
 });
 
 // API endpoint to list all albums
 app.get('/api/list-albums', async (req, res) => {
     try {
-        const indexPath = path.join(__dirname, 'index-new.html');
+        const indexPath = path.join(__dirname, 'index.html');
         const html = await fs.readFile(indexPath, 'utf-8');
 
         const genres = ['metal', 'stoner-psych', 'prog', 'rock-pop', 'alternative', 'archival'];
@@ -316,7 +316,7 @@ app.get('/api/list-albums', async (req, res) => {
 app.put('/api/edit-album', async (req, res) => {
     try {
         const { artist, album, bandcampUrl, currentGenre, newGenre, index } = req.body;
-        const indexPath = path.join(__dirname, 'index-new.html');
+        const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
         // Find all albums in the current genre using the SAME method as list endpoint
@@ -459,7 +459,7 @@ app.put('/api/edit-album', async (req, res) => {
 app.delete('/api/delete-album', async (req, res) => {
     try {
         const { genre, index } = req.body;
-        const indexPath = path.join(__dirname, 'index-new.html');
+        const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
         // Find all albums in the genre
