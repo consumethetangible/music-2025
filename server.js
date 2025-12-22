@@ -319,6 +319,13 @@ app.put('/api/edit-album', async (req, res) => {
         const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
+        // Debug: Check if new genres exist in HTML
+        console.log('Checking for new genres in HTML:');
+        console.log('  live-albums:', html.includes('data-genre="live-albums"'));
+        console.log('  pop-soul-rb:', html.includes('data-genre="pop-soul-rb"'));
+        console.log('  rock-roll:', html.includes('data-genre="rock-roll"'));
+        console.log('  alternative-other:', html.includes('data-genre="alternative-other"'));
+
         // Find all albums in the current genre using the SAME method as list endpoint
         const containerRegex = new RegExp(`<div class="albums" data-genre="${currentGenre}">`, 'g');
         let containerMatch;
