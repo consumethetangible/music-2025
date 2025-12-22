@@ -237,6 +237,208 @@ ${albumEntry}
     }
 });
 
+// API endpoint to list all albums
+app.get('/api/list-albums', async (req, res) => {
+    try {
+        const indexPath = path.join(__dirname, 'index-new.html');
+        const html = await fs.readFile(indexPath, 'utf-8');
+
+        const genres = ['metal', 'stoner-psych', 'prog', 'rock-pop', 'alternative', 'archival'];
+        const albums = {};
+
+        genres.forEach(genre => {
+            albums[genre] = [];
+            const genreRegex = new RegExp(`<div class="albums" data-genre="${genre}">([\\s\\S]*?)</div>\\s*</div>`, 'g');
+            let match;
+
+            while ((match = genreRegex.exec(html)) !== null) {
+                const albumsHTML = match[1];
+                const albumRegex = /<a class="album-cover"[\s\S]*?href="#"[\s\S]*?data-bandcamp="([^"]*)"[\s\S]*?<img class="album-artwork" src="([^"]*)"[\s\S]*?<div class="artist">([^<]*)<\/div>[\s\S]*?<div class="album">([^<]*)<\/div>/g;
+
+                let albumMatch;
+                while ((albumMatch = albumRegex.exec(albumsHTML)) !== null) {
+                    albums[genre].push({
+                        bandcampUrl: albumMatch[1],
+                        artwork: albumMatch[2],
+                        artist: albumMatch[3],
+                        album: albumMatch[4]
+                    });
+                }
+            }
+        });
+
+        res.json({ albums });
+
+    } catch (error) {
+        console.error('List albums error:', error);
+        res.status(500).json({ error: 'Failed to list albums' });
+    }
+});
+
+// API endpoint to edit album
+app.put('/api/edit-album', async (req, res) => {
+    try {
+        const { artist, album, bandcampUrl, currentGenre, newGenre, index } = req.body;
+        const indexPath = path.join(__dirname, 'index-new.html');
+        let html = await fs.readFile(indexPath, 'utf-8');
+
+        // Find all albums in the current genre
+        const genreRegex = new RegExp(`(<div class="albums" data-genre="${currentGenre}">)([\\s\\S]*?)(</div>\\s*</div>)`, 'g');
+        const albumRegex = /<a class="album-cover"[\s\S]*?<\/a>/g;
+
+        let genreMatch;
+        let allMatches = [];
+
+        while ((genreMatch = genreRegex.exec(html)) !== null) {
+            let albumMatch;
+            let startPos = genreMatch.index + genreMatch[1].length;
+            let albumsHTML = genreMatch[2];
+
+            while ((albumMatch = albumRegex.exec(albumsHTML)) !== null) {
+                allMatches.push({
+                    fullMatch: albumMatch[0],
+                    position: startPos + albumMatch.index,
+                    length: albumMatch[0].length
+                });
+            }
+        }
+
+        if (index >= allMatches.length) {
+            return res.status(404).json({ error: 'Album not found at specified index' });
+        }
+
+        const targetAlbum = allMatches[index];
+        const oldAlbumHTML = targetAlbum.fullMatch;
+
+        // Create updated album HTML
+        const artistMatch = oldAlbumHTML.match(/<div class="artist">([^<]*)<\/div>/);
+        const albumMatch = oldAlbumHTML.match(/<div class="album">([^<]*)<\/div>/);
+        const artworkMatch = oldAlbumHTML.match(/src="([^"]*)"/);
+
+        if (!artistMatch || !albumMatch || !artworkMatch) {
+            return res.status(400).json({ error: 'Could not parse album HTML' });
+        }
+
+        let newAlbumHTML = oldAlbumHTML.replace(artistMatch[1], artist);
+        newAlbumHTML = newAlbumHTML.replace(albumMatch[1], album);
+        newAlbumHTML = newAlbumHTML.replace(/data-bandcamp="[^"]*"/, `data-bandcamp="${bandcampUrl}"`);
+        newAlbumHTML = newAlbumHTML.replace(/alt="[^"]*"/, `alt="${artist} - ${album}"`);
+
+        // If moving to a different genre, remove from current and add to new
+        if (newGenre && newGenre !== currentGenre) {
+            // Remove from current genre
+            html = html.slice(0, targetAlbum.position) + html.slice(targetAlbum.position + targetAlbum.length);
+
+            // Add to new genre (at the end of last shelf)
+            const newGenreRegex = new RegExp(`<div class="albums" data-genre="${newGenre}">`, 'g');
+            const newGenreMatches = [...html.matchAll(newGenreRegex)];
+
+            if (newGenreMatches.length === 0) {
+                return res.status(404).json({ error: `Genre ${newGenre} not found` });
+            }
+
+            const lastMatch = newGenreMatches[newGenreMatches.length - 1];
+            let searchPos = lastMatch.index + lastMatch[0].length;
+            let depth = 1;
+            let lastAlbumsEnd = -1;
+
+            while (depth > 0 && searchPos < html.length) {
+                const nextOpen = html.indexOf('<div', searchPos);
+                const nextClose = html.indexOf('</div>', searchPos);
+
+                if (nextClose === -1) break;
+
+                if (nextOpen !== -1 && nextOpen < nextClose) {
+                    depth++;
+                    searchPos = nextOpen + 4;
+                } else {
+                    depth--;
+                    if (depth === 0) {
+                        lastAlbumsEnd = nextClose;
+                    }
+                    searchPos = nextClose + 6;
+                }
+            }
+
+            // Update data-genre attribute in the album HTML
+            newAlbumHTML = newAlbumHTML.replace(/data-genre="[^"]*"/, `data-genre="${newGenre}"`);
+
+            html = html.slice(0, lastAlbumsEnd) + '\n                    ' + newAlbumHTML + '\n                ' + html.slice(lastAlbumsEnd);
+        } else {
+            // Just update in place
+            html = html.slice(0, targetAlbum.position) + newAlbumHTML + html.slice(targetAlbum.position + targetAlbum.length);
+        }
+
+        await fs.writeFile(indexPath, html, 'utf-8');
+
+        res.json({
+            success: true,
+            message: `Updated ${artist} - ${album}`
+        });
+
+    } catch (error) {
+        console.error('Edit album error:', error);
+        res.status(500).json({ error: 'Failed to edit album' });
+    }
+});
+
+// API endpoint to delete album
+app.delete('/api/delete-album', async (req, res) => {
+    try {
+        const { genre, index } = req.body;
+        const indexPath = path.join(__dirname, 'index-new.html');
+        let html = await fs.readFile(indexPath, 'utf-8');
+
+        // Find all albums in the genre
+        const genreRegex = new RegExp(`(<div class="albums" data-genre="${genre}">)([\\s\\S]*?)(</div>\\s*</div>)`, 'g');
+        const albumRegex = /<a class="album-cover"[\s\S]*?<\/a>/g;
+
+        let genreMatch;
+        let allMatches = [];
+
+        while ((genreMatch = genreRegex.exec(html)) !== null) {
+            let albumMatch;
+            let startPos = genreMatch.index + genreMatch[1].length;
+            let albumsHTML = genreMatch[2];
+
+            while ((albumMatch = albumRegex.exec(albumsHTML)) !== null) {
+                allMatches.push({
+                    fullMatch: albumMatch[0],
+                    position: startPos + albumMatch.index,
+                    length: albumMatch[0].length
+                });
+            }
+        }
+
+        if (index >= allMatches.length) {
+            return res.status(404).json({ error: 'Album not found at specified index' });
+        }
+
+        const targetAlbum = allMatches[index];
+
+        // Extract artist and album name for response message
+        const artistMatch = targetAlbum.fullMatch.match(/<div class="artist">([^<]*)<\/div>/);
+        const albumMatch = targetAlbum.fullMatch.match(/<div class="album">([^<]*)<\/div>/);
+
+        const artistName = artistMatch ? artistMatch[1] : 'Unknown';
+        const albumName = albumMatch ? albumMatch[1] : 'Unknown';
+
+        // Remove the album HTML
+        html = html.slice(0, targetAlbum.position) + html.slice(targetAlbum.position + targetAlbum.length);
+
+        await fs.writeFile(indexPath, html, 'utf-8');
+
+        res.json({
+            success: true,
+            message: `Deleted ${artistName} - ${albumName}`
+        });
+
+    } catch (error) {
+        console.error('Delete album error:', error);
+        res.status(500).json({ error: 'Failed to delete album' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Admin server running at http://localhost:${PORT}`);
     console.log(`Visit http://localhost:${PORT}/admin to add albums`);
