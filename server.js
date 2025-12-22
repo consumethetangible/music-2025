@@ -249,46 +249,49 @@ app.get('/api/list-albums', async (req, res) => {
         genres.forEach(genre => {
             albums[genre] = [];
 
-            // Simple approach: find all album blocks in this genre
-            // Split the HTML by album-cover anchors and look for the data-genre attribute
-            const anchorRegex = /<a class="album-cover"/g;
-            let match;
-            let positions = [];
+            // Find all <div class="albums" data-genre="${genre}"> containers
+            const containerRegex = new RegExp(`<div class="albums" data-genre="${genre}">`, 'g');
+            let containerMatch;
 
-            // Find all album-cover positions
-            while ((match = anchorRegex.exec(html)) !== null) {
-                positions.push(match.index);
-            }
+            while ((containerMatch = containerRegex.exec(html)) !== null) {
+                const containerStart = containerMatch.index + containerMatch[0].length;
 
-            // Check each album block
-            for (let i = 0; i < positions.length; i++) {
-                const start = positions[i];
-                const end = i < positions.length - 1 ? positions[i + 1] : html.length;
-                const block = html.substring(start, Math.min(end, start + 1000)); // Limit block size
-
-                // Check if this block belongs to our genre
-                const genreCheck = block.indexOf(`data-genre="${genre}"`);
-                if (genreCheck === -1 || genreCheck > 500) {
-                    // Look backwards from album start to see if genre is nearby
-                    const beforeBlock = html.substring(Math.max(0, start - 200), start);
-                    if (beforeBlock.indexOf(`data-genre="${genre}"`) === -1) {
-                        continue;
+                // Find the closing </div> using depth tracking
+                let depth = 1;
+                let pos = containerStart;
+                while (depth > 0 && pos < html.length) {
+                    if (html.substring(pos, pos + 5) === '<div ') {
+                        depth++;
+                    } else if (html.substring(pos, pos + 6) === '</div>') {
+                        depth--;
                     }
+                    if (depth === 0) break;
+                    pos++;
                 }
 
-                // Extract album data
-                const bandcampMatch = block.match(/data-bandcamp="([^"]*)"/);
-                const srcMatch = block.match(/src="([^"]*)"/);
-                const artistMatch = block.match(/<div class="artist">([^<]*)<\/div>/);
-                const albumMatch = block.match(/<div class="album">([^<]*)<\/div>/);
+                const containerContent = html.substring(containerStart, pos);
 
-                if (bandcampMatch && srcMatch && artistMatch && albumMatch) {
-                    albums[genre].push({
-                        bandcampUrl: bandcampMatch[1],
-                        artwork: srcMatch[1],
-                        artist: artistMatch[1],
-                        album: albumMatch[1]
-                    });
+                // Now extract ALL albums from this container
+                const albumRegex = /<a class="album-cover"[\s\S]*?<\/a>/g;
+                let albumMatch;
+
+                while ((albumMatch = albumRegex.exec(containerContent)) !== null) {
+                    const albumHTML = albumMatch[0];
+
+                    // Extract album data
+                    const bandcampMatch = albumHTML.match(/data-bandcamp="([^"]*)"/);
+                    const srcMatch = albumHTML.match(/src="([^"]*)"/);
+                    const artistMatch = albumHTML.match(/<div class="artist">([^<]*)<\/div>/);
+                    const albumTitleMatch = albumHTML.match(/<div class="album">([^<]*)<\/div>/);
+
+                    if (bandcampMatch && srcMatch && artistMatch && albumTitleMatch) {
+                        albums[genre].push({
+                            bandcampUrl: bandcampMatch[1],
+                            artwork: srcMatch[1],
+                            artist: artistMatch[1],
+                            album: albumTitleMatch[1]
+                        });
+                    }
                 }
             }
         });
