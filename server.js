@@ -249,23 +249,45 @@ app.get('/api/list-albums', async (req, res) => {
         genres.forEach(genre => {
             albums[genre] = [];
 
-            // Find all shelves for this genre
-            const shelfRegex = new RegExp(`<div class="albums" data-genre="${genre}">[\\s\\S]*?</div>\\s*</div>`, 'g');
-            let shelfMatch;
+            // Simple approach: find all album blocks in this genre
+            // Split the HTML by album-cover anchors and look for the data-genre attribute
+            const anchorRegex = /<a class="album-cover"/g;
+            let match;
+            let positions = [];
 
-            while ((shelfMatch = shelfRegex.exec(html)) !== null) {
-                const shelfHTML = shelfMatch[0];
+            // Find all album-cover positions
+            while ((match = anchorRegex.exec(html)) !== null) {
+                positions.push(match.index);
+            }
 
-                // Extract albums from this shelf - simpler pattern
-                const albumRegex = /<a class="album-cover"[^>]*?data-bandcamp="([^"]*)"[^>]*?>[\s\S]*?src="([^"]*)"[\s\S]*?<div class="artist">([^<]*)<\/div>[\s\S]*?<div class="album">([^<]*)<\/div>[\s\S]*?<\/a>/g;
+            // Check each album block
+            for (let i = 0; i < positions.length; i++) {
+                const start = positions[i];
+                const end = i < positions.length - 1 ? positions[i + 1] : html.length;
+                const block = html.substring(start, Math.min(end, start + 1000)); // Limit block size
 
-                let albumMatch;
-                while ((albumMatch = albumRegex.exec(shelfHTML)) !== null) {
+                // Check if this block belongs to our genre
+                const genreCheck = block.indexOf(`data-genre="${genre}"`);
+                if (genreCheck === -1 || genreCheck > 500) {
+                    // Look backwards from album start to see if genre is nearby
+                    const beforeBlock = html.substring(Math.max(0, start - 200), start);
+                    if (beforeBlock.indexOf(`data-genre="${genre}"`) === -1) {
+                        continue;
+                    }
+                }
+
+                // Extract album data
+                const bandcampMatch = block.match(/data-bandcamp="([^"]*)"/);
+                const srcMatch = block.match(/src="([^"]*)"/);
+                const artistMatch = block.match(/<div class="artist">([^<]*)<\/div>/);
+                const albumMatch = block.match(/<div class="album">([^<]*)<\/div>/);
+
+                if (bandcampMatch && srcMatch && artistMatch && albumMatch) {
                     albums[genre].push({
-                        bandcampUrl: albumMatch[1],
-                        artwork: albumMatch[2],
-                        artist: albumMatch[3],
-                        album: albumMatch[4]
+                        bandcampUrl: bandcampMatch[1],
+                        artwork: srcMatch[1],
+                        artist: artistMatch[1],
+                        album: albumMatch[1]
                     });
                 }
             }
