@@ -4,6 +4,11 @@ const path = require('path');
 const htmlPath = path.join(__dirname, 'index-new.html');
 let html = fs.readFileSync(htmlPath, 'utf8');
 
+// Helper function to get sortable artist name (strips "The " from beginning)
+function getSortKey(artistName) {
+    return artistName.replace(/^The\s+/i, '').trim();
+}
+
 // Define sections to process
 const sections = [
     { name: 'Metal', dataGenre: 'metal' },
@@ -49,8 +54,8 @@ sections.forEach(section => {
 
     if (albums.length === 0) return;
 
-    // Sort alphabetically by artist
-    albums.sort((a, b) => a.artist.localeCompare(b.artist));
+    // Sort alphabetically by artist (ignoring "The" at the start)
+    albums.sort((a, b) => getSortKey(a.artist).localeCompare(getSortKey(b.artist)));
 
     console.log(`  Sorted order: ${albums.map(a => a.artist).join(', ')}`);
 
