@@ -402,7 +402,14 @@ app.put('/api/edit-album', async (req, res) => {
         // If moving to a different genre, remove from current and add to new
         if (newGenre && newGenre !== currentGenre) {
             // Remove from current genre
+            console.log(`Removing album at position ${targetAlbum.position}, length ${targetAlbum.length}`);
+            console.log(`HTML length before removal: ${html.length}`);
             html = html.slice(0, targetAlbum.position) + html.slice(targetAlbum.position + targetAlbum.length);
+            console.log(`HTML length after removal: ${html.length}`);
+
+            // Check if target genre still exists after removal
+            const genreStillExists = html.includes(`data-genre="${newGenre}"`);
+            console.log(`Genre ${newGenre} still exists after removal: ${genreStillExists}`);
 
             // Add to new genre (at the end of last shelf) - simpler string-based approach
             // Find all occurrences of this genre's containers
