@@ -319,23 +319,59 @@ app.put('/api/edit-album', async (req, res) => {
         const indexPath = path.join(__dirname, 'index-new.html');
         let html = await fs.readFile(indexPath, 'utf-8');
 
-        // Find all albums in the current genre
-        const genreRegex = new RegExp(`(<div class="albums" data-genre="${currentGenre}">)([\\s\\S]*?)(</div>\\s*</div>)`, 'g');
-        const albumRegex = /<a class="album-cover"[\s\S]*?<\/a>/g;
-
-        let genreMatch;
+        // Find all albums in the current genre using the SAME method as list endpoint
+        const containerRegex = new RegExp(`<div class="albums" data-genre="${currentGenre}">`, 'g');
+        let containerMatch;
         let allMatches = [];
 
-        while ((genreMatch = genreRegex.exec(html)) !== null) {
-            let albumMatch;
-            let startPos = genreMatch.index + genreMatch[1].length;
-            let albumsHTML = genreMatch[2];
+        while ((containerMatch = containerRegex.exec(html)) !== null) {
+            const containerStart = containerMatch.index + containerMatch[0].length;
 
-            while ((albumMatch = albumRegex.exec(albumsHTML)) !== null) {
+            // Find the closing </div> using depth tracking
+            let depth = 1;
+            let pos = containerStart;
+            while (depth > 0 && pos < html.length) {
+                if (html.substring(pos, pos + 5) === '<div ' || html.substring(pos, pos + 5) === '<div>') {
+                    depth++;
+                } else if (html.substring(pos, pos + 6) === '</div>') {
+                    depth--;
+                }
+                if (depth === 0) break;
+                pos++;
+            }
+
+            const containerContent = html.substring(containerStart, pos);
+
+            // Split by album-cover anchor tags to get each album
+            const albumParts = containerContent.split('<a class="album-cover"');
+
+            // Skip first part (it's before the first album)
+            for (let i = 1; i < albumParts.length; i++) {
+                const albumHTML = '<a class="album-cover"' + albumParts[i];
+
+                // Find where this album starts in the full HTML
+                const albumStart = containerMatch.index + containerMatch[0].length + containerContent.indexOf('<a class="album-cover"' + albumParts[i]);
+
+                // Find the end of the album (find the closing </a>)
+                let albumEndSearch = albumStart;
+                let aDepth = 1;
+                while (aDepth > 0 && albumEndSearch < html.length) {
+                    if (html.substring(albumEndSearch, albumEndSearch + 2) === '<a') {
+                        aDepth++;
+                    } else if (html.substring(albumEndSearch, albumEndSearch + 4) === '</a>') {
+                        aDepth--;
+                        if (aDepth === 0) {
+                            albumEndSearch += 4;
+                            break;
+                        }
+                    }
+                    albumEndSearch++;
+                }
+
                 allMatches.push({
-                    fullMatch: albumMatch[0],
-                    position: startPos + albumMatch.index,
-                    length: albumMatch[0].length
+                    fullMatch: html.substring(albumStart, albumEndSearch),
+                    position: albumStart,
+                    length: albumEndSearch - albumStart
                 });
             }
         }
