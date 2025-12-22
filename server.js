@@ -243,7 +243,7 @@ app.get('/api/list-albums', async (req, res) => {
         const indexPath = path.join(__dirname, 'index.html');
         const html = await fs.readFile(indexPath, 'utf-8');
 
-        const genres = ['metal', 'stoner-psych', 'prog', 'rock-pop', 'alternative', 'archival'];
+        const genres = ['metal', 'stoner-psych', 'prog', 'rock-roll', 'alternative-other', 'live-albums', 'pop-soul-rb'];
         const albums = {};
 
         genres.forEach(genre => {
