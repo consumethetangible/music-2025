@@ -272,11 +272,9 @@ app.get('/api/list-albums', async (req, res) => {
                 }
 
                 const containerContent = html.substring(containerStart, pos);
-                console.log(`Genre ${genre}, container ${containerCount}: content length = ${containerContent.length}`);
 
                 // Split by album-cover anchor tags to get each album
                 const albumParts = containerContent.split('<a class="album-cover"');
-                console.log(`  Split into ${albumParts.length} parts`);
                 let albumsInContainer = 0;
 
                 // Skip first part (it's before the first album)
@@ -299,9 +297,7 @@ app.get('/api/list-albums', async (req, res) => {
                         });
                     }
                 }
-                console.log(`  Found ${albumsInContainer} albums in this container`);
             }
-            console.log(`Total for ${genre}: ${albums[genre].length} albums from ${containerCount} containers`);
         });
 
         res.json({ albums });
@@ -318,13 +314,6 @@ app.put('/api/edit-album', async (req, res) => {
         const { artist, album, bandcampUrl, currentGenre, newGenre, index } = req.body;
         const indexPath = path.join(__dirname, 'index.html');
         let html = await fs.readFile(indexPath, 'utf-8');
-
-        // Debug: Check if new genres exist in HTML
-        console.log('Checking for new genres in HTML:');
-        console.log('  live-albums:', html.includes('data-genre="live-albums"'));
-        console.log('  pop-soul-rb:', html.includes('data-genre="pop-soul-rb"'));
-        console.log('  rock-roll:', html.includes('data-genre="rock-roll"'));
-        console.log('  alternative-other:', html.includes('data-genre="alternative-other"'));
 
         // Find all albums in the current genre using the SAME method as list endpoint
         const containerRegex = new RegExp(`<div class="albums" data-genre="${currentGenre}">`, 'g');
@@ -414,8 +403,6 @@ app.put('/api/edit-album', async (req, res) => {
             html = html.slice(0, targetAlbum.position) + html.slice(targetAlbum.position + targetAlbum.length);
 
             // Add to new genre (at the end of last shelf) - simpler string-based approach
-            console.log(`Looking for genre: ${newGenre}`);
-
             // Find all occurrences of this genre's containers
             const searchString = `data-genre="${newGenre}"`;
             let genrePositions = [];
@@ -425,8 +412,6 @@ app.put('/api/edit-album', async (req, res) => {
                 genrePositions.push(searchIndex);
                 searchIndex += searchString.length;
             }
-
-            console.log(`Found ${genrePositions.length} containers for genre ${newGenre}`);
 
             if (genrePositions.length === 0) {
                 return res.status(404).json({ error: `Genre ${newGenre} not found` });
