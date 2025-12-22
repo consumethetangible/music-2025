@@ -252,15 +252,17 @@ app.get('/api/list-albums', async (req, res) => {
             // Find all <div class="albums" data-genre="${genre}"> containers
             const containerRegex = new RegExp(`<div class="albums" data-genre="${genre}">`, 'g');
             let containerMatch;
+            let containerCount = 0;
 
             while ((containerMatch = containerRegex.exec(html)) !== null) {
+                containerCount++;
                 const containerStart = containerMatch.index + containerMatch[0].length;
 
                 // Find the closing </div> using depth tracking
                 let depth = 1;
                 let pos = containerStart;
                 while (depth > 0 && pos < html.length) {
-                    if (html.substring(pos, pos + 5) === '<div ') {
+                    if (html.substring(pos, pos + 5) === '<div ' || html.substring(pos, pos + 5) === '<div>') {
                         depth++;
                     } else if (html.substring(pos, pos + 6) === '</div>') {
                         depth--;
@@ -270,10 +272,12 @@ app.get('/api/list-albums', async (req, res) => {
                 }
 
                 const containerContent = html.substring(containerStart, pos);
+                console.log(`Genre ${genre}, container ${containerCount}: content length = ${containerContent.length}`);
 
                 // Now extract ALL albums from this container
                 const albumRegex = /<a class="album-cover"[\s\S]*?<\/a>/g;
                 let albumMatch;
+                let albumsInContainer = 0;
 
                 while ((albumMatch = albumRegex.exec(containerContent)) !== null) {
                     const albumHTML = albumMatch[0];
@@ -285,6 +289,7 @@ app.get('/api/list-albums', async (req, res) => {
                     const albumTitleMatch = albumHTML.match(/<div class="album">([^<]*)<\/div>/);
 
                     if (bandcampMatch && srcMatch && artistMatch && albumTitleMatch) {
+                        albumsInContainer++;
                         albums[genre].push({
                             bandcampUrl: bandcampMatch[1],
                             artwork: srcMatch[1],
@@ -293,7 +298,9 @@ app.get('/api/list-albums', async (req, res) => {
                         });
                     }
                 }
+                console.log(`  Found ${albumsInContainer} albums in this container`);
             }
+            console.log(`Total for ${genre}: ${albums[genre].length} albums from ${containerCount} containers`);
         });
 
         res.json({ albums });
