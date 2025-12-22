@@ -413,28 +413,37 @@ app.put('/api/edit-album', async (req, res) => {
             // Remove from current genre
             html = html.slice(0, targetAlbum.position) + html.slice(targetAlbum.position + targetAlbum.length);
 
-            // Add to new genre (at the end of last shelf)
-            const newGenreRegex = new RegExp(`<div class="albums" data-genre="${newGenre}">`, 'g');
-            const newGenreMatches = [...html.matchAll(newGenreRegex)];
-
+            // Add to new genre (at the end of last shelf) - simpler string-based approach
             console.log(`Looking for genre: ${newGenre}`);
-            console.log(`Regex pattern: <div class="albums" data-genre="${newGenre}">`);
 
-            // Debug: Show the actual HTML around this genre
-            const genreIndex = html.indexOf(`data-genre="${newGenre}"`);
-            if (genreIndex !== -1) {
-                const snippet = html.substring(Math.max(0, genreIndex - 50), genreIndex + 100);
-                console.log('HTML snippet around genre:', snippet);
+            // Find all occurrences of this genre's containers
+            const searchString = `data-genre="${newGenre}"`;
+            let genrePositions = [];
+            let searchIndex = 0;
+
+            while ((searchIndex = html.indexOf(searchString, searchIndex)) !== -1) {
+                genrePositions.push(searchIndex);
+                searchIndex += searchString.length;
             }
 
-            console.log(`Found ${newGenreMatches.length} matches`);
+            console.log(`Found ${genrePositions.length} containers for genre ${newGenre}`);
 
-            if (newGenreMatches.length === 0) {
+            if (genrePositions.length === 0) {
                 return res.status(404).json({ error: `Genre ${newGenre} not found` });
             }
 
-            const lastMatch = newGenreMatches[newGenreMatches.length - 1];
-            let searchPos = lastMatch.index + lastMatch[0].length;
+            // Use the last container found
+            const lastGenrePos = genrePositions[genrePositions.length - 1];
+
+            // Find the opening tag start (search backwards for <div)
+            let tagStart = lastGenrePos;
+            while (tagStart > 0 && html.substring(tagStart - 5, tagStart) !== '<div ') {
+                tagStart--;
+            }
+            tagStart -= 5;
+
+            // Find the closing > of the opening tag
+            let searchPos = html.indexOf('>', lastGenrePos) + 1;
             let depth = 1;
             let lastAlbumsEnd = -1;
 
