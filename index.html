@@ -22,6 +22,10 @@
                 /* Subtle texture */
                 repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(101, 67, 33, .05) 3px, rgba(101, 67, 33, .05) 4px),
                 repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(101, 67, 33, .05) 3px, rgba(101, 67, 33, .05) 4px),
+                /* Spotlight effects for depth */
+                radial-gradient(ellipse at 20% 30%, rgba(139, 90, 43, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(139, 90, 43, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
                 /* Warm record store atmosphere */
                 linear-gradient(180deg, #2a1f1a 0%, #1a120e 50%, #0f0a08 100%);
             font-family: 'Inter', sans-serif;
@@ -34,7 +38,13 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(20, 15, 12, 0.90);
+            background:
+                /* Pegboard holes */
+                radial-gradient(circle at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 2px, transparent 3px, transparent 100%),
+                /* Pegboard base color */
+                rgba(20, 15, 12, 0.90);
+            background-size: 25px 25px, 100% 100%;
+            background-position: 0 0, 0 0;
             border-radius: 20px;
             padding: 60px 50px;
             box-shadow:
