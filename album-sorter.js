@@ -10,12 +10,12 @@ function getSortKey(artistName) {
 const sections = [
     { name: 'Metal', dataGenre: 'metal' },
     { name: 'Stoner & Psych', dataGenre: 'stoner-psych' },
-    { name: 'Prog', dataGenre: 'prog' },
+    { name: 'Progressive Rock', dataGenre: 'prog' },
     { name: 'Rock & Roll', dataGenre: 'rock-roll' },
     { name: 'Alternative/Other', dataGenre: 'alternative-other' },
-    { name: 'Live Albums', dataGenre: 'live-albums' },
-    { name: 'Pop, Soul, R&B', dataGenre: 'pop-soul-rb' },
-    { name: 'Jazz/Fusion', dataGenre: 'jazz-fusion' }
+    { name: 'Soul, Pop, Hip-Hop, R&B', dataGenre: 'pop-soul-rb' },
+    { name: 'Jazz/Fusion', dataGenre: 'jazz-fusion' },
+    { name: 'Live Albums', dataGenre: 'live-albums' }
 ];
 
 /**

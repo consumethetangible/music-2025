@@ -134,11 +134,11 @@ app.post('/api/add-album', async (req, res) => {
         const genreNameMap = {
             'metal': 'Metal',
             'stoner-psych': 'Stoner & Psych',
-            'prog': 'Prog',
+            'prog': 'Progressive Rock',
             'rock-roll': 'Rock & Roll',
             'alternative-other': 'Alternative/Other',
             'live-albums': 'Live Albums',
-            'pop-soul-rb': 'Pop, Soul, R&B',
+            'pop-soul-rb': 'Soul, Pop, Hip-Hop, R&B',
             'jazz-fusion': 'Jazz/Fusion'
         };
 
