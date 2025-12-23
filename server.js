@@ -6,6 +6,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const path = require('path');
+const { sortAndRedistributeAlbums } = require('./album-sorter');
 
 const app = express();
 const PORT = 3000;
@@ -228,9 +229,12 @@ ${albumEntry}
         // Write the updated HTML back
         await fs.writeFile(indexPath, html, 'utf-8');
 
-        res.json({ 
-            success: true, 
-            message: `Added ${artist} - ${album} to ${genre} section` 
+        // Automatically sort and redistribute albums
+        sortAndRedistributeAlbums(indexPath, false);
+
+        res.json({
+            success: true,
+            message: `Added ${artist} - ${album} to ${genre} section (sorted alphabetically)`
         });
 
     } catch (error) {
