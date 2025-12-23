@@ -14,7 +14,8 @@ const sections = [
     { name: 'Rock & Roll', dataGenre: 'rock-roll' },
     { name: 'Alternative/Other', dataGenre: 'alternative-other' },
     { name: 'Live Albums', dataGenre: 'live-albums' },
-    { name: 'Pop, Soul, R&B', dataGenre: 'pop-soul-rb' }
+    { name: 'Pop, Soul, R&B', dataGenre: 'pop-soul-rb' },
+    { name: 'Jazz/Fusion', dataGenre: 'jazz-fusion' }
 ];
 
 /**

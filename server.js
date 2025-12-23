@@ -126,7 +126,8 @@ app.post('/api/add-album', async (req, res) => {
             'rock-roll': 'rock-roll',
             'alternative-other': 'alternative-other',
             'live-albums': 'live-albums',
-            'pop-soul-rb': 'pop-soul-rb'
+            'pop-soul-rb': 'pop-soul-rb',
+            'jazz-fusion': 'jazz-fusion'
         };
 
         // Map genre to section name (for HTML comments)
@@ -137,7 +138,8 @@ app.post('/api/add-album', async (req, res) => {
             'rock-roll': 'Rock & Roll',
             'alternative-other': 'Alternative/Other',
             'live-albums': 'Live Albums',
-            'pop-soul-rb': 'Pop, Soul, R&B'
+            'pop-soul-rb': 'Pop, Soul, R&B',
+            'jazz-fusion': 'Jazz/Fusion'
         };
 
         const genreClass = genreMap[genre];
@@ -249,7 +251,7 @@ app.get('/api/list-albums', async (req, res) => {
         const indexPath = path.join(__dirname, 'index.html');
         const html = await fs.readFile(indexPath, 'utf-8');
 
-        const genres = ['metal', 'stoner-psych', 'prog', 'rock-roll', 'alternative-other', 'live-albums', 'pop-soul-rb'];
+        const genres = ['metal', 'stoner-psych', 'prog', 'rock-roll', 'alternative-other', 'live-albums', 'pop-soul-rb', 'jazz-fusion'];
         const albums = {};
 
         genres.forEach(genre => {
