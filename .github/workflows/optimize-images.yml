@@ -9,6 +9,9 @@ on:
       - '**/*.png'
       - '**/*.webp'
 
+permissions:
+  contents: write
+
 jobs:
   optimize:
     name: Optimize and commit images
