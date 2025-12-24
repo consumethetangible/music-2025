@@ -55,6 +55,50 @@
             z-index: 1;
         }
 
+        /* Industrial hazard stripes accent on left edge */
+        .container::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            width: 12px;
+            height: 200px;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255, 200, 0, 0.2) 0px,
+                rgba(255, 200, 0, 0.2) 12px,
+                rgba(20, 20, 20, 0.4) 12px,
+                rgba(20, 20, 20, 0.4) 24px
+            );
+            border-radius: 0 4px 4px 0;
+            box-shadow:
+                inset -1px 0 2px rgba(0, 0, 0, 0.6),
+                2px 0 8px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        /* Industrial hazard stripes accent on right edge */
+        .container::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 25%;
+            width: 12px;
+            height: 200px;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255, 200, 0, 0.2) 0px,
+                rgba(255, 200, 0, 0.2) 12px,
+                rgba(20, 20, 20, 0.4) 12px,
+                rgba(20, 20, 20, 0.4) 24px
+            );
+            border-radius: 4px 0 0 4px;
+            box-shadow:
+                inset 1px 0 2px rgba(0, 0, 0, 0.6),
+                -2px 0 8px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
         h1 {
             font-family: 'Righteous', sans-serif;
             font-size: clamp(38px, 7vw, 64px);
@@ -184,6 +228,11 @@
             transform: translateY(-50%);
             height: 15px;
             background:
+                /* Mounting bolts */
+                radial-gradient(circle at 5% 50%, rgba(40, 40, 40, 0.8) 0%, rgba(40, 40, 40, 0.8) 3px, transparent 3px),
+                radial-gradient(circle at 5% 50%, rgba(80, 80, 80, 0.6) 0%, rgba(80, 80, 80, 0.6) 2px, transparent 2px),
+                radial-gradient(circle at 95% 50%, rgba(40, 40, 40, 0.8) 0%, rgba(40, 40, 40, 0.8) 3px, transparent 3px),
+                radial-gradient(circle at 95% 50%, rgba(80, 80, 80, 0.6) 0%, rgba(80, 80, 80, 0.6) 2px, transparent 2px),
                 /* Chrome reflections - top highlight */
                 linear-gradient(180deg,
                     rgba(255, 255, 255, 0.4) 0%,
@@ -288,6 +337,15 @@
             overflow-y: visible;
             scrollbar-width: thin;
             scrollbar-color: rgba(140, 140, 140, 0.5) transparent;
+            transition: box-shadow 0.4s ease;
+        }
+
+        /* Subtle cyan glow when hovering over albums */
+        .albums:hover {
+            box-shadow:
+                0 0 30px rgba(0, 184, 212, 0.15),
+                0 0 60px rgba(0, 170, 255, 0.08),
+                inset 0 -3px 15px rgba(0, 217, 255, 0.1);
         }
 
         /* Mounting brackets for each shelf */
