@@ -151,36 +151,6 @@
 
         .section {
             margin-bottom: 60px;
-            position: relative;
-        }
-
-        /* Mounting brackets for shelves */
-        .section::before,
-        .section::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            width: 8px;
-            height: 45px;
-            background: linear-gradient(90deg,
-                rgba(90, 95, 100, 1) 0%,
-                rgba(110, 115, 120, 1) 50%,
-                rgba(80, 85, 90, 1) 100%);
-            box-shadow:
-                inset 2px 0 3px rgba(0, 0, 0, 0.5),
-                inset -1px 0 2px rgba(255, 255, 255, 0.2),
-                2px 0 5px rgba(0, 0, 0, 0.6);
-            z-index: 1;
-        }
-
-        .section::before {
-            left: 30px;
-            border-radius: 0 2px 2px 0;
-        }
-
-        .section::after {
-            right: 30px;
-            border-radius: 2px 0 0 2px;
         }
 
         h2 {
@@ -318,6 +288,36 @@
             overflow-y: visible;
             scrollbar-width: thin;
             scrollbar-color: rgba(140, 140, 140, 0.5) transparent;
+        }
+
+        /* Mounting brackets for each shelf */
+        .albums::before,
+        .albums::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 8px;
+            height: 45px;
+            background: linear-gradient(90deg,
+                rgba(90, 95, 100, 1) 0%,
+                rgba(110, 115, 120, 1) 50%,
+                rgba(80, 85, 90, 1) 100%);
+            box-shadow:
+                inset 2px 0 3px rgba(0, 0, 0, 0.5),
+                inset -1px 0 2px rgba(255, 255, 255, 0.2),
+                2px 0 5px rgba(0, 0, 0, 0.6);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .albums::before {
+            left: 25px;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .albums::after {
+            right: 25px;
+            border-radius: 2px 0 0 2px;
         }
 
         .albums::-webkit-scrollbar {
