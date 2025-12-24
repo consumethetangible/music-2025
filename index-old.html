@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Music Favorites</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@700&family=Inter:wght@400;600&family=Courier+Prime:ital@0;1&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background:
+                /* Dark atmospheric gradient */
+                radial-gradient(ellipse at top, #1a1520 0%, #0d0a12 40%, #0a0a0a 100%);
+            font-family: 'Inter', sans-serif;
+            padding: 60px 40px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Neon instrument background images */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                /* Blue speakers - top left */
+                url('now-playing-blue-speakers.webp'),
+                /* Red drums - bottom right */
+                url('now-playing-red-drums.webp'),
+                /* Yellow mic - middle right accent */
+                url('now-playing-yellow-mic.webp');
+            background-position:
+                -10% 10%,
+                110% 90%,
+                95% 50%;
+            background-size:
+                45%,
+                50%,
+                35%;
+            background-repeat: no-repeat;
+            opacity: 0.22;
+        }
+
+        /* Additional atmospheric glow layer */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(79, 172, 254, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 50%, rgba(255, 215, 0, 0.12) 0%, transparent 35%);
+        }
+
+        :root {
+            --spindle-size: 2%;
+            --spindle-sheen: rgba(255,255,255,0.14);
+            --spindle-ring-color: rgba(212,175,55,0.03);
+            --coarse-gap: 3px;
+            --fine-gap: 1px;
+            --conic-opacity: 0.02;
+            --vinyl-spin-speed: 2.8s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.88);
+            border-radius: 20px;
+            padding: 60px 50px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            font-weight: 400;
+            position: relative;
+            animation: fadeInUp 1s ease-out, neonFlicker 4s ease-in-out infinite;
+            text-shadow:
+                /* Bright white core */
+                0 0 10px #fff,
+                0 0 20px #fff,
+                /* Colored neon glow */
+                0 0 40px #4FACFE,
+                0 0 80px #4FACFE,
+                0 0 120px #4FACFE,
+                /* Secondary orange glow */
+                0 0 160px #FF6B35,
+                /* Depth shadow */
+                0 4px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Subtle neon flicker effect */
+        @keyframes neonFlicker {
+            0%, 100% {
+                opacity: 1;
+                text-shadow:
+                    0 0 10px #fff,
+                    0 0 20px #fff,
+                    0 0 40px #4FACFE,
+                    0 0 80px #4FACFE,
+                    0 0 120px #4FACFE,
+                    0 0 160px #FF6B35,
+                    0 4px 8px rgba(0, 0, 0, 0.8);
+            }
+            45%, 55% {
+                opacity: 0.98;
+                text-shadow:
+                    0 0 8px #fff,
+                    0 0 18px #fff,
+                    0 0 35px #4FACFE,
+                    0 0 70px #4FACFE,
+                    0 0 100px #4FACFE,
+                    0 0 140px #FF6B35,
+                    0 4px 8px rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 17px;
+            color: #bbb;
+            font-weight: 400;
+            margin-bottom: 50px;
+            font-family: 'Courier Prime', monospace;
+            font-style: italic;
+            letter-spacing: 0.8px;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        
+        .section {
+            margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 38px;
+            color: #d4af37;
+            margin-bottom: 35px;
+            padding-bottom: 18px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, transparent 0%, #d4af37 20%, #d4af37 80%, transparent 100%) 1;
+            letter-spacing: 4px;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        h2::before {
+            content: '♪';
+            position: absolute;
+            left: -35px;
+            color: #d4af37;
+            opacity: 0.5;
+            font-size: 28px;
+        }
+        
+        .releases {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .release {
+            position: relative;
+            aspect-ratio: 1;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            border-radius: 50%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            will-change: transform, opacity;
+            transition:
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s ease;
+            border: 8px solid #1a1a1a;
+            box-shadow:
+                /* Outer edge ring */
+                0 0 0 2px #333,
+                /* Main depth shadows */
+                0 10px 30px rgba(0, 0, 0, 0.8),
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                /* Beveled edge - inner shadows for depth */
+                inset 0 0 50px rgba(0, 0, 0, 0.5),
+                inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                inset 0 3px 6px rgba(0, 0, 0, 0.3),
+                /* Beveled edge - highlights for 3D effect */
+                inset -2px -2px 4px rgba(255, 255, 255, 0.04),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.02),
+                /* Subtle top highlight catch */
+                inset 0 4px 2px rgba(255, 255, 255, 0.06);
+            overflow: visible;
+        }
+        
+        .release::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 2px #0a0a0a,
+                inset 0 2px 10px rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+        
+        .release::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg 0.5deg,
+                rgba(255, 255, 255, 0.02) 0.5deg 1deg
+            );
+            pointer-events: none;
+            z-index: 0;
+            /* make rotations smoother and predictable */
+            transform: rotate(0deg);
+            transform-origin: center;
+            will-change: transform;
+        }
+        
+        /* Tone arm base (fixed pivot point) */
+        .tonearm {
+            position: absolute;
+            width: 5px;
+            height: 50%;
+            background:
+                /* Segmented arm tube with depth */
+                linear-gradient(to right, rgba(0,0,0,0.3) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.3) 100%),
+                linear-gradient(to bottom,
+                    #c0c0c0 0%,
+                    #a0a0a0 15%,
+                    #909090 30%,
+                    #858585 45%,
+                    #757575 60%,
+                    #686868 75%,
+                    #606060 90%,
+                    #555555 100%);
+            top: 5%;
+            right: 10%;
+            transform-origin: top center;
+            transform: rotate(-60deg);
+            opacity: 0;
+            /* snappier, more natural easing for the tonearm */
+            transition: opacity 280ms ease, transform 600ms cubic-bezier(0.22, 0.9, 0.28, 1);
+            will-change: transform, opacity;
+            border-radius: 2.5px 2.5px 0 0;
+            box-shadow:
+                /* Main shadow - enhanced depth */
+                5px 5px 15px rgba(0, 0, 0, 0.85),
+                /* Secondary softer shadow for realism */
+                3px 3px 25px rgba(0, 0, 0, 0.4),
+                /* Edge highlight */
+                inset -1px 0 1px rgba(255, 255, 255, 0.15),
+                /* Depth shadow */
+                inset 1px 0 1px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+            pointer-events: none;
+            transform-style: flat;
+        }
+
+        /* Pivot point at top - more detailed housing */
+        .tonearm::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background:
+                radial-gradient(circle at 35% 35%, rgba(255,255,255,0.3), transparent 50%),
+                radial-gradient(circle, #606060, #404040);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 2px #303030,
+                0 0 0 3px rgba(255,255,255,0.1),
+                inset 0 2px 4px rgba(0, 0, 0, 0.8),
+                inset 0 -1px 2px rgba(255, 255, 255, 0.1),
+                0 3px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Cartridge and needle assembly at bottom */
+        .tonearm::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 14px;
+            background:
+                /* Cartridge body */
+                linear-gradient(135deg,
+                    rgba(255,255,255,0.1) 0%,
+                    rgba(0,0,0,0.2) 50%,
+                    rgba(255,255,255,0.05) 100%),
+                linear-gradient(to bottom, #505050, #303030);
+            border-radius: 2px 2px 4px 4px;
+            box-shadow:
+                /* Enhanced cartridge shadow with contact point */
+                0 4px 12px rgba(0, 0, 0, 0.8),
+                0 2px 20px rgba(0, 0, 0, 0.5),
+                /* Inner detail */
+                inset 0 1px 2px rgba(255, 255, 255, 0.1),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.5),
+                /* Golden stylus glow */
+                0 0 10px rgba(212, 175, 55, 0.8),
+                0 0 6px rgba(212, 175, 55, 0.95);
+        }
+        
+        .release:hover .tonearm {
+            opacity: 1;
+            transform: rotate(-10deg);
+        }
+        
+        .release.clickable {
+            cursor: pointer;
+        }
+        
+        /* Simple CSS hover transform for clickable releases — hover lift is handled
+           by CSS while the tilt script only applies rotation. This avoids transform
+           composition conflicts because rotate and translate/scale compose cleanly. */
+        .release.clickable:hover {
+            transform: translate3d(0, -8px, 0) scale(1.08);
+            box-shadow:
+                /* Accent glow border */
+                0 0 0 3px var(--accent-color, #d4af37),
+                0 0 30px var(--accent-glow, rgba(212, 175, 55, 0.6)),
+                0 25px 60px var(--accent-glow-soft, rgba(212, 175, 55, 0.3)),
+                /* Enhanced beveled edge on hover */
+                inset 0 0 60px rgba(0, 0, 0, 0.6),
+                inset 0 -4px 8px rgba(0, 0, 0, 0.5),
+                inset 0 4px 8px rgba(0, 0, 0, 0.4),
+                inset -3px -3px 6px rgba(255, 255, 255, 0.08),
+                inset 3px 3px 6px rgba(255, 255, 255, 0.04),
+                inset 0 6px 3px rgba(255, 255, 255, 0.1),
+                0 35px 80px rgba(0, 0, 0, 0.6),
+                inset 0 0 60px var(--accent-glow-inner, rgba(212, 175, 55, 0.15)),
+                inset 0 3px 2px rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-color, #d4af37);
+        }
+
+        /* Unique color accents for each vinyl based on artwork vibe */
+        .section.new-releases .release:nth-child(6n+1) {
+            --accent-color: #e8a0bf; /* soft pink */
+            --accent-glow: rgba(232, 160, 191, 0.6);
+            --accent-glow-soft: rgba(232, 160, 191, 0.3);
+            --accent-glow-inner: rgba(232, 160, 191, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+2) {
+            --accent-color: #7fb3d5; /* sky blue */
+            --accent-glow: rgba(127, 179, 213, 0.6);
+            --accent-glow-soft: rgba(127, 179, 213, 0.3);
+            --accent-glow-inner: rgba(127, 179, 213, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+3) {
+            --accent-color: #b19cd9; /* lavender */
+            --accent-glow: rgba(177, 156, 217, 0.6);
+            --accent-glow-soft: rgba(177, 156, 217, 0.3);
+            --accent-glow-inner: rgba(177, 156, 217, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+4) {
+            --accent-color: #a8d5ba; /* mint green */
+            --accent-glow: rgba(168, 213, 186, 0.6);
+            --accent-glow-soft: rgba(168, 213, 186, 0.3);
+            --accent-glow-inner: rgba(168, 213, 186, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+5) {
+            --accent-color: #f4a460; /* sandy orange */
+            --accent-glow: rgba(244, 164, 96, 0.6);
+            --accent-glow-soft: rgba(244, 164, 96, 0.3);
+            --accent-glow-inner: rgba(244, 164, 96, 0.15);
+        }
+
+        .section.new-releases .release:nth-child(6n+6) {
+            --accent-color: #d4af37; /* classic gold */
+            --accent-glow: rgba(212, 175, 55, 0.6);
+            --accent-glow-soft: rgba(212, 175, 55, 0.3);
+            --accent-glow-inner: rgba(212, 175, 55, 0.15);
+        }
+
+        /* Remove browser default link styling (underlines/visited color) for release anchors */
+        .release {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .release:link,
+        .release:visited,
+        .release:hover,
+        .release:active {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* vinyl spin animation (clockwise viewing from top) */
+        @keyframes vinyl-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* trigger spin on hover or when .playing is present; use variable for speed
+           Only use the CSS pseudo-element spin when a JS-injected .vinyl-grooves
+           element is NOT present. If JS injects grooves we add .has-grooves and
+           the JS ramping loop will handle rotation smoothly. */
+        .release:not(.has-grooves).clickable:hover::after,
+        .release:not(.has-grooves).playing::after {
+            animation: vinyl-spin var(--vinyl-spin-speed, 2.8s) linear infinite;
+            /* subtle motion blur illusion */
+            filter: contrast(1.02) saturate(0.98) blur(0.2px);
+        }
+        
+        .release.no-link {
+            cursor: default;
+            opacity: 0.7;
+        }
+        
+        .artist {
+            font-weight: 600;
+            color: #f4e4a6;
+            font-size: 18px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 30; /* ensure play button doesn't occlude text */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .album {
+            color: #999;
+            font-size: 14px;
+            font-style: italic;
+            position: relative;
+            z-index: 30; /* match artist so labels stay above artwork and overlays */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .archival .release {
+            border-color: #2a2a2a;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            border: 3px solid #4a4a4a;
+            box-shadow: 
+                12px 12px 25px rgba(0, 0, 0, 0.9),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.6);
+            transform: perspective(800px) rotateY(-15deg) rotateX(8deg);
+            overflow: visible;
+            position: relative;
+        }
+        
+        /* Right side panel - deeper */
+        .archival .release::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -30px;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to right, #2a2a2a, #1a1a1a, #0a0a0a);
+            transform-origin: left;
+            transform: rotateY(90deg);
+            border-radius: 0 15px 15px 0;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.9);
+            z-index: -1;
+        }
+        
+        /* Bottom panel - deeper */
+        .archival .release::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to bottom, #1a1a1a, #0a0a0a, #000);
+            transform-origin: top;
+            transform: rotateX(-90deg);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.9);
+            z-index: -1;
+        }
+        
+        /* Label on front */
+        .archival .artist::before {
+            content: 'DELUXE EDITION';
+            display: block;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 12px;
+            color: #8b7355;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .archival .release .tonearm {
+            display: none;
+        }
+        
+        .archival .release.clickable:hover {
+            transform: perspective(800px) rotateY(-15deg) rotateX(8deg) scale(1.08);
+            border-color: #8b7355;
+            box-shadow: 
+                15px 15px 35px rgba(139, 115, 85, 0.6),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.6);
+        }
+        
+        .archival .release.clickable:hover::before,
+        .archival .release.clickable:hover::after {
+            animation: none !important;
+        }
+        
+        .archival .release.clickable:hover .artist::before {
+            color: #d4af37;
+        }
+        
+        /* Artwork image inside release */
+        .release .artwork {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate3d(-50%, -50%, 0);
+            width: 60%;
+            height: 60%;
+            object-fit: cover;
+            border-radius: 50%;
+            z-index: 2;
+            pointer-events: none;
+            will-change: transform;
+            transform-style: flat;
+            transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* microinteraction: enhanced artwork lift on hover for new releases
+           Disabled when JS tilt is active to avoid competing transforms. */
+        .section.new-releases .release.clickable:hover:not(.tilt-controlled) .artwork {
+            /* lift slightly and scale more - removed expensive filters for Safari performance */
+            transform: translate3d(-50%, -50%, 0) scale(1.08);
+        }
+
+        /* initial load reveal (staggered) - enhanced with scale and transform */
+        .release {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: opacity 480ms cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 480ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .release.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* staggered label reveal using a CSS variable set by JS */
+        .release .artist,
+        .release .album {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 260ms ease var(--stagger, 0ms), transform 260ms ease var(--stagger, 0ms);
+        }
+
+        .release.show .artist,
+        .release.show .album {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* visible focus for keyboard users */
+        .release:focus-visible {
+            outline: 3px solid rgba(212, 175, 55, 0.12);
+            outline-offset: 8px;
+        }
+
+        /* Make circular artwork smaller for New Releases so it reads like a record label */
+        .section.new-releases .release .artwork {
+            width: 40%;
+            height: 40%;
+        }
+
+        /* Full-cover artwork for archival box sets */
+        .archival .release .artwork {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform: none;
+            border-radius: 12px;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.95;
+            filter: saturate(0.98) contrast(0.98);
+        }
+
+        .archival .release .artist,
+        .archival .release .album {
+            position: relative;
+            z-index: 2;
+            color: #f4f4f4;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        /* Keep textual labels present in the DOM but hidden by default; reveal on hover */
+        .archival .release .artist,
+        .archival .release .album {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 220ms ease, transform 220ms ease;
+            pointer-events: none;
+        }
+
+        .archival .release:hover .artist,
+        .archival .release:hover .album {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Overlay for archival covers to improve text readability on hover/focus */
+        .archival .release .overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.15));
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 220ms ease;
+            pointer-events: none;
+        }
+
+        .archival .release:hover .overlay,
+        .archival .release:focus-within .overlay {
+            opacity: 1;
+        }
+
+    @media (max-width: 768px) {
+            .releases {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .subtitle {
+                font-size: 13px;
+            }
+            
+            .container {
+                padding: 40px 30px;
+            }
+            
+            .release {
+                padding: 25px;
+            }
+
+            /* Slightly larger label on small screens so artwork remains readable */
+            .section.new-releases .release .artwork {
+                width: 50%;
+                height: 50%;
+            }
+            
+            /* on small screens prefer opacity-only entrance for performance */
+            .release { transition: opacity 240ms ease; }
+            
+            .artist {
+                font-size: 15px;
+            }
+            
+            .album {
+                font-size: 12px;
+            }
+        }
+        /* VINYL TEXTURE + LABEL RING (scoped to new releases so archival overrides remain intact) */
+        .section.new-releases .release {
+            /* make 3D transforms look more natural */
+            transform-style: preserve-3d;
+            perspective: 900px;
+        }
+
+        .section.new-releases .release::after {
+            /* Vinyl grooves as concentric rings (repeating-radial-gradient) for the
+               'groove' appearance, plus a very low-opacity conic overlay so rotation
+               still reads as motion. This gives primarily concentric rings while
+               preserving visible spinning.
+            */
+            /* keep the ::after fallback (in case JS is disabled) — still uses CSS vars */
+            background-image:
+                radial-gradient(circle at center, rgba(0,0,0,0.06) 60%, rgba(0,0,0,0.22) 100%),
+                radial-gradient(circle at center, transparent 0%, transparent 34%, rgba(0,0,0,0.22) 36%, transparent 38%),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.02) 0px var(--coarse-gap), transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.01) 0px var(--fine-gap), transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
+                repeating-conic-gradient(from 0deg, rgba(255,255,255,var(--conic-opacity)) 0deg 0.5deg, transparent 0.5deg 1deg);
+            background-blend-mode: overlay, multiply, normal, normal, overlay;
+            opacity: 0.92;
+            filter: contrast(1.05) saturate(0.98);
+            will-change: transform, opacity, background-position;
+            transform-origin: center center;
+        }
+
+        /* Element-based grooves (preferred) — injected by JS per .release so we can
+           ramp speed and animate transform on an actual element rather than a pseudo
+           element. This enables smooth ramp-up/ramp-down and per-card randomization.
+        */
+        .release .vinyl-grooves {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                /* Depth gradient */
+                radial-gradient(circle at center, rgba(0,0,0,0.06) 60%, rgba(0,0,0,0.22) 100%),
+                /* Center label area shadow */
+                radial-gradient(circle at center, transparent 0%, transparent 34%, rgba(0,0,0,0.22) 36%, transparent 38%),
+                /* Coarse grooves */
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.02) 0px var(--coarse-gap), transparent var(--coarse-gap) calc(var(--coarse-gap) * 2)),
+                /* Fine grooves */
+                repeating-radial-gradient(circle at center, rgba(255,255,255,0.01) 0px var(--fine-gap), transparent var(--fine-gap) calc(var(--fine-gap) * 2)),
+                /* Spinning reflection lines */
+                repeating-conic-gradient(from 0deg, rgba(255,255,255,var(--conic-opacity)) 0deg 0.5deg, transparent 0.5deg 1deg);
+            opacity: 0.92;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* Animated reflection layer - DISABLED for Safari performance */
+        .release .vinyl-reflection {
+            display: none;
+        }
+
+        @keyframes vinyl-reflection-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* rotor receives rotation transforms; keep it as a 3D-aware layer */
+        .tilt-rotor {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            transform-style: preserve-3d;
+            will-change: transform;
+            /* Don't clip children during 3D rotation */
+            overflow: visible;
+        }
+
+        /* Keep artwork and tonearm flat - don't let them inherit parent's 3D rotation */
+        .tilt-rotor .artwork,
+        .tilt-rotor .tonearm {
+            transform: translate(-50%, -50%) !important;
+            transform-style: flat;
+        }
+
+        .tilt-rotor .tonearm {
+            transform: rotate(-60deg) !important;
+        }
+
+        .release:hover .tilt-rotor .tonearm {
+            transform: rotate(-10deg) !important;
+        }
+
+        .release .vinyl-sheen {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            /* sit above grooves but below artwork/text; keep lower than artwork to
+               avoid occluding labels when artwork scales. */
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at var(--mouse-x, 30%) var(--mouse-y, 25%), rgba(255,255,255,0.18), rgba(255,255,255,0) 40%),
+                radial-gradient(circle at 70% 70%, rgba(212,175,55,0.08), rgba(212,175,55,0) 25%);
+            opacity: 0.0;
+            transition: opacity 280ms ease;
+            will-change: transform, opacity;
+        }
+
+        .release.hover-sheen .vinyl-sheen { opacity: 0.85; }
+
+        /* Smooth transitions for playing state */
+        .release.playing {
+            transition:
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.5s ease;
+        }
+
+        .release.playing .vinyl-sheen {
+            opacity: 0.9;
+            transition: opacity 400ms ease;
+        }
+
+        .release.playing .tonearm {
+            opacity: 1;
+            transform: rotate(-10deg);
+            transition:
+                opacity 350ms ease,
+                transform 700ms cubic-bezier(0.22, 0.9, 0.28, 1);
+        }
+
+        /* Enhanced glow when playing */
+        .release.playing {
+            border-color: var(--accent-color, #d4af37);
+            box-shadow:
+                /* Outer edge ring */
+                0 0 0 2px var(--accent-color, #d4af37),
+                /* Intensified glow */
+                0 0 40px var(--accent-glow, rgba(212, 175, 55, 0.7)),
+                0 0 60px var(--accent-glow-soft, rgba(212, 175, 55, 0.4)),
+                /* Main depth shadows */
+                0 15px 40px rgba(0, 0, 0, 0.8),
+                0 25px 70px rgba(0, 0, 0, 0.4),
+                /* Beveled edge - inner shadows for depth */
+                inset 0 0 50px rgba(0, 0, 0, 0.5),
+                inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                inset 0 3px 6px rgba(0, 0, 0, 0.3),
+                /* Beveled edge - highlights for 3D effect */
+                inset -2px -2px 4px rgba(255, 255, 255, 0.04),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.02),
+                /* Enhanced inner glow when playing */
+                inset 0 0 80px var(--accent-glow-inner, rgba(212, 175, 55, 0.2)),
+                /* Subtle top highlight catch */
+                inset 0 4px 2px rgba(255, 255, 255, 0.06);
+        }
+
+        /* Vinyl center label - realistic record label */
+        .release .vinyl-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 28%;
+            height: 28%;
+            border-radius: 50%;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                /* Label texture */
+                radial-gradient(circle at center, var(--accent-glow-inner) 0%, transparent 80%),
+                radial-gradient(circle at 48% 48%, rgba(255,255,255,0.08), transparent 15%),
+                radial-gradient(circle at center,
+                    rgba(20,20,20,0.95) 0%,
+                    rgba(30,30,30,0.92) 50%,
+                    rgba(15,15,15,0.96) 100%);
+            box-shadow:
+                inset 0 0 0 1px var(--accent-color, rgba(212,175,55,0.3)),
+                inset 0 2px 8px rgba(0,0,0,0.6),
+                0 0 0 1px rgba(0,0,0,0.5),
+                0 3px 12px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 5px;
+            text-align: center;
+            color: var(--accent-color, #d4af37);
+            font-family: 'Courier Prime', monospace;
+            padding: 5%;
+            line-height: 1.3;
+        }
+
+        .vinyl-label::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg 2deg,
+                rgba(255,255,255,0.015) 2deg 4deg
+            );
+        }
+
+        .vinyl-label .label-artist {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 0.3em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            opacity: 0.85;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .vinyl-label .label-album {
+            font-size: 0.8em;
+            font-style: italic;
+            opacity: 0.6;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Spindle hole in center of label */
+        .vinyl-label::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12%;
+            height: 12%;
+            background: radial-gradient(circle, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 0.5px rgba(0,0,0,0.8),
+                inset 0 1px 2px rgba(0,0,0,0.9),
+                0 0 4px rgba(0,0,0,0.5);
+        }
+
+        .section.new-releases .release::before {
+            /* emphasize inner label with a subtle bevel ring */
+            /* spindle hole uses a CSS variable so it's easy to tweak */
+            width: var(--spindle-size);
+            height: var(--spindle-size);
+            box-shadow: 0 0 0 0.6px rgba(0,0,0,0.34), 0 0 0 2px var(--spindle-ring-color) inset;
+            transition: box-shadow 160ms ease, width 140ms ease, height 140ms ease, background 160ms ease;
+            z-index: 3;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
+        }
+
+        .section.new-releases .release.clickable:hover::before {
+            box-shadow: 0 0 0 6px rgba(0,0,0,0.25), 0 0 30px 6px rgba(212,175,55,0.06) inset, 0 0 8px rgba(212,175,55,0.08);
+            /* subtle sheen centered slightly off-axis to simulate light catch */
+            background-image: radial-gradient(circle at 30% 28%, var(--spindle-sheen) 0%, rgba(255,255,255,0) 40%), radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
+            background-blend-mode: screen, normal;
+        }
+
+        /* entrance: fade + slide to give items a soft lift on load */
+        .release {
+            transform: translateY(8px) scale(0.996);
+            transition: opacity 420ms cubic-bezier(0.2,0.9,0.2,1), transform 420ms cubic-bezier(0.2,0.9,0.2,1);
+        }
+
+        .release.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* prefer reduced motion: keep opacity-only entrance */
+        @media (prefers-reduced-motion: reduce) {
+            .release {
+                transition: none;
+                transform: none !important;
+            }
+        }
+
+        /* subtle parallax tilt — baseline CSS fallback; exact tilt computed by JS when available */
+        .release.tilt-enabled {
+            will-change: transform;
+        }
+
+        /* Decorative corner flourishes (small, low-cost SVG accents) */
+        .corner-svg {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            fill: none;
+            stroke: rgba(212,175,55,0.12);
+            stroke-width: 1.25;
+            pointer-events: none;
+            z-index: 2;
+            filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+        }
+
+        .corner-svg.top-left { top: 18px; left: 18px; transform: rotate(-6deg); }
+        .corner-svg.bottom-right { bottom: 18px; right: 18px; transform: rotate(18deg); }
+        /* accessible play/pause button overlay - enhanced integration */
+        .play-toggle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08), transparent 60%),
+                rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            border: 2px solid var(--accent-color, rgba(212,175,55,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color, #d4af37);
+            z-index: 12;
+            box-shadow:
+                0 8px 24px rgba(0,0,0,0.7),
+                0 0 20px var(--accent-glow-inner, rgba(212,175,55,0.1)),
+                inset 0 1px 2px rgba(255,255,255,0.08);
+            cursor: pointer;
+            transition:
+                transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 200ms ease,
+                opacity 180ms ease,
+                box-shadow 200ms ease,
+                border-color 200ms ease;
+            opacity: 0; /* hidden until hover/focus */
+        }
+
+        .release:hover .play-toggle,
+        .release:focus-within .play-toggle,
+        .release.playing .play-toggle {
+            opacity: 1;
+        }
+
+        .play-toggle:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            border-color: var(--accent-color, #d4af37);
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.8),
+                0 0 30px var(--accent-glow, rgba(212,175,55,0.4)),
+                inset 0 1px 3px rgba(255,255,255,0.12);
+        }
+
+        .play-toggle:active {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .play-toggle:focus {
+            outline: 3px solid var(--accent-color, rgba(212,175,55,0.3));
+            outline-offset: 6px;
+        }
+
+        .play-toggle svg { width: 34px; height: 34px; display:block; }
+
+        /* screen-reader only helper */
+        .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+        /* Labels container: force labels above rotor/grooves for new releases to
+           avoid quadrant-dependent occlusion caused by 3D painting order. The
+           container is absolutely positioned and non-interactive by default so
+           it doesn't interfere with click/hover; we selectively allow pointer
+           events for focusable children when needed. */
+        .section.new-releases .release .labels {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 30; /* above grooves/sheen/artwork/tonearm */
+            pointer-events: none; /* don't block clicks on the release */
+            transform: none; /* keep labels out of rotation/tilt flow */
+        }
+
+        .section.new-releases .release .labels .artist,
+        .section.new-releases .release .labels .album {
+            pointer-events: auto; /* allow keyboard focus/focus-visible to work */
+            position: relative;
+            z-index: 31;
+            transform: none !important;
+            /* Constrain text to prevent spreading across vinyl */
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Consuming Music in 2025</h1>
+        <div class="subtitle">A partial look at some of Chris's favorite albums</div>
+        
+                <div class="section new-releases metal">
+            <h2>Metal</h2>
+            <div class="releases" data-genre="metal">
+                <a class="release clickable" href="https://deafheavens.bandcamp.com/album/lonely-people-with-power" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <picture>
+                        <source type="image/webp" srcset="deafheaven.webp">
+                        <img loading="lazy" class="artwork" src="deafheaven.webp" alt="Deafheaven - Lonely People With Power">
+                    </picture>
+                    <div class="artist">Deafheaven</div>
+                    <div class="album">Lonely People With Power</div>
+                </a>
+                <a class="release clickable" href="https://rwake.bandcamp.com/album/the-return-of-magik" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="the-return-of-magik.jpg" alt="Rwake - The Return of Magick">
+                    <div class="artist">Rwake</div>
+                    <div class="album">The Return of Magick</div>
+                </a>
+                <a class="release clickable" href="https://sunn.bandcamp.com/album/eternitys-pillars-b-w-raise-thechalice-reverential" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="eternitys-pillars.jpg" alt="sunn O))) - Eternity's Pillars">
+                    <div class="artist">sunn O)))</div>
+                    <div class="album">Eternity's Pillars b/w Raise The Chalice & Reverential</div>
+                </a>
+                <a class="release clickable" href="https://yelloweyes.bandcamp.com/album/confusion-gate" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="confusion-gate.jpg" alt="Yellow Eyes - The Confusion Gate">
+                    <div class="artist">Yellow Eyes</div>
+                    <div class="album">The Confusion Gate</div>
+                </a>
+            </div>
+        <!-- Decorative SVG flourishes: kept lightweight and purely decorative -->
+        <svg class="corner-svg top-left" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M6 58 C18 42, 36 34, 58 18" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 50 C18 44, 30 38, 50 26" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        <svg class="corner-svg bottom-right" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M58 6 C46 22, 28 30, 6 46" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M54 14 C46 20, 34 26, 14 38" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        </div>
+
+        <div class="section new-releases stoner-psych">
+            <h2>Stoner & Psych</h2>
+            <div class="releases" data-genre="stoner-psych">
+                <a class="release clickable" href="https://basknc.bandcamp.com/album/the-turning" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="the-turning.jpg" alt="Bask - The Turning">
+                    <div class="artist">Bask</div>
+                    <div class="album">The Turning</div>
+                </a>
+                <a class="release clickable" href="https://brasscamelband.bandcamp.com/album/camel" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="brass-camel.jpg" alt="Brass Camel - Camel">
+                    <div class="artist">Brass Camel</div>
+                    <div class="album">Camel</div>
+                </a>
+                <a class="release clickable" href="https://giobiagiobia.bandcamp.com/album/x-on" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="giobia.jpg" alt="Giöbia - X-ÆON">
+                    <div class="artist">Giöbia</div>
+                    <div class="album">X-ÆON</div>
+                </a>
+                <a class="release clickable" href="https://leatherhearsesl.bandcamp.com/album/burn-in-heaven-decalouge" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="leather-hearse.jpg" alt="Leather Hearse - Burn in Heaven / Decalogue">
+                    <div class="artist">Leather Hearse</div>
+                    <div class="album">Burn in Heaven / Decalogue</div>
+                </a>
+                <a class="release clickable" href="https://naxatras.bandcamp.com/album/v" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="naxatras-v.jpg" alt="Naxatras - V">
+                    <div class="artist">Naxatras</div>
+                    <div class="album">V</div>
+                </a>
+                <a class="release clickable" href="https://phantomspell.bandcamp.com/album/heather-hearth" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="heather-and-hearth.jpg" alt="Phantom Spell - Heather & Hearth">
+                    <div class="artist">Phantom Spell</div>
+                    <div class="album">Heather & Hearth</div>
+                </a>
+            </div>
+        <!-- Decorative SVG flourishes: kept lightweight and purely decorative -->
+        <svg class="corner-svg top-left" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M6 58 C18 42, 36 34, 58 18" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 50 C18 44, 30 38, 50 26" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        <svg class="corner-svg bottom-right" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M58 6 C46 22, 28 30, 6 46" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M54 14 C46 20, 34 26, 14 38" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        </div>
+
+        <div class="section new-releases prog">
+            <h2>Prog</h2>
+            <div class="releases" data-genre="prog">
+                <a class="release clickable" href="https://blackcountrynewroad.bandcamp.com/" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="black-country-new-road.jpg" alt="Black Country, New Road - Forever Howlong">
+                    <div class="artist">Black Country, New Road</div>
+                    <div class="album">Forever Howlong</div>
+                </a>
+                <a class="release clickable" href="https://hedvigmollestadtrio.bandcamp.com/album/bees-in-the-bonnet" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="hedvig-mollestad.jpg" alt="Hedvig Mollestad Trio - Bees in the Bonnet">
+                    <div class="artist">Hedvig Mollestad Trio</div>
+                    <div class="album">Bees in the Bonnet</div>
+                </a>
+                <a class="release clickable" href="https://hiromimusic.bandcamp.com/album/out-there" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="hiromi.jpg" alt="Hiromi - Out There">
+                    <div class="artist">Hiromi</div>
+                    <div class="album">Out There</div>
+                </a>
+                <a class="release clickable" href="https://larsfredrikfroislie.bandcamp.com/album/gamle-mester" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="gamle-mester.jpg" alt="Lars Fredrik Frøslie - Gamle Mester">
+                    <div class="artist">Lars Fredrik Frøslie</div>
+                    <div class="album">Gamle Mester</div>
+                </a>
+                <a class="release clickable" href="https://stevenwilsonhq.com" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <picture>
+                        <source type="image/webp" srcset="steven-wilson.webp">
+                        <img loading="lazy" class="artwork" src="steven-wilson.webp" alt="Steven Wilson - The Overview">
+                    </picture>
+                    <div class="artist">Steven Wilson</div>
+                    <div class="album">The Overview</div>
+                </a>
+            </div>
+        <!-- Decorative SVG flourishes: kept lightweight and purely decorative -->
+        <svg class="corner-svg top-left" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M6 58 C18 42, 36 34, 58 18" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 50 C18 44, 30 38, 50 26" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        <svg class="corner-svg bottom-right" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M58 6 C46 22, 28 30, 6 46" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M54 14 C46 20, 34 26, 14 38" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        </div>
+
+        <div class="section new-releases rock-pop">
+            <h2>Rock & Pop</h2>
+            <div class="releases" data-genre="rock-pop">
+                <a class="release clickable" href="https://automatic-band.bandcamp.com/album/is-it-now" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="automatic.jpg" alt="Automatic - Is It Now?">
+                    <div class="artist">Automatic</div>
+                    <div class="album">Is It Now?</div>
+                </a>
+                <a class="release clickable" href="https://thedirtynil.bandcamp.com/album/the-lash" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="dirty-nil.jpg" alt="The Dirty Nil - The Lash">
+                    <div class="artist">The Dirty Nil</div>
+                    <div class="album">The Lash</div>
+                </a>
+                <a class="release clickable" href="https://militariegun.bandcamp.com/album/god-save-the-gun" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="god-save-the-gun.jpg" alt="Militarie Gun - God Save The Gun">
+                    <div class="artist">Militarie Gun</div>
+                    <div class="album">God Save The Gun</div>
+                </a>
+                <a class="release clickable" href="https://www.newdad.live" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="newdad.jpg" alt="NewDad - Altar">
+                    <div class="artist">NewDad</div>
+                    <div class="album">Altar</div>
+                </a>
+                <a class="release clickable" href="https://turnstilehardcore.com" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="turnstile.jpg" alt="Turnstile - NEVER ENOUGH">
+                    <div class="artist">Turnstile</div>
+                    <div class="album">NEVER ENOUGH</div>
+                </a>
+            </div>
+        <!-- Decorative SVG flourishes: kept lightweight and purely decorative -->
+        <svg class="corner-svg top-left" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M6 58 C18 42, 36 34, 58 18" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 50 C18 44, 30 38, 50 26" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        <svg class="corner-svg bottom-right" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M58 6 C46 22, 28 30, 6 46" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M54 14 C46 20, 34 26, 14 38" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        </div>
+
+        <div class="section new-releases alternative">
+            <h2>Alternative</h2>
+            <div class="releases" data-genre="alternative">
+                <a class="release clickable" href="https://annahstasia.bandcamp.com/album/tether" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="annahstasia.jpg" alt="Annahstasia - Tether">
+                    <div class="artist">Annahstasia</div>
+                    <div class="album">Tether</div>
+                </a>
+                <a class="release clickable" href="https://clairerousay.bandcamp.com/album/no-floor" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="no-floor.jpg" alt="Claire Rousay & More Ease - No Floor">
+                    <div class="artist">Claire Rousay & More Ease</div>
+                    <div class="album">No Floor</div>
+                </a>
+                <a class="release clickable" href="https://cleoforshort.bandcamp.com/album/cuntry" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="cleo-reed.jpg" alt="Cleo Reed - Cuntry">
+                    <div class="artist">Cleo Reed</div>
+                    <div class="album">Cuntry</div>
+                </a>
+                <a class="release clickable" href="https://dominicsanderson.bandcamp.com/album/blazing-revelations" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="blazing-revelation.jpg" alt="Dominic Sanderson - Blazing Revelations">
+                    <div class="artist">Dominic Sanderson</div>
+                    <div class="album">Blazing Revelations</div>
+                </a>
+                <a class="release clickable" href="https://gokurosawa.bandcamp.com/album/soft-shakes" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="soft-shakes.jpg" alt="Go Kurosawa - soft shakes">
+                    <div class="artist">Go Kurosawa</div>
+                    <div class="album">soft shakes</div>
+                </a>
+                <a class="release clickable" href="https://guerillatoss.bandcamp.com/album/youre-weird-now" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="youre-weird-now.jpg" alt="Guerrilla Toss - You're Weird Now">
+                    <div class="artist">Guerrilla Toss</div>
+                    <div class="album">You're Weird Now</div>
+                </a>
+                <a class="release clickable" href="https://ivslys.bandcamp.com/album/zero-seven-four-one-zero" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="ivslys.jpg" alt="IVSLYS - Zero Seven Four One Zero">
+                    <div class="artist">IVSLYS</div>
+                    <div class="album">Zero Seven Four One Zero</div>
+                </a>
+                <a class="release clickable" href="https://lyrapramuk.bandcamp.com/album/hymnal" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="hymnal.jpg" alt="Lyra Pramuk - Hymnal">
+                    <div class="artist">Lyra Pramuk</div>
+                    <div class="album">Hymnal</div>
+                </a>
+                <a class="release clickable" href="https://militariegun.bandcamp.com/album/god-save-the-gun" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="natural-information-society-totality.jpg" alt="Natural Information Society - Totality">
+                    <div class="artist">Natural Information Society & Bitchin' Bajas</div>
+                    <div class="album">Totality</div>
+                </a>
+                <a class="release clickable" href="https://squeakyfeet.bandcamp.com/album/overview-effect-2" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="the-overview-effect.jpg" alt="Squeaky Feet - The Overview Effect">
+                    <div class="artist">Squeaky Feet</div>
+                    <div class="album">The Overview Effect</div>
+                </a>
+                <a class="release clickable" href="https://yoodooright.bandcamp.com/album/yoo-ii-avec-nolan-potter" target="_blank" rel="noopener noreferrer">
+                    <div class="tonearm"></div>
+                    <img loading="lazy" class="artwork" src="yoo-ii-avec-nolan-potter.jpg" alt="Yoo Doo Right & Nolan Potter - Yoo II avec Nolan Potter">
+                    <div class="artist">Yoo Doo Right & Nolan Potter</div>
+                    <div class="album">Yoo II avec Nolan Potter</div>
+                </a>
+            </div>
+        <!-- Decorative SVG flourishes: kept lightweight and purely decorative -->
+        <svg class="corner-svg top-left" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M6 58 C18 42, 36 34, 58 18" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 50 C18 44, 30 38, 50 26" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        <svg class="corner-svg bottom-right" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M58 6 C46 22, 28 30, 6 46" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M54 14 C46 20, 34 26, 14 38" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+
+        </div>
+
+        
+        <div class="section archival">
+            <h2>Archival / Reissues</h2>
+            <div class="releases">
+                <a class="release clickable" href="https://jethrotull.com/merch/still-living-in-the-past-boxset/" target="_blank" rel="noopener noreferrer">
+                    <img loading="lazy" class="artwork" src="jethro-tull.jpg" alt="Jethro Tull - Still Living in the Past">
+                    <div class="overlay" aria-hidden="true"></div>
+                    <div class="artist">Jethro Tull</div>
+                    <div class="album">Still Living in the Past</div>
+                </a>
+                <a class="release clickable" href="https://lesrallizesdenudes.bandcamp.com/album/jittoku-76" target="_blank" rel="noopener noreferrer">
+                    <img loading="lazy" class="artwork" src="les-rallizes-denudes.jpg" alt="Les Rallizes Dénudés - Jittoku '76">
+                    <div class="overlay" aria-hidden="true"></div>
+                    <div class="artist">Les Rallizes Dénudés</div>
+                    <div class="album">Jittoku '76</div>
+                </a>
+                <a class="release clickable" href="https://imotorhead.com/the-manticore-tapes/" target="_blank" rel="noopener noreferrer">
+                    <img loading="lazy" class="artwork" src="motorhead.jpg" alt="Motörhead - The Manticore Tapes">
+                    <div class="overlay" aria-hidden="true"></div>
+                    <div class="artist">Motörhead</div>
+                    <div class="album">The Manticore Tapes</div>
+                </a>
+                <a class="release clickable" href="https://store.pinkfloyd.com/collections/live-at-pompeii" target="_blank" rel="noopener noreferrer">
+                    <img loading="lazy" class="artwork" src="live-in-pompei.jpeg" alt="Pink Floyd - Live at Pompeii - MCMLXXII">
+                    <div class="overlay" aria-hidden="true"></div>
+                    <div class="artist">Pink Floyd</div>
+                    <div class="album">Live at Pompeii - MCMLXXII</div>
+                </a>
+                <a class="release clickable" href="https://shop.deeppurple.com/gb/deep-purple/special-collections/madein-japan/made-in-japan-super-deluxe-edition-5cdbr/0602475839507.html" target="_blank" rel="noopener noreferrer">
+                    <img loading="lazy" class="artwork" src="made-in-japan.jpg" alt="Deep Purple - Made in Japan Super Deluxe">
+                    <div class="overlay" aria-hidden="true"></div>
+                    <div class="artist">Deep Purple</div>
+                    <div class="album">Made in Japan Super Deluxe</div>
+                </a>
+                <a class="release clickable" href="https://store.zappa.com/collections/box-sets/products/cheeper-thancheep-2cd-blu-ray" target="_blank" rel="noopener noreferrer">
+                    <img loading="lazy" class="artwork" src="cheaper-than-cheap.jpg" alt="Frank Zappa - Cheaper Than Cheap">
+                    <div class="overlay" aria-hidden="true"></div>
+                    <div class="artist">Frank Zappa</div>
+                    <div class="album">Cheaper Than Cheap</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Staggered reveal of releases with respects to prefers-reduced-motion
+        (function() {
+            function reveal() {
+                var releases = document.querySelectorAll('.releases .release');
+                    releases.forEach(function(el, i) {
+                    var delay = i * 120; // ms (slower stagger for a more dramatic entrance)
+                    el.style.setProperty('--stagger', delay + 'ms');
+                    setTimeout(function() { el.classList.add('show'); }, delay);
+                });
+            }
+
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                // respect user preference: show everything immediately without motion
+                document.querySelectorAll('.releases .release').forEach(function(el){ el.classList.add('show'); });
+            } else {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', reveal);
+                } else {
+                    reveal();
+                }
+            }
+        })();
+    </script>
+    <script>
+    /* Parallax tilt per card (disabled for reduced-motion & touch devices) */
+    (function(){
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (('ontouchstart' in window) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) return;
+
+        var maxRotate = 6; // degrees
+        var maxTranslateY = -6; // px
+        var baseScale = 1.06;
+
+        function enableTiltFor(el) {
+            // Create a rotor element inside the release that will receive the
+            // rotation transforms. Labels (.artist/.album) are left outside the
+            // rotor so they stay unrotated and keep their stacking order.
+            var rotor = el.querySelector('.tilt-rotor');
+            if (!rotor) {
+                rotor = document.createElement('div');
+                rotor.className = 'tilt-rotor';
+                // Move all children except artist, album, play-toggle, overlay
+                var children = Array.from(el.childNodes);
+                var preserve = ['artist','album','play-toggle','overlay'];
+                var toMove = [];
+                children.forEach(function(n){
+                    if (n.nodeType !== 1) { toMove.push(n); return; }
+                    var cls = n.classList;
+                    if (!cls) { toMove.push(n); return; }
+                    var keep = false;
+                    preserve.forEach(function(k){ if (cls.contains(k)) keep = true; });
+                    if (!keep) toMove.push(n);
+                });
+                // insert rotor as the first element
+                el.insertBefore(rotor, el.firstChild);
+                toMove.forEach(function(n){ rotor.appendChild(n); });
+            }
+
+            var raf = null;
+            var current = {rx:0, ry:0};
+            var target = {rx:0, ry:0};
+
+            function update() {
+                current.rx += (target.rx - current.rx) * 0.18;
+                current.ry += (target.ry - current.ry) * 0.18;
+                rotor.style.transform = 'rotateX(' + current.rx + 'deg) rotateY(' + current.ry + 'deg)';
+                raf = requestAnimationFrame(update);
+            }
+
+            function onMove(e) {
+                var clientX = e.clientX, clientY = e.clientY;
+                if (e.touches && e.touches[0]) {
+                    clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
+                }
+                var rect = el.getBoundingClientRect();
+                var cx = rect.left + rect.width / 2;
+                var cy = rect.top + rect.height / 2;
+                var dx = (clientX - cx) / (rect.width / 2);
+                var dy = (clientY - cy) / (rect.height / 2);
+                var clamp = function(v){ return Math.max(-1, Math.min(1, v)); };
+                dx = clamp(dx); dy = clamp(dy);
+                target.ry = -dx * maxRotate;
+                target.rx = dy * maxRotate;
+                if (!raf) raf = requestAnimationFrame(update);
+            }
+
+            function onEnter(){ el.classList.add('tilt-enabled'); }
+            function onLeave(){
+                target.rx = target.ry = 0;
+                el.classList.remove('tilt-enabled');
+                // allow smoothing back to identity then clear inline style
+                setTimeout(function(){
+                    if (raf) { cancelAnimationFrame(raf); raf = null; }
+                    rotor.style.transform = '';
+                }, 260);
+            }
+
+            el.addEventListener('mousemove', onMove);
+            el.addEventListener('mouseenter', onEnter);
+            el.addEventListener('mouseleave', onLeave);
+        }
+
+        // Disable tilt for new releases to prevent artwork/tonearm clipping
+        // The circular border-radius clips elements when they rotate in 3D space
+        /*
+        var items = document.querySelectorAll('.section.new-releases .release.clickable');
+        items.forEach(function(it){
+            // skip archival items if any slipped through
+            if (it.closest('.archival')) return;
+            enableTiltFor(it);
+        });
+        */
+    })();
+    </script>
+    <script>
+    // Inject accessible play/pause buttons and <picture> wrappers for artworks.
+    (function(){
+        // Ensure we wait for all content to be loaded
+        function init() {
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                // still inject play buttons for accessibility, but avoid heavy motion changes
+            }
+
+            function makePlaySVG(isPlaying){
+                var ns = 'http://www.w3.org/2000/svg';
+                var svg = document.createElementNS(ns, 'svg');
+                svg.setAttribute('viewBox','0 0 24 24');
+                var path = document.createElementNS(ns, 'path');
+                path.setAttribute('fill','currentColor');
+                if (isPlaying) {
+                    path.setAttribute('d','M6 5h3v14H6zM15 5h3v14h-3z');
+                } else {
+                    path.setAttribute('d','M8 5v14l11-7z');
+                }
+                svg.appendChild(path);
+                return svg;
+            }
+
+            var releases = document.querySelectorAll('.section.new-releases .release.clickable');
+            releases.forEach(function(el){
+            if (el.closest('.archival')) return;
+
+            // inject play button if missing
+            if (!el.querySelector('.play-toggle')){
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'play-toggle';
+                btn.setAttribute('aria-pressed','false');
+                btn.setAttribute('aria-label','Play preview');
+                btn.appendChild(makePlaySVG(false));
+                var sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = 'Play preview'; btn.appendChild(sr);
+
+                // insert before artwork - handle both direct img and picture-wrapped img
+                var art = el.querySelector('.artwork');
+                var insertTarget = art;
+                if (art && art.parentElement && art.parentElement.tagName.toLowerCase() === 'picture') {
+                    // artwork is wrapped in picture - insert before the picture element
+                    insertTarget = art.parentElement;
+                }
+                if (insertTarget && insertTarget.parentElement === el) {
+                    el.insertBefore(btn, insertTarget);
+                } else {
+                    el.appendChild(btn);
+                }
+
+                btn.addEventListener('click', function(evt){
+                    evt.preventDefault(); evt.stopPropagation();
+                    var wasPlaying = el.classList.contains('playing');
+                    // clear other playing
+                    document.querySelectorAll('.section.new-releases .release.playing').forEach(function(o){ if (o!==el) o.classList.remove('playing'); });
+                    if (wasPlaying){ el.classList.remove('playing'); btn.setAttribute('aria-pressed','false'); btn.setAttribute('aria-label','Play preview'); btn.replaceChild(makePlaySVG(false), btn.firstChild); }
+                    else { el.classList.add('playing'); btn.setAttribute('aria-pressed','true'); btn.setAttribute('aria-label','Pause preview'); btn.replaceChild(makePlaySVG(true), btn.firstChild); }
+                });
+
+                // keyboard handled natively by button: space/enter activates
+            }
+
+            // wrap artwork in <picture> with a .webp source if not already wrapped
+            (async function(){
+                var artwork = el.querySelector('img.artwork');
+                if (artwork && artwork.parentElement && artwork.parentElement.tagName.toLowerCase() !== 'picture'){
+                    var src = artwork.getAttribute('src');
+                    if (src){
+                        var avif = src.replace(/\.(jpe?g|png|jpeg)$/i, '.avif');
+                        var webp = src.replace(/\.(jpe?g|png|jpeg)$/i, '.webp');
+                        try {
+                            // Prefer AVIF when available, otherwise fall back to WebP.
+                            var okAvif = false;
+                            try { var hAvif = await fetch(avif, { method: 'HEAD' }); okAvif = !!(hAvif && hAvif.ok); } catch(e){}
+                            if (okAvif) {
+                                var picture = document.createElement('picture');
+                                var sourceAvif = document.createElement('source');
+                                sourceAvif.setAttribute('type','image/avif');
+                                sourceAvif.setAttribute('srcset', avif);
+                                picture.appendChild(sourceAvif);
+                                // also add webp as a secondary fallback if present
+                                try { var hWebp = await fetch(webp, { method: 'HEAD' }); if (hWebp && hWebp.ok) { var sourceWebp = document.createElement('source'); sourceWebp.setAttribute('type','image/webp'); sourceWebp.setAttribute('srcset', webp); picture.appendChild(sourceWebp); } } catch(e){}
+                                // move img into picture
+                                artwork.parentNode.insertBefore(picture, artwork);
+                                picture.appendChild(artwork);
+                            } else {
+                                // try webp alone
+                                try {
+                                    var head = await fetch(webp, { method: 'HEAD' });
+                                    if (head && head.ok) {
+                                        var picture = document.createElement('picture');
+                                        var source = document.createElement('source');
+                                        source.setAttribute('type','image/webp');
+                                        source.setAttribute('srcset', webp);
+                                        picture.appendChild(source);
+                                        artwork.parentNode.insertBefore(picture, artwork);
+                                        picture.appendChild(artwork);
+                                    }
+                                } catch (e) {
+                                    // webp missing or network error — leave original img in place
+                                }
+                            }
+                        } catch (e) {
+                            // overall failure — leave original img as-is
+                        }
+                    }
+                }
+            })();
+        });
+        }
+
+        // Run init when DOM is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+    <script>
+    /* Vinyl grooves injection + spin ramping + randomized spacing + sheen
+       - Injects .vinyl-grooves and .vinyl-sheen elements into each new-release card
+       - Randomizes --coarse-gap and --fine-gap per card to simulate longer/shorter tracks
+       - ROTATION DISABLED FOR SAFARI DIAGNOSTIC
+    */
+    (function(){
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (('ontouchstart' in window) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) return;
+
+        var releases = document.querySelectorAll('.section.new-releases .release.clickable');
+
+        releases.forEach(function(el){
+            if (el.closest('.archival')) return;
+
+            // inject grooves + sheen if not present
+            if (!el.querySelector('.vinyl-grooves')) {
+                var grooves = document.createElement('span');
+                grooves.className = 'vinyl-grooves';
+                el.insertBefore(grooves, el.firstChild);
+                // mark that this card uses JS-driven grooves so CSS pseudo-element
+                // animation doesn't compete with JS-driven transform.
+                el.classList.add('has-grooves');
+            }
+            if (!el.querySelector('.vinyl-sheen')) {
+                var sheen = document.createElement('span');
+                sheen.className = 'vinyl-sheen';
+                el.insertBefore(sheen, el.firstChild);
+            }
+
+            // inject animated reflection layer
+            if (!el.querySelector('.vinyl-reflection')) {
+                var reflection = document.createElement('span');
+                reflection.className = 'vinyl-reflection';
+                el.insertBefore(reflection, el.firstChild);
+            }
+
+            // inject center label with artist/album info
+            if (!el.querySelector('.vinyl-label')) {
+                var label = document.createElement('div');
+                label.className = 'vinyl-label';
+
+                var artistEl = el.querySelector('.artist');
+                var albumEl = el.querySelector('.album');
+
+                if (artistEl) {
+                    var labelArtist = document.createElement('div');
+                    labelArtist.className = 'label-artist';
+                    labelArtist.textContent = artistEl.textContent;
+                    label.appendChild(labelArtist);
+                }
+
+                if (albumEl) {
+                    var labelAlbum = document.createElement('div');
+                    labelAlbum.className = 'label-album';
+                    labelAlbum.textContent = albumEl.textContent;
+                    label.appendChild(labelAlbum);
+                }
+
+                el.insertBefore(label, el.firstChild);
+            }
+
+            // randomize groove spacing to simulate track-length variance
+            var coarse = Math.floor(Math.random() * 5) + 2; // 2..6 px
+            var fine = (Math.random() * 1.6 + 0.6).toFixed(2); // 0.6 .. 2.2 px
+            el.style.setProperty('--coarse-gap', coarse + 'px');
+            el.style.setProperty('--fine-gap', fine + 'px');
+
+            /* ROTATION DISABLED FOR SAFARI DIAGNOSTIC
+            // ramping spin state
+            var g = el.querySelector('.vinyl-grooves');
+            var s = el.querySelector('.vinyl-sheen');
+            var angle = 0;
+            var speed = 0; // deg per ms
+            var target = 0;
+            var last = performance.now();
+            var running = false;
+            var period = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vinyl-spin-speed')) || 2.8; // seconds
+            var normalSpeed = 360 / (period * 1000); // deg per ms
+            var hoverSpeed = normalSpeed * 4; // 4x faster on hover for more obvious spin
+            var targetSpeed = normalSpeed;
+
+            function raf(now){
+                var dt = now - last; last = now;
+                // lerp speed towards target with smooth acceleration
+                speed += (target - speed) * 0.12;
+                if (Math.abs(speed) < 0.00001) speed = 0;
+                angle = (angle + speed * dt) % 360;
+                if (g) g.style.transform = 'rotate(' + angle + 'deg)';
+                if (s) s.style.transform = 'rotate(' + (angle * 1.25) + 'deg)';
+                if (running) requestAnimationFrame(raf);
+            }
+
+            function startSpin(){
+                target = targetSpeed;
+                if (!running) { running = true; last = performance.now(); requestAnimationFrame(raf); }
+            }
+            function stopSpin(){
+                target = 0;
+                // allow RAF to stop naturally when speed decays to ~0
+                setTimeout(function(){ if (Math.abs(speed) < 0.02) { running = false; } }, 600);
+            }
+
+            el.addEventListener('mouseenter', function(){
+                el.classList.add('hover-sheen');
+                targetSpeed = hoverSpeed; // accelerate on hover
+                startSpin();
+            });
+            el.addEventListener('mouseleave', function(){
+                el.classList.remove('hover-sheen');
+                targetSpeed = normalSpeed; // back to normal speed
+                stopSpin();
+            });
+
+            // if page wants to mark playing, keep spinning
+            var observer = new MutationObserver(function(m){
+                m.forEach(function(rec){
+                    if (rec.type !== 'attributes') return;
+                    if (el.classList.contains('playing')) startSpin(); else stopSpin();
+                });
+            });
+            observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+            */
+        });
+    })();
+    </script>
+    <script>
+    // Clicking a card toggles the .playing state and clears other playing cards.
+    (function(){
+        var releases = document.querySelectorAll('.section.new-releases .release.clickable');
+        if (!releases || releases.length === 0) return;
+        releases.forEach(function(el){
+            el.addEventListener('click', function(ev){
+                // Toggle playing on the clicked card and remove from others.
+                var currentlyPlaying = el.classList.contains('playing');
+                // clear others first
+                document.querySelectorAll('.section.new-releases .release.playing').forEach(function(o){
+                    if (o !== el) o.classList.remove('playing');
+                });
+                if (currentlyPlaying) {
+                    el.classList.remove('playing');
+                } else {
+                    el.classList.add('playing');
+                }
+                // Do not prevent default — keep link behavior (opens in new tab for target="_blank").
+            });
+        });
+    })();
+    </script>
+    <script>
+    // Dynamic spotlight effect that follows cursor
+    (function(){
+        var releases = document.querySelectorAll('.section.new-releases .release');
+
+        releases.forEach(function(release){
+            release.addEventListener('mousemove', function(e){
+                var rect = release.getBoundingClientRect();
+                var x = ((e.clientX - rect.left) / rect.width) * 100;
+                var y = ((e.clientY - rect.top) / rect.height) * 100;
+
+                release.style.setProperty('--mouse-x', x + '%');
+                release.style.setProperty('--mouse-y', y + '%');
+            });
+
+            release.addEventListener('mouseleave', function(){
+                release.style.setProperty('--mouse-x', '30%');
+                release.style.setProperty('--mouse-y', '25%');
+            });
+        });
+    })();
+    </script>
+    <!-- Label container shim: wrap artist/album into absolute .labels for new releases -->
+    <script id="labels-shim">
+    (function(){
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
+
+        function init(){
+            var items = document.querySelectorAll('.section.new-releases .release');
+            items.forEach(function(el){
+                // skip if already wrapped
+                if (el.querySelector('.labels')) return;
+                var artist = el.querySelector('.artist');
+                var album = el.querySelector('.album');
+                if (!artist && !album) return;
+                var labels = document.createElement('div');
+                labels.className = 'labels';
+                // insert labels as last child so they visually sit above artwork
+                el.appendChild(labels);
+                if (artist) labels.appendChild(artist);
+                if (album) labels.appendChild(album);
+                // keep CSS stagger variable if present
+                var stagger = el.style.getPropertyValue('--stagger');
+                if (stagger) labels.style.setProperty('--stagger', stagger);
+            });
+        }
+    })();
+    </script>
+  </body>
+  </html>
