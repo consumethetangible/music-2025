@@ -113,14 +113,22 @@
                 radial-gradient(ellipse at 50% 80%, rgba(100, 50, 25, 0.1) 0%, transparent 20%),
                 /* Base metal color */
                 linear-gradient(180deg, rgba(60, 65, 70, 0.9) 0%, rgba(45, 50, 55, 0.95) 100%);
-            border-radius: 8px;
+            /* Jagged irregular edges */
+            clip-path: polygon(
+                0% 2%, 2% 0%, 5% 1%, 8% 0%, 12% 2%, 15% 0%, 18% 1%, 22% 0%,
+                25% 2%, 30% 1%, 35% 0%, 40% 1%, 45% 0%, 50% 2%, 55% 0%,
+                60% 1%, 65% 0%, 70% 2%, 75% 1%, 78% 0%, 82% 1%, 85% 0%,
+                88% 2%, 92% 0%, 95% 1%, 98% 0%, 100% 2%,
+                100% 98%, 98% 100%, 95% 99%, 92% 100%, 88% 98%, 85% 100%,
+                82% 99%, 78% 100%, 75% 98%, 70% 99%, 65% 100%, 60% 98%,
+                55% 100%, 50% 99%, 45% 100%, 40% 98%, 35% 100%, 30% 99%,
+                25% 100%, 22% 98%, 18% 100%, 15% 99%, 12% 100%, 8% 98%,
+                5% 100%, 2% 99%, 0% 98%
+            );
             box-shadow:
-                0 4px 15px rgba(0, 0, 0, 0.8),
+                0 6px 20px rgba(0, 0, 0, 0.9),
                 inset 0 2px 4px rgba(255, 255, 255, 0.05),
                 inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(80, 70, 60, 0.5);
-            border-top-color: rgba(100, 90, 80, 0.6);
-            border-bottom-color: rgba(40, 35, 30, 0.8);
         }
 
         /* Rivets on the plate */
@@ -143,6 +151,36 @@
 
         .section {
             margin-bottom: 60px;
+            position: relative;
+        }
+
+        /* Mounting brackets for shelves */
+        .section::before,
+        .section::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            width: 8px;
+            height: 45px;
+            background: linear-gradient(90deg,
+                rgba(90, 95, 100, 1) 0%,
+                rgba(110, 115, 120, 1) 50%,
+                rgba(80, 85, 90, 1) 100%);
+            box-shadow:
+                inset 2px 0 3px rgba(0, 0, 0, 0.5),
+                inset -1px 0 2px rgba(255, 255, 255, 0.2),
+                2px 0 5px rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .section::before {
+            left: 30px;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .section::after {
+            right: 30px;
+            border-radius: 2px 0 0 2px;
         }
 
         h2 {
@@ -224,25 +262,32 @@
             right: 0;
             height: 35px;
             background:
-                /* Brushed metal texture */
+                /* Wear marks and scratches */
+                linear-gradient(90deg, transparent 0%, transparent 20%, rgba(255, 255, 255, 0.05) 20.5%, transparent 21%),
+                linear-gradient(90deg, transparent 0%, transparent 45%, rgba(0, 0, 0, 0.1) 45.5%, transparent 46%),
+                linear-gradient(90deg, transparent 0%, transparent 72%, rgba(255, 255, 255, 0.03) 72.5%, transparent 73%),
+                /* Fine brushed metal texture */
                 repeating-linear-gradient(90deg,
-                    rgba(180, 180, 180, 0.3) 0px,
-                    rgba(200, 200, 200, 0.3) 1px,
-                    rgba(180, 180, 180, 0.3) 2px,
-                    rgba(160, 160, 160, 0.3) 3px),
-                /* Main metallic gradient */
+                    rgba(180, 180, 180, 0.4) 0px,
+                    rgba(200, 200, 200, 0.4) 0.5px,
+                    rgba(180, 180, 180, 0.4) 1px,
+                    rgba(160, 160, 160, 0.4) 1.5px),
+                /* Subtle color variations */
+                radial-gradient(ellipse at 30% 50%, rgba(140, 145, 150, 0.3) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 50%, rgba(155, 160, 165, 0.2) 0%, transparent 35%),
+                /* Main metallic gradient with more depth */
                 linear-gradient(180deg,
-                    rgba(200, 200, 200, 1) 0%,
-                    rgba(160, 160, 160, 1) 20%,
-                    rgba(120, 120, 120, 1) 50%,
-                    rgba(140, 140, 140, 1) 80%,
-                    rgba(160, 160, 160, 1) 100%);
+                    rgba(210, 215, 220, 1) 0%,
+                    rgba(170, 175, 180, 1) 15%,
+                    rgba(130, 135, 140, 1) 50%,
+                    rgba(145, 150, 155, 1) 85%,
+                    rgba(165, 170, 175, 1) 100%);
             border-radius: 4px;
             box-shadow:
-                0 4px 8px rgba(0, 0, 0, 0.8),
-                0 8px 20px rgba(0, 0, 0, 0.6),
-                inset 0 2px 3px rgba(255, 255, 255, 0.3),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+                0 5px 12px rgba(0, 0, 0, 0.85),
+                0 10px 25px rgba(0, 0, 0, 0.7),
+                inset 0 3px 5px rgba(255, 255, 255, 0.35),
+                inset 0 -3px 6px rgba(0, 0, 0, 0.6);
             z-index: 0;
         }
 
