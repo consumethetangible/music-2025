@@ -19,15 +19,15 @@
 
         body {
             background:
-                /* Subtle texture */
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(101, 67, 33, .05) 3px, rgba(101, 67, 33, .05) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(101, 67, 33, .05) 3px, rgba(101, 67, 33, .05) 4px),
-                /* Spotlight effects for depth */
-                radial-gradient(ellipse at 20% 30%, rgba(139, 90, 43, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(139, 90, 43, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
-                /* Warm record store atmosphere */
-                linear-gradient(180deg, #2a1f1a 0%, #1a120e 50%, #0f0a08 100%);
+                /* Subtle metallic texture */
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(100, 120, 140, .05) 3px, rgba(100, 120, 140, .05) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(100, 120, 140, .05) 3px, rgba(100, 120, 140, .05) 4px),
+                /* Cool spotlight effects for depth */
+                radial-gradient(ellipse at 20% 30%, rgba(0, 170, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(100, 140, 180, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(0, 184, 212, 0.05) 0%, transparent 60%),
+                /* Industrial atmosphere */
+                linear-gradient(180deg, #1a1e25 0%, #0f1318 50%, #080a0d 100%);
             font-family: 'Inter', sans-serif;
             padding: 60px 40px;
             min-height: 100vh;
@@ -40,17 +40,17 @@
             margin: 0 auto;
             background:
                 /* Pegboard holes */
-                radial-gradient(circle at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 2px, transparent 3px, transparent 100%),
-                /* Pegboard base color */
-                rgba(20, 15, 12, 0.90);
+                radial-gradient(circle at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.4) 2px, transparent 3px, transparent 100%),
+                /* Pegboard base color - cool grey */
+                rgba(18, 22, 28, 0.92);
             background-size: 25px 25px, 100% 100%;
             background-position: 0 0, 0 0;
             border-radius: 20px;
             padding: 60px 50px;
             box-shadow:
                 0 30px 60px rgba(0, 0, 0, 0.9),
-                inset 0 1px 1px rgba(139, 90, 43, 0.1);
-            border: 1px solid rgba(139, 90, 43, 0.25);
+                inset 0 1px 1px rgba(100, 140, 180, 0.15);
+            border: 1px solid rgba(100, 140, 180, 0.3);
             position: relative;
             z-index: 1;
         }
